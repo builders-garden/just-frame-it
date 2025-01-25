@@ -4,10 +4,11 @@ import { useApply } from "@/hooks/use-apply";
 import { useFrame } from "../farcaster-provider";
 import SafeAreaContainer from "../SafeAreaContainer";
 import { Climate_Crisis } from "next/font/google";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ApplyModal, { ApplyFormData } from "../ApplyModal";
 import { useSignIn } from "@/hooks/use-sign-in";
 import ProgramInfoModal from "../ProgramInfoModal";
+import Image from "next/image";
 
 const climateCrisis = Climate_Crisis({ subsets: ["latin"] });
 
@@ -17,6 +18,45 @@ export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { signIn, isLoading: isSigningIn } = useSignIn();
   const [isProgramInfoModalOpen, setIsProgramInfoModalOpen] = useState(false);
+  const [countdown, setCountdown] = useState({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+  });
+
+  useEffect(() => {
+    // Set target date to March 16, 2025 23:59:59 Rome time (UTC+1 in winter, UTC+2 in summer)
+    // March is in winter time (CET), so UTC+1
+    const targetDate = new Date("2025-03-16T22:59:59Z"); // 23:59:59 Rome time (UTC+1)
+
+    const updateCountdown = () => {
+      // Convert current time to Rome time
+      const now = new Date();
+      const romeOffset = 60; // Rome timezone offset in minutes (UTC+1)
+      const localOffset = now.getTimezoneOffset();
+      const adjustedNow = new Date(
+        now.getTime() + (localOffset + romeOffset) * 60000
+      );
+
+      const diff = targetDate.getTime() - adjustedNow.getTime();
+
+      if (diff > 0) {
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor(
+          (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        );
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+        setCountdown({ days, hours, minutes, seconds });
+      }
+    };
+
+    updateCountdown();
+    const interval = setInterval(updateCountdown, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   const handleApplyClick = async () => {
     try {
@@ -82,51 +122,51 @@ export default function Home() {
         />
       </div>
 
-      <div className="relative z-10 flex min-h-screen flex-col items-center justify-between px-4">
-        {/* Hero Section */}
-        <div className="w-full max-w-5xl mx-auto text-center space-y-6 py-16">
+      <div className="relative z-10 flex min-h-screen flex-col items-center px-4">
+        {/* Hero Section - removed justify-between from parent and added margin-top */}
+        <div className="w-full max-w-5xl mx-auto text-center space-y-6 py-16 md:py-24 mt-8">
           <h1
-            className={`font-bold text-purple-600 border py-1 border-blue-500 relative`}
+            className={` text-purple-600 border py-1 md:py-4 border-blue-500 relative max-w-3xl mx-auto`}
           >
-            <div className="absolute w-2 h-2 bg-white border border-blue-500 top-0 left-0 -translate-x-1/2 -translate-y-1/2"></div>
-            <div className="absolute w-2 h-2 bg-white border border-blue-500 top-0 right-0 translate-x-1/2 -translate-y-1/2"></div>
-            <div className="absolute w-2 h-2 bg-white border border-blue-500 bottom-0 left-0 -translate-x-1/2 translate-y-1/2"></div>
-            <div className="absolute w-2 h-2 bg-white border border-blue-500 bottom-0 right-0 translate-x-1/2 translate-y-1/2"></div>
-            <div className="flex flex-col gap-4">
+            <div className="absolute w-2 h-2 md:w-3 md:h-3 bg-white border border-blue-500 top-0 left-0 -translate-x-1/2 -translate-y-1/2"></div>
+            <div className="absolute w-2 h-2 md:w-3 md:h-3 bg-white border border-blue-500 top-0 right-0 translate-x-1/2 -translate-y-1/2"></div>
+            <div className="absolute w-2 h-2 md:w-3 md:h-3 bg-white border border-blue-500 bottom-0 left-0 -translate-x-1/2 translate-y-1/2"></div>
+            <div className="absolute w-2 h-2 md:w-3 md:h-3 bg-white border border-blue-500 bottom-0 right-0 translate-x-1/2 translate-y-1/2"></div>
+            <div className="flex flex-col gap-4 md:gap-6">
               <p
-                className={`text-4xl text-purple-500 ${climateCrisis.className}`}
+                className={`text-4xl md:text-7xl text-purple-500 ${climateCrisis.className}`}
               >
                 Just Frame It
               </p>
-              <p className="text-purple-500 font-normal">
-                Build sprint to reframe the future of social feeds.
+              <p className="text-purple-500 font-semibold text-base md:text-xl">
+                Build sprint to reframe the future of social feeds
               </p>
             </div>
           </h1>
 
           {/* Info Cards */}
-          <div className="flex flex-wrap justify-center gap-4 mt-8 text-xs font-bold text-purple-500">
-            <div className="border-2 border-purple-500 px-6 py-2 bg-white/50">
+          <div className="flex flex-wrap justify-center gap-4 mt-8 text-xs md:text-base font-bold text-purple-500">
+            <div className="border-2 border-purple-500 px-6 py-2 md:px-8 md:py-3 bg-white/50">
               6 TEAMS
             </div>
-            <div className="border-2 border-purple-500 px-6 py-2 bg-white/50">
+            <div className="border-2 border-purple-500 px-6 py-2 md:px-8 md:py-3 bg-white/50">
               HYBRID BUILDATHON
             </div>
-            <div className="border-2 border-purple-500 px-6 py-2 bg-white/50">
+            <div className="border-2 border-purple-500 px-6 py-2 md:px-8 md:py-3 bg-white/50">
               ONLINE - NYC - ROME
             </div>
-            <div className="border-2 border-purple-500 px-6 py-2 bg-white/50">
+            <div className="border-2 border-purple-500 px-6 py-2 md:px-8 md:py-3 bg-white/50">
               APR 7TH - JUNE 7TH
             </div>
           </div>
         </div>
 
-        {/* Apply Button Section */}
-        <div className="w-full max-w-5xl mx-auto text-center pb-8">
+        {/* Apply Button Section - added margin-top auto to push it down */}
+        <div className="w-full max-w-5xl mx-auto text-center pb-8 md:pb-16 mt-auto">
           {/* Learn More Link */}
           <button
             onClick={() => setIsProgramInfoModalOpen(true)}
-            className="mb-4 text-purple-600 underline hover:text-purple-700 transition-colors duration-200"
+            className="mb-4 md:mb-6 text-purple-600 text-base md:text-lg underline hover:text-purple-700 transition-colors duration-200"
           >
             Learn More
           </button>
@@ -135,14 +175,32 @@ export default function Home() {
             <button
               onClick={handleApplyClick}
               disabled={isSigningIn}
-              className="px-8 py-4 bg-purple-600 text-white text-xl font-semibold shadow-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+              className="px-8 py-4 md:px-12 md:py-6 bg-purple-600 text-white text-xl md:text-2xl font-semibold shadow-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
             >
               {isSigningIn ? "Connecting..." : "Apply Now"}
             </button>
-            <p className="text-purple-500 mt-4">
-              Applications closing on March 16th
+            <p className="text-purple-500 mt-4 md:mt-6 text-xs md:text-sm">
+              Applications closing in {countdown.days} days, {countdown.hours}{" "}
+              hours, {countdown.minutes} minutes, {countdown.seconds} seconds
             </p>
           </div>
+        </div>
+
+        {/* Builders Garden logo */}
+        <div className="w-full flex justify-center mb-8">
+          <a
+            href="https://builders.garden"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Image
+              src="/images/builders-garden-logo.png"
+              alt="Builders Garden"
+              width={60}
+              height={12}
+              className="opacity-80 hover:opacity-100 transition-opacity"
+            />
+          </a>
         </div>
       </div>
 
