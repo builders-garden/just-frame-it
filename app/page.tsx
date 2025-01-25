@@ -24,6 +24,13 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       title: "Frame Mavericks",
       description: "Frame Builders Program",
+      images: [
+        {
+          url: `${appUrl}/images/preview.png`,
+          width: 1200,
+          height: 630,
+        },
+      ],
     },
     other: {
       "fc:frame": JSON.stringify(frame),
