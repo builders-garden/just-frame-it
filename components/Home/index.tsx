@@ -38,15 +38,49 @@ export default function Home() {
 
   return (
     <SafeAreaContainer insets={context?.client.safeAreaInsets}>
-      {/* Background Pattern */}
-      <div
-        className="fixed inset-0 z-0 opacity-20"
-        style={{
-          backgroundImage: "url('/images/pattern.svg')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      />
+      {/* Animated Background Pattern */}
+      <div className="fixed inset-0 z-0 overflow-hidden">
+        {/* Layer 1 - Short scattered lines */}
+        <div
+          className="absolute inset-0 opacity-10"
+          style={{
+            background: `
+              linear-gradient(45deg, transparent 15%, #9333ea 15.25%, transparent 15.75%),
+              linear-gradient(45deg, transparent 45%, #9333ea 45.25%, transparent 45.75%),
+              linear-gradient(45deg, transparent 75%, #9333ea 75.25%, transparent 75.75%),
+              linear-gradient(45deg, transparent 85%, #9333ea 85.25%, transparent 85.75%)
+            `,
+            backgroundSize: "300px 300px",
+            animation: "diagonal-fall 20s linear infinite, fade-in 2s ease-out",
+          }}
+        />
+        {/* Layer 2 - Medium length lines */}
+        <div
+          className="absolute inset-0 opacity-10"
+          style={{
+            background: `
+              linear-gradient(45deg, transparent 25%, #9333ea 25.25%, transparent 25.75%),
+              linear-gradient(45deg, transparent 55%, #9333ea 55.25%, transparent 55.75%),
+              linear-gradient(45deg, transparent 95%, #9333ea 95.25%, transparent 95.75%)
+            `,
+            backgroundSize: "300px 300px",
+            animation: "diagonal-fall 15s linear infinite, fade-in 2s ease-out",
+          }}
+        />
+        {/* Layer 3 - Long lines */}
+        <div
+          className="absolute inset-0 opacity-10"
+          style={{
+            background: `
+              linear-gradient(45deg, transparent 5%, #9333ea 5.25%, transparent 5.75%),
+              linear-gradient(45deg, transparent 35%, #9333ea 35.25%, transparent 35.75%),
+              linear-gradient(45deg, transparent 65%, #9333ea 65.25%, transparent 65.75%)
+            `,
+            backgroundSize: "300px 300px",
+            animation: "diagonal-fall 25s linear infinite, fade-in 2s ease-out",
+          }}
+        />
+      </div>
 
       <div className="relative z-10 flex min-h-screen flex-col items-center justify-between px-4">
         {/* Hero Section */}
@@ -111,6 +145,27 @@ export default function Home() {
           </div>
         </div>
       </div>
+
+      {/* Update animation styles */}
+      <style jsx global>{`
+        @keyframes diagonal-fall {
+          0% {
+            transform: translate(-100%, -100%) rotate(-1deg);
+          }
+          100% {
+            transform: translate(100%, 100%) rotate(-1deg);
+          }
+        }
+
+        @keyframes fade-in {
+          0% {
+            opacity: 0;
+          }
+          100% {
+            opacity: 0.1;
+          }
+        }
+      `}</style>
 
       <ApplyModal
         isOpen={isModalOpen}
