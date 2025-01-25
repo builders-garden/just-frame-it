@@ -7,23 +7,23 @@ const frame = {
   version: "next",
   imageUrl: `${appUrl}/images/feed.png`,
   button: {
-    title: "Launch App",
+    title: "Apply Now",
     action: {
       type: "launch_frame",
-      name: "Mini-app Starter",
+      name: "Frame Mavericks",
       url: appUrl,
       splashImageUrl: `${appUrl}/images/splash.png`,
-      splashBackgroundColor: "#f7f7f7",
+      splashBackgroundColor: "#ffffff",
     },
   },
 };
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: "Mini-app Starter",
+    title: "Frame Mavericks",
     openGraph: {
-      title: "Mini-app Starter",
-      description: "A starter for mini-apps",
+      title: "Frame Mavericks",
+      description: "Frame Builders Program",
     },
     other: {
       "fc:frame": JSON.stringify(frame),

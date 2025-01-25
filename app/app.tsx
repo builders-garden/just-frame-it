@@ -1,40 +1,37 @@
-import { ContextType, useMiniAppContext } from "@/hooks/use-miniapp-context";
-import dynamic from "next/dynamic";
-import { SafeAreaInsets } from "@/types";
+"use client";
 
-const Demo = dynamic(() => import("@/components/Home"), {
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import dynamic from "next/dynamic";
+
+const Home = dynamic(() => import("@/components/Home"), {
   ssr: false,
-  loading: () => <div>Loading...</div>,
+  loading: () => (
+    <div className="flex justify-center items-center min-h-screen">
+      <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-purple-600" />
+    </div>
+  ),
 });
 
-interface SafeAreaContainerProps {
-  children: React.ReactNode;
-  insets?: SafeAreaInsets;
-}
-
-const SafeAreaContainer = ({ children, insets }: SafeAreaContainerProps) => (
-  <main
-    className="flex min-h-screen flex-col items-center justify-center p-24 gap-y-3"
-    style={{
-      marginTop: insets?.top ?? 0,
-      marginBottom: insets?.bottom ?? 0,
-      marginLeft: insets?.left ?? 0,
-      marginRight: insets?.right ?? 0,
-    }}
-  >
-    {children}
-  </main>
+const queryClient = new QueryClient();
+const FrameProvider = dynamic(
+  () =>
+    import("@/components/farcaster-provider").then((mod) => mod.FrameProvider),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-purple-600" />
+      </div>
+    ),
+  }
 );
 
-export default function Home() {
-  const { type: contextType, context } = useMiniAppContext();
-  return contextType === ContextType.Farcaster ? (
-    <SafeAreaContainer insets={context.client.safeAreaInsets}>
-      <Demo />
-    </SafeAreaContainer>
-  ) : (
-    <SafeAreaContainer>
-      <Demo />
-    </SafeAreaContainer>
+export default function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <FrameProvider>
+        <Home />
+      </FrameProvider>
+    </QueryClientProvider>
   );
 }

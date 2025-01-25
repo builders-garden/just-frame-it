@@ -6,13 +6,13 @@
   },
   "frame": {
     "version": "1",
-    "name": "MiniApp Template",
-    "iconUrl": "https://miniapps.builders.garden/images/icon.png",
-    "homeUrl": "https://miniapps.builders.garden",
-    "imageUrl": "https://miniapps.builders.garden/images/feed.png",
-    "buttonTitle": "Press Me",
-    "splashImageUrl": "https://miniapps.builders.garden/images/splash.png",
+    "name": "Frame Mavericks",
+    "iconUrl": "https://mavericks.builders.garden/images/icon.png",
+    "homeUrl": "https://mavericks.builders.garden",
+    "imageUrl": "https://mavericks.builders.garden/images/feed.png",
+    "buttonTitle": "Apply Now",
+    "splashImageUrl": "https://mavericks.builders.garden/images/splash.png",
     "splashBackgroundColor": "#ffffff",
-    "webhookUrl": "https://miniapps.builders.garden/api/webhook"
+    "webhookUrl": "https://mavericks.builders.garden/api/webhook"
   }
 }

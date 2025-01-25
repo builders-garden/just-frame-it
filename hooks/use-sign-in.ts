@@ -1,11 +1,11 @@
 import { sdk } from "@farcaster/frame-sdk";
-import { useCallback, useState } from "react";
+import { useFrame } from "@/components/farcaster-provider";
+import { useCallback, useEffect, useState } from "react";
 import { MESSAGE_EXPIRATION_TIME } from "@/lib/constants";
-import { MiniKit } from "@worldcoin/minikit-js";
-import { ContextType, useMiniAppContext } from "./use-miniapp-context";
+import posthog from "posthog-js";
 
 export const useSignIn = () => {
-  const { type: contextType, context } = useMiniAppContext();
+  const { isSDKLoaded, context, error: contextError } = useFrame();
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -15,44 +15,32 @@ export const useSignIn = () => {
       setIsLoading(true);
       setError(null);
 
-      if (!context) {
-        throw new Error("No context found");
+      if (contextError) {
+        throw new Error(`SDK initialization failed: ${contextError}`);
       }
 
-      if (contextType === ContextType.Farcaster && !context.user?.fid) {
+      if (!context) {
+        throw new Error("FarVille must be played from Warpcast!");
+      }
+
+      if (!context.user?.fid) {
         throw new Error(
           "No FID found. Please make sure you're logged into Warpcast."
         );
       }
-      let referrerFid: number | null = null;
-      let result: { message: string; signature: string; address?: string };
-      if (contextType === ContextType.Worldcoin) {
-        const nonce = Math.random().toString(36).substring(2);
-        const message = `Sign in to MiniApp. Nonce: ${nonce}`;
-        const miniKitResult = await MiniKit.commandsAsync.signMessage({
-          message,
-        });
-        if (miniKitResult.finalPayload.status !== "success") {
-          throw new Error("[MiniKit] Failed to sign message");
-        }
-        result = {
-          message: miniKitResult.commandPayload!.message,
-          signature: miniKitResult.finalPayload.signature,
-          address: miniKitResult.finalPayload.address,
-        };
-      } else {
-        result = await sdk.actions.signIn({
-          nonce: Math.random().toString(36).substring(2),
-          notBefore: new Date().toISOString(),
-          expirationTime: new Date(
-            Date.now() + MESSAGE_EXPIRATION_TIME
-          ).toISOString(),
-        });
-        referrerFid =
-          context.location?.type === "cast_embed"
-            ? context.location.cast.fid
-            : null;
-      }
+
+      const result = await sdk.actions.signIn({
+        nonce: Math.random().toString(36).substring(2),
+        notBefore: new Date().toISOString(),
+        expirationTime: new Date(
+          Date.now() + MESSAGE_EXPIRATION_TIME
+        ).toISOString(),
+      });
+
+      const referrerFid =
+        context.location?.type === "cast_embed"
+          ? context.location.cast.fid
+          : null;
 
       const res = await fetch("/api/auth/sign-in", {
         method: "POST",
@@ -62,10 +50,7 @@ export const useSignIn = () => {
         body: JSON.stringify({
           signature: result.signature,
           message: result.message,
-          ...(contextType === ContextType.Farcaster && {
-            fid: context.user.fid,
-          }),
-          ...(result.address && { walletAddress: result.address }),
+          fid: context.user.fid,
           referrerFid,
         }),
       });
@@ -78,7 +63,6 @@ export const useSignIn = () => {
       const data = await res.json();
       localStorage.setItem("token", data.token);
       setIsSignedIn(true);
-      // TODO: install posthog to activate this
       // posthog.identify(context.user.fid.toString());
       return data;
     } catch (err) {
@@ -89,12 +73,7 @@ export const useSignIn = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [context, contextType]);
+  }, [context, contextError, isSDKLoaded]);
 
-  const logout = useCallback(() => {
-    localStorage.removeItem("token");
-    setIsSignedIn(false);
-  }, []);
-
-  return { signIn, logout, isSignedIn, isLoading, error };
+  return { signIn, isSignedIn, isLoading, error };
 };
