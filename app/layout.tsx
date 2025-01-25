@@ -5,8 +5,8 @@ import "./globals.css";
 const redHatDisplay = Red_Hat_Display({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Frame Mavericks",
-  description: "Frame Builders Program",
+  title: "Just Frame It",
+  description: "Build sprint to reframe the future of social feeds",
 };
 
 export default function RootLayout({

@@ -6,13 +6,13 @@
   },
   "frame": {
     "version": "1",
-    "name": "Frame Mavericks",
-    "iconUrl": "https://mavericks.builders.garden/images/icon.png",
-    "homeUrl": "https://mavericks.builders.garden",
-    "imageUrl": "https://mavericks.builders.garden/images/feed.png",
+    "name": "Just Frame It",
+    "iconUrl": "https://frame-it.builders.garden/images/icon.png",
+    "homeUrl": "https://frame-it.builders.garden",
+    "imageUrl": "https://frame-it.builders.garden/images/feed.png",
     "buttonTitle": "Apply Now",
-    "splashImageUrl": "https://mavericks.builders.garden/images/splash.png",
+    "splashImageUrl": "https://frame-it.builders.garden/images/splash.png",
     "splashBackgroundColor": "#ffffff",
-    "webhookUrl": "https://mavericks.builders.garden/api/webhook"
+    "webhookUrl": "https://frame-it.builders.garden/api/webhook"
   }
 }

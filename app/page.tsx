@@ -10,7 +10,7 @@ const frame = {
     title: "Apply Now",
     action: {
       type: "launch_frame",
-      name: "Frame Mavericks",
+      name: "Just Frame It",
       url: appUrl,
       splashImageUrl: `${appUrl}/images/splash.png`,
       splashBackgroundColor: "#ffffff",
@@ -20,10 +20,10 @@ const frame = {
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: "Frame Mavericks",
+    title: "Just Frame It",
     openGraph: {
-      title: "Frame Mavericks",
-      description: "Frame Builders Program",
+      title: "Just Frame It",
+      description: "Build sprint to reframe the future of social feeds",
       images: [
         {
           url: `${appUrl}/images/preview.png`,
