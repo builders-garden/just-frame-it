@@ -28,7 +28,6 @@ export const searchUsers = async (
   viewerFid?: string,
   limit: number = 5
 ): Promise<NeynarUser[]> => {
-  console.log("searchUsers", query, viewerFid, limit);
   const url = new URL("https://api.neynar.com/v2/farcaster/user/search");
   url.searchParams.append("q", query);
   if (viewerFid) {

@@ -3,9 +3,10 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 import { Climate_Crisis } from "next/font/google";
-import { useFrame } from "../farcaster-provider";
 import { useMe } from "@/hooks/use-users";
 import { useSearchUsers } from "@/hooks/use-users";
+import { useProfile } from "@farcaster/auth-kit";
+import Image from "next/image";
 
 const climateCrisis = Climate_Crisis({ subsets: ["latin"] });
 interface ApplyModalProps {
@@ -31,7 +32,6 @@ export default function ApplyModal({
   isLoading,
 }: ApplyModalProps) {
   const { data: user } = useMe();
-  const { context } = useFrame();
   const [searchQuery, setSearchQuery] = useState("");
   const [hasProjectIdea, setHasProjectIdea] = useState(false);
   const [selectedTeamMembers, setSelectedTeamMembers] = useState<
@@ -40,11 +40,10 @@ export default function ApplyModal({
       pfp_url?: string;
     }>
   >([]);
+  const { isAuthenticated, profile } = useProfile();
 
   const { data: searchResults, isLoading: isSearching } =
     useSearchUsers(searchQuery);
-
-  console.log("Search results:", searchResults);
 
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
@@ -54,7 +53,6 @@ export default function ApplyModal({
     return () => window.removeEventListener("keydown", handleEsc);
   }, [onClose]);
 
-  console.log(context?.user);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -77,7 +75,6 @@ export default function ApplyModal({
     onSubmit(data);
   };
 
-  console.log(searchResults);
 
   return (
     <AnimatePresence>
@@ -144,14 +141,28 @@ export default function ApplyModal({
                         name="name"
                         id="name"
                         disabled
-                        value={user?.username}
+                        value={
+                          isAuthenticated ? profile.username : user?.username
+                        }
                         className="block w-full border border-gray-300 px-3 py-2 pl-10 focus:border-purple-500 focus:outline-none focus:ring-purple-500"
                       />
-                      {user?.pfp_url && (
-                        <img
-                          src={user.pfp_url}
-                          alt={user.username}
+                      {isAuthenticated && profile.pfpUrl ? (
+                        <Image
+                          src={profile.pfpUrl}
+                          alt={"profile pfp"}
+                          width={24}
+                          height={24}
                           className="absolute left-2 top-1/2 -translate-y-1/2 h-6 w-6 rounded-full"
+                          placeholder="empty"
+                        />
+                      ) : (
+                        <Image
+                          src={user?.pfp_url!}
+                          alt={user?.username!}
+                          width={24}
+                          height={24}
+                          className="absolute left-2 top-1/2 -translate-y-1/2 h-6 w-6 rounded-full"
+                          placeholder="empty"
                         />
                       )}
                     </div>
@@ -259,10 +270,13 @@ export default function ApplyModal({
                                 }}
                               >
                                 {user.pfp_url && (
-                                  <img
+                                  <Image
                                     src={user.pfp_url}
                                     alt={user.username}
+                                    width={24}
+                                    height={24}
                                     className="h-6 w-6 rounded-full"
+                                    placeholder="empty"
                                   />
                                 )}
                                 {user.username}
@@ -276,17 +290,20 @@ export default function ApplyModal({
                         </div>
                       )}
                     </div>
-                    <div className="mt-2 flex flex-wrap gap-2">
+                    <div className="mt-2 flex items-center flex-wrap gap-2">
                       {selectedTeamMembers.map((member) => (
                         <div
                           key={member.username}
                           className="bg-purple-100 px-2 py-1 rounded-md flex items-center gap-1"
                         >
                           {member.pfp_url && (
-                            <img
+                            <Image
                               src={member.pfp_url}
                               alt={member.username}
+                              width={24}
+                              height={24}
                               className="h-6 w-6 rounded-full"
+                              placeholder="empty"
                             />
                           )}
                           <span>{member.username}</span>
@@ -306,7 +323,7 @@ export default function ApplyModal({
                         </div>
                       ))}
                       {selectedTeamMembers.length < 2 && (
-                        <div className="text-sm text-gray-500">
+                        <div className="text-xs text-gray-500">
                           You can add up to {2 - selectedTeamMembers.length}{" "}
                           more team member
                           {2 - selectedTeamMembers.length === 1 ? "" : "s"}

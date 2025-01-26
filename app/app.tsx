@@ -1,6 +1,7 @@
 "use client";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { AuthKitProvider } from "@farcaster/auth-kit";
 import dynamic from "next/dynamic";
 
 const Home = dynamic(() => import("@/components/Home"), {
@@ -26,12 +27,22 @@ const FrameProvider = dynamic(
   }
 );
 
+const config = {
+  // rpcUrl:
+  //   "https://opt-mainnet.g.alchemy.com/v2/jvAhl-sK4YJ54h5eA_eZKMSAaA57mqUz",
+  domain: "frame-it.builders.garden",
+  siweUri: "https://frame-it.builders.garden" || "http://localhost:3000",
+  relay: "https://relay.farcaster.xyz",
+};
+
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <FrameProvider>
-        <Home />
-      </FrameProvider>
+      <AuthKitProvider config={config}>
+        <FrameProvider>
+          <Home />
+        </FrameProvider>
+      </AuthKitProvider>
     </QueryClientProvider>
   );
 }

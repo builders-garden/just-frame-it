@@ -13,7 +13,13 @@ interface UseApiQueryOptions<TData, TBody = unknown>
 export const useApiQuery = <TData, TBody = unknown>(
   options: UseApiQueryOptions<TData, TBody>
 ) => {
-  const { url, method = "GET", body, isProtected = false, ...queryOptions } = options;
+  const {
+    url,
+    method = "GET",
+    body,
+    isProtected = false,
+    ...queryOptions
+  } = options;
 
   return useQuery<TData>({
     ...queryOptions,

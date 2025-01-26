@@ -9,6 +9,7 @@ import ApplyModal, { ApplyFormData } from "../ApplyModal";
 import { useSignIn } from "@/hooks/use-sign-in";
 import ProgramInfoModal from "../ProgramInfoModal";
 import Image from "next/image";
+import ApplyButton from "../ApplyButton";
 
 const climateCrisis = Climate_Crisis({ subsets: ["latin"] });
 
@@ -171,14 +172,17 @@ export default function Home() {
             Learn More
           </button>
 
-          <div>
-            <button
-              onClick={handleApplyClick}
-              disabled={isSigningIn}
-              className="px-8 py-4 md:px-12 md:py-6 bg-purple-600 text-white text-xl md:text-2xl font-semibold shadow-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
-            >
-              {isSigningIn ? "Connecting..." : "Apply Now"}
-            </button>
+          <div className="flex flex-col items-center">
+            <ApplyButton
+              onSuccess={() => {
+                if (!isModalOpen) {
+                  setIsModalOpen(true);
+                }
+              }}
+              onError={(error) => {
+                console.error("Failed to sign in", error);
+              }}
+            />
             <p className="text-purple-500 mt-4 md:mt-6 text-xs md:text-sm">
               Applications closing in {countdown.days} days, {countdown.hours}{" "}
               hours, {countdown.minutes} minutes, {countdown.seconds} seconds
@@ -225,17 +229,21 @@ export default function Home() {
         }
       `}</style>
 
-      <ApplyModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSubmit={handleApply}
-        isLoading={isPending}
-      />
+      {isModalOpen && (
+        <ApplyModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onSubmit={handleApplyClick}
+          isLoading={isPending}
+        />
+      )}
 
-      <ProgramInfoModal
-        isOpen={isProgramInfoModalOpen}
-        onClose={() => setIsProgramInfoModalOpen(false)}
-      />
+      {isProgramInfoModalOpen && (
+        <ProgramInfoModal
+          isOpen={isProgramInfoModalOpen}
+          onClose={() => setIsProgramInfoModalOpen(false)}
+        />
+      )}
     </SafeAreaContainer>
   );
 }

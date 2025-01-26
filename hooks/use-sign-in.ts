@@ -3,44 +3,46 @@ import { useFrame } from "@/components/farcaster-provider";
 import { useCallback, useEffect, useState } from "react";
 import { MESSAGE_EXPIRATION_TIME } from "@/lib/constants";
 import posthog from "posthog-js";
+import { useProfile, useSignInMessage } from "@farcaster/auth-kit";
 
 export const useSignIn = () => {
   const { isSDKLoaded, context, error: contextError } = useFrame();
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { message, signature } = useSignInMessage();
+  const { isAuthenticated, profile } = useProfile();
 
   const signIn = useCallback(async () => {
     try {
       setIsLoading(true);
       setError(null);
 
-      if (contextError) {
-        throw new Error(`SDK initialization failed: ${contextError}`);
+      let result: { message: string; signature: string } = {
+        message: "",
+        signature: "",
+      };
+      let userFid: number | undefined;
+
+      if (context) {
+        result = await sdk.actions.signIn({
+          nonce: Math.random().toString(36).substring(2),
+          notBefore: new Date().toISOString(),
+          expirationTime: new Date(
+            Date.now() + MESSAGE_EXPIRATION_TIME
+          ).toISOString(),
+        });
+        userFid = context.user.fid;
+      } else if (isAuthenticated) {
+        if (!message || !signature) {
+          throw new Error("No message or signature found");
+        }
+        userFid = profile.fid;
+        result = {
+          message: message || "",
+          signature: signature || "",
+        };
       }
-
-      if (!context) {
-        throw new Error("FarVille must be played from Warpcast!");
-      }
-
-      if (!context.user?.fid) {
-        throw new Error(
-          "No FID found. Please make sure you're logged into Warpcast."
-        );
-      }
-
-      const result = await sdk.actions.signIn({
-        nonce: Math.random().toString(36).substring(2),
-        notBefore: new Date().toISOString(),
-        expirationTime: new Date(
-          Date.now() + MESSAGE_EXPIRATION_TIME
-        ).toISOString(),
-      });
-
-      const referrerFid =
-        context.location?.type === "cast_embed"
-          ? context.location.cast.fid
-          : null;
 
       const res = await fetch("/api/auth/sign-in", {
         method: "POST",
@@ -50,8 +52,7 @@ export const useSignIn = () => {
         body: JSON.stringify({
           signature: result.signature,
           message: result.message,
-          fid: context.user.fid,
-          referrerFid,
+          fid: userFid,
         }),
       });
 
@@ -73,7 +74,13 @@ export const useSignIn = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [context, contextError, isSDKLoaded]);
+  }, [context, isAuthenticated, message, profile.fid, signature]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      signIn();
+    }
+  }, [isAuthenticated, signIn]);
 
   return { signIn, isSignedIn, isLoading, error };
 };

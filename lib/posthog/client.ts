@@ -7,6 +7,5 @@ export const trackEvent = (
   if (process.env.NEXT_PUBLIC_POSTHOG_DISABLED === "true") {
     return;
   }
-  console.log("tracking event", event, data);
   return posthog.capture(event, data);
 };

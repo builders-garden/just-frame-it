@@ -58,7 +58,6 @@ export function FrameProvider({ children }: FrameProviderProps) {
     if (sdk && !isSDKLoaded) {
       load().then(() => {
         setIsSDKLoaded(true);
-        console.log("SDK loaded");
       });
     }
   }, [isSDKLoaded]);
