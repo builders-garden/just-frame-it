@@ -53,7 +53,6 @@ export default function ApplyModal({
     return () => window.removeEventListener("keydown", handleEsc);
   }, [onClose]);
 
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const form = e.target as HTMLFormElement;
@@ -74,7 +73,6 @@ export default function ApplyModal({
 
     onSubmit(data);
   };
-
 
   return (
     <AnimatePresence>
@@ -128,7 +126,7 @@ export default function ApplyModal({
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
-                  <div>
+                  <div className="flex flex-col gap-1">
                     <label
                       htmlFor="name"
                       className="block text-sm font-medium text-gray-700"
@@ -166,6 +164,15 @@ export default function ApplyModal({
                         />
                       )}
                     </div>
+                    {/* <p
+                      onClick={() => {
+                        signOut();
+                        onClose();
+                      }}
+                      className="cursor-pointer text-purple-600 text-xs underline hover:text-purple-700 transition-colors duration-200"
+                    >
+                      Change account
+                    </p> */}
                   </div>
 
                   <div>

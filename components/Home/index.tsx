@@ -175,9 +175,7 @@ export default function Home() {
           <div className="flex flex-col items-center">
             <ApplyButton
               onSuccess={() => {
-                if (!isModalOpen) {
-                  setIsModalOpen(true);
-                }
+                setIsModalOpen(true);
               }}
               onError={(error) => {
                 console.error("Failed to sign in", error);

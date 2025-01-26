@@ -1,11 +1,6 @@
 import { useSignIn } from "@/hooks/use-sign-in";
 import { useFrame } from "../farcaster-provider";
-import {
-  AuthClientError,
-  SignInButton,
-  useProfile,
-} from "@farcaster/auth-kit";
-import { useEffect } from "react";
+import { AuthClientError, SignInButton, useProfile } from "@farcaster/auth-kit";
 import Button from "../Button";
 
 export default function ApplyButton({
@@ -17,7 +12,6 @@ export default function ApplyButton({
 }) {
   const { isSDKLoaded, context } = useFrame();
   const { signIn, isLoading: isSigningIn, isSignedIn } = useSignIn();
-  const { isAuthenticated } = useProfile();
 
   const handleSignIn = async () => {
     try {
@@ -33,18 +27,12 @@ export default function ApplyButton({
     }
   };
 
-  useEffect(() => {
-    if (isSignedIn) {
-      onSuccess();
-    }
-  }, [isSignedIn]);
-
   if (!context || !isSDKLoaded) {
-    if (isAuthenticated) {
+    if (isSignedIn) {
       return (
-        <Button onClick={onSuccess} disabled={!isAuthenticated || isSigningIn}>
-          Apply
-        </Button>
+        <div className="flex flex-col items-center justify-center gap-2">
+          <Button onClick={onSuccess}>Apply</Button>
+        </div>
       );
     } else {
       return (
@@ -56,7 +44,7 @@ export default function ApplyButton({
             }}
             onError={onError}
           />
-          <span className="text-sm text-gray-500">
+          <span className="text-sm text-gray-400">
             Sign in to apply for the program
           </span>
         </div>

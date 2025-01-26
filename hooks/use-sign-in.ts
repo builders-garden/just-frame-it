@@ -3,10 +3,14 @@ import { useFrame } from "@/components/farcaster-provider";
 import { useCallback, useEffect, useState } from "react";
 import { MESSAGE_EXPIRATION_TIME } from "@/lib/constants";
 import posthog from "posthog-js";
-import { useProfile, useSignInMessage } from "@farcaster/auth-kit";
+import {
+  useProfile,
+  useSignInMessage,
+  useSignIn as useSignInFromFarcaster,
+} from "@farcaster/auth-kit";
 
 export const useSignIn = () => {
-  const { isSDKLoaded, context, error: contextError } = useFrame();
+  const { context } = useFrame();
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -76,11 +80,31 @@ export const useSignIn = () => {
     }
   }, [context, isAuthenticated, message, profile.fid, signature]);
 
+  const signOut = useCallback(async () => {
+    localStorage.removeItem("token");
+    setIsSignedIn(false);
+  }, []);
+
   useEffect(() => {
     if (isAuthenticated) {
       signIn();
     }
   }, [isAuthenticated, signIn]);
 
-  return { signIn, isSignedIn, isLoading, error };
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      setIsSignedIn(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isSignedIn) {
+      posthog.identify(
+        profile ? profile.fid?.toString() : context?.user?.fid?.toString()
+      );
+    }
+  }, [isSignedIn, profile.fid, context?.user?.fid, profile]);
+
+  return { signIn, signOut, isSignedIn, isLoading, error };
 };
