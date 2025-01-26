@@ -28,10 +28,8 @@ const FrameProvider = dynamic(
 );
 
 const config = {
-  // rpcUrl:
-  //   "https://opt-mainnet.g.alchemy.com/v2/jvAhl-sK4YJ54h5eA_eZKMSAaA57mqUz",
   domain: "frame-it.builders.garden",
-  siweUri: "https://frame-it.builders.garden" || "http://localhost:3000",
+  siweUri: "https://frame-it.builders.garden",
   relay: "https://relay.farcaster.xyz",
 };
 
