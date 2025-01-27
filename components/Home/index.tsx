@@ -133,15 +133,22 @@ export default function Home() {
             <div className="absolute w-2 h-2 md:w-3 md:h-3 bg-white border border-blue-500 top-0 right-0 translate-x-1/2 -translate-y-1/2"></div>
             <div className="absolute w-2 h-2 md:w-3 md:h-3 bg-white border border-blue-500 bottom-0 left-0 -translate-x-1/2 translate-y-1/2"></div>
             <div className="absolute w-2 h-2 md:w-3 md:h-3 bg-white border border-blue-500 bottom-0 right-0 translate-x-1/2 translate-y-1/2"></div>
-            <div className="flex flex-col gap-4 md:gap-6">
-              <p
-                className={`text-4xl md:text-7xl text-purple-500 ${climateCrisis.className}`}
-              >
-                Just Frame It
-              </p>
-              <p className="text-purple-500 font-semibold text-base md:text-xl">
-                Build sprint to reframe the future of social feeds
-              </p>
+            <div className="flex flex-col gap-1 justify-center items-center px-4">
+              <div className="flex flex-col gap-4 justify-center items-center">
+                <p
+                  className={`text-4xl md:text-7xl text-purple-500 ${climateCrisis.className}`}
+                >
+                  Just Frame It
+                </p>
+                <p className="text-purple-500 font-semibold md:text-2xl">
+                  Build sprint to reframe the future of social feeds
+                </p>
+              </div>
+              <div className="flex flex-row gap-2 items-center text-xs">
+                <p>ONLINE - NYC - ROME</p>
+                <p className="w-1 h-1 bg-purple-500 rounded-full"></p>
+                <p className=" bg-white/50">APR 7TH - JUNE 7TH</p>
+              </div>
             </div>
           </h1>
 
@@ -152,12 +159,6 @@ export default function Home() {
             </div>
             <div className="border-2 border-purple-500 px-6 py-2 md:px-8 md:py-3 bg-white/50">
               HYBRID BUILDATHON
-            </div>
-            <div className="border-2 border-purple-500 px-6 py-2 md:px-8 md:py-3 bg-white/50">
-              ONLINE - NYC - ROME
-            </div>
-            <div className="border-2 border-purple-500 px-6 py-2 md:px-8 md:py-3 bg-white/50">
-              APR 7TH - JUNE 7TH
             </div>
           </div>
         </div>
