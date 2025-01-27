@@ -124,10 +124,9 @@ export default function Home() {
       </div>
 
       <div className="relative z-10 flex min-h-screen flex-col items-center px-4">
-        {/* Hero Section - removed justify-between from parent and added margin-top */}
-        <div className="w-full max-w-5xl mx-auto text-center space-y-6 py-16 md:py-24 mt-8">
+        <div className="w-full max-w-5xl mx-auto text-center space-y-4 py-8 md:py-24 mt-4 md:mt-8">
           <h1
-            className={` text-purple-600 border py-1 md:py-4 border-blue-500 relative max-w-3xl mx-auto`}
+            className={`text-purple-600 border py-1 md:py-4 border-blue-500 relative max-w-3xl mx-auto`}
           >
             <div className="absolute w-2 h-2 md:w-3 md:h-3 bg-white border border-blue-500 top-0 left-0 -translate-x-1/2 -translate-y-1/2"></div>
             <div className="absolute w-2 h-2 md:w-3 md:h-3 bg-white border border-blue-500 top-0 right-0 translate-x-1/2 -translate-y-1/2"></div>
@@ -135,39 +134,36 @@ export default function Home() {
             <div className="absolute w-2 h-2 md:w-3 md:h-3 bg-white border border-blue-500 bottom-0 right-0 translate-x-1/2 translate-y-1/2"></div>
             <div className="flex flex-col gap-1 justify-center items-center px-4">
               <p
-                className={`text-4xl md:text-7xl text-purple-500 ${climateCrisis.className}`}
+                className={`text-3xl md:text-7xl text-purple-500 ${climateCrisis.className}`}
               >
                 Just Frame It
               </p>
-              <p className="text-purple-500 font-semibold md:text-2xl">
+              <p className="text-purple-500 font-semibold text-sm md:text-2xl">
                 Build sprint to reframe the future of social feeds
               </p>
             </div>
           </h1>
 
-          <div className="flex flex-row gap-2 justify-center items-center text-purple-500 text-center md:text-xlfi font-semibold">
+          <div className="flex flex-row gap-2 justify-center items-center text-purple-500 text-center text-sm md:text-xl font-semibold">
             <p>APR 7TH - JUNE 7TH</p>
             <p className="w-1 h-1 bg-purple-500 rounded-full"></p>
             <p>ONLINE - NYC - ROME</p>
           </div>
 
-          {/* Info Cards */}
-          <div className="flex flex-wrap justify-center gap-4 mt-8 text-xs md:text-base font-bold text-purple-500">
-            <div className="border-2 border-purple-500 px-6 py-2 md:px-8 md:py-3 bg-white/50">
+          <div className="flex flex-wrap justify-center gap-2 md:gap-4 mt-4 md:mt-8 text-xs md:text-base font-bold text-purple-500">
+            <div className="border-2 border-purple-500 px-4 py-1 md:px-8 md:py-3 bg-white/50">
               6 TEAMS
             </div>
-            <div className="border-2 border-purple-500 px-6 py-2 md:px-8 md:py-3 bg-white/50">
+            <div className="border-2 border-purple-500 px-4 py-1 md:px-8 md:py-3 bg-white/50">
               HYBRID BUILDATHON
             </div>
           </div>
         </div>
 
-        {/* Apply Button Section - added margin-top auto to push it down */}
-        <div className="w-full max-w-5xl mx-auto text-center pb-8 md:pb-16 mt-auto">
-          {/* Learn More Link */}
+        <div className="w-full max-w-5xl mx-auto text-center pb-4 md:pb-16 mt-auto">
           <button
             onClick={() => setIsProgramInfoModalOpen(true)}
-            className="mb-4 md:mb-6 text-purple-600 text-base md:text-lg underline hover:text-purple-700 transition-colors duration-200"
+            className="mb-2 md:mb-6 text-purple-600 text-sm md:text-lg underline hover:text-purple-700 transition-colors duration-200"
           >
             Learn More
           </button>
@@ -181,15 +177,14 @@ export default function Home() {
                 console.error("Failed to sign in", error);
               }}
             />
-            <p className="text-purple-500 mt-4 md:mt-6 text-xs md:text-sm">
+            <p className="text-purple-500 mt-2 md:mt-6 text-xs md:text-sm">
               Applications closing in {countdown.days} days, {countdown.hours}{" "}
               hours, {countdown.minutes} minutes, {countdown.seconds} seconds
             </p>
           </div>
         </div>
 
-        {/* Builders Garden logo */}
-        <div className="w-full flex justify-center mb-8">
+        <div className="w-full flex justify-center mb-4 md:mb-8">
           <a
             href="https://builders.garden"
             target="_blank"
@@ -198,15 +193,14 @@ export default function Home() {
             <Image
               src="/images/builders-garden-logo.png"
               alt="Builders Garden"
-              width={60}
-              height={12}
+              width={90}
+              height={18}
               className="opacity-80 hover:opacity-100 transition-opacity"
             />
           </a>
         </div>
       </div>
 
-      {/* Update animation styles */}
       <style jsx global>{`
         @keyframes diagonal-fall {
           0% {
