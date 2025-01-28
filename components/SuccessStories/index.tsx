@@ -24,7 +24,7 @@ interface SuccessStory {
 const successStories: SuccessStory[] = [
   {
     name: "Farville",
-    description: "Grow and harvest crops with your friends.",
+    description: "Farm simulation game",
     logoUrl: "https://farville.farm/images/icon.png",
     url: "https://warpcast.com/~/channel/farville",
     metrics: [
@@ -78,7 +78,7 @@ const successStories: SuccessStory[] = [
   },
   {
     name: "Farcade",
-    description: "It's game time",
+    description: "Arcade Games",
     logoUrl: "https://play.farcade.ai/icons/icon-512x512.png",
     url: "https://warpcast.com/~/channel/farcade",
     metrics: [
@@ -108,7 +108,7 @@ const successStories: SuccessStory[] = [
   },
   {
     name: "Farworld",
-    description: "Onchain Monster Collector ",
+    description: "Onchain Monster Collector",
     logoUrl: "https://farworld.gg/icon-512x512.png",
     url: "https://farworld.gg",
     metrics: [
@@ -138,7 +138,7 @@ const successStories: SuccessStory[] = [
   },
   {
     name: "Ponder",
-    description: "The pulse of the Farcaster community",
+    description: "Surveys and social predictions",
     logoUrl:
       "https://imagedelivery.net/BXluQx4ige9GuW0Ia56BHw/7d5d37b4-8658-43e8-ad5f-450b34fd4e00/original",
     url: "https://warpcast.com/~/channel/ponder",
@@ -163,7 +163,7 @@ const successStories: SuccessStory[] = [
   },
   {
     name: "Bracket",
-    description: "25 NFL",
+    description: "Betting on NFL brackets",
     logoUrl:
       "https://imagedelivery.net/BXluQx4ige9GuW0Ia56BHw/cfbd4c9b-df12-4009-ec04-15ed68be7100/original",
     url: "https://warpcast.com/~/channel/bracket",
@@ -185,168 +185,170 @@ const successStories: SuccessStory[] = [
 
 export default function SuccessStories() {
   return (
-    <div className="w-full py-8 md:py-16">
+    <div className="w-full py-6 md:py-12">
       <h2
-        className={`text-2xl md:text-4xl text-purple-600 mb-6 text-center px-4 ${climateCrisis.className}`}
+        className={`text-2xl md:text-4xl text-purple-600 mb-4 md:mb-6 text-center px-4 ${climateCrisis.className}`}
       >
         Success Stories
       </h2>
       <div className="relative mx-auto max-w-[100vw] overflow-hidden">
         <div className="flex overflow-x-hidden">
-          <div className="animate-scroll flex gap-4 md:gap-6 pl-4 md:pl-[max(2rem,calc((100vw-1200px)/2))] pr-4 md:pr-[max(2rem,calc((100vw-1200px)/2))]">
+          <div className="animate-scroll flex gap-3 md:gap-4 pl-4 md:pl-[max(2rem,calc((100vw-1200px)/2))] pr-4 md:pr-[max(2rem,calc((100vw-1200px)/2))]">
             {successStories.map((story) => (
               <div
                 key={story.name}
-                className="flex-shrink-0 w-[260px] md:w-[300px] bg-white border-2 border-purple-200 rounded-lg p-3 md:p-4 hover:border-purple-400 transition-colors duration-200 flex flex-col"
+                className="flex-shrink-0 w-[220px] md:w-[280px] bg-white border-2 border-purple-200 rounded-lg p-2.5 md:p-4 hover:border-purple-400 transition-colors duration-200 flex flex-col justify-center"
               >
-                <div className="flex items-center gap-2 md:gap-3">
+                <div className="flex items-start gap-2">
                   <Image
                     src={story.logoUrl}
                     alt={`${story.name} logo`}
-                    width={32}
-                    height={32}
-                    className="rounded-lg flex-shrink-0 md:w-10 md:h-10 w-8 h-8"
+                    width={28}
+                    height={28}
+                    className="rounded-lg flex-shrink-0 md:w-8 md:h-8 w-7 h-7"
                   />
-                  <div>
-                    <h3 className="text-base md:text-lg font-bold text-purple-600">
+                  <div className="flex-1 flex flex-col gap-0">
+                    <h3 className="text-xs md:text-base font-bold text-purple-600">
                       {story.name}
                     </h3>
-                    <a
-                      href={story.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-[10px] md:text-xs text-purple-400 hover:text-purple-600 transition-colors"
-                    >
-                      Try it out
-                    </a>
+                    <p className="text-gray-600 text-[10px] md:text-xs">
+                      {story.description}
+                    </p>
                   </div>
                 </div>
 
-                <p className="text-gray-600 text-xs md:text-sm mt-2 md:mt-3 min-h-[32px] md:min-h-[40px]">
-                  {story.description}
-                </p>
-
-                <div className="grid grid-cols-3 gap-2 mt-auto mb-3 md:mb-4">
+                <div className="grid grid-cols-3 gap-2 mt-2.5 md:mt-3 mb-2.5 md:mb-3">
                   {story.metrics.map((metric) => (
                     <div key={metric.label} className="text-center">
-                      <div className="text-base md:text-lg font-bold text-purple-600">
+                      <div className="text-sm md:text-base font-bold text-purple-600">
                         {metric.value}
                       </div>
-                      <div className="text-[10px] md:text-xs text-gray-500">
+                      <div className="text-[9px] md:text-[10px] text-gray-500">
                         {metric.label}
                       </div>
                     </div>
                   ))}
                 </div>
 
-                <div className="flex flex-row items-center gap-2 border-t border-purple-100 pt-2 md:pt-3">
-                  <div className="text-[10px] md:text-xs text-gray-500">
-                    Built by
-                  </div>
-                  <div className="flex flex-row -space-x-1">
-                    {story.founders.map((founder) => (
-                      <div key={founder.username} className="relative group">
-                        <a
-                          href={`https://warpcast.com/${founder.username}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center justify-center hover:bg-purple-50 p-0.5 rounded-full transition-colors w-[20px] h-[20px] md:w-[24px] md:h-[24px]"
-                        >
-                          <Image
-                            src={founder.avatarUrl}
-                            alt={founder.name}
-                            width={20}
-                            height={20}
-                            className="rounded-full ring-2 ring-white w-full h-full object-cover"
-                          />
-                        </a>
-                        <div className="absolute left-1/2 -translate-x-1/2 -bottom-1 translate-y-full pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-10 whitespace-nowrap">
-                          <div className="bg-gray-900 text-white text-[10px] md:text-xs rounded px-2 py-1 animate-fadeIn">
-                            @{founder.username}
+                <div className="flex flex-row items-center justify-between gap-2 border-t border-purple-100 pt-2 md:pt-3">
+                  <div className="flex items-center gap-2">
+                    <div className="text-[10px] md:text-xs text-gray-500">
+                      Built by
+                    </div>
+                    <div className="flex flex-row -space-x-1">
+                      {story.founders.map((founder) => (
+                        <div key={founder.username} className="relative group">
+                          <a
+                            href={`https://warpcast.com/${founder.username}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center justify-center hover:bg-purple-50 p-0.5 rounded-full transition-colors w-[18px] h-[18px] md:w-[20px] md:h-[20px]"
+                          >
+                            <Image
+                              src={founder.avatarUrl}
+                              alt={founder.name}
+                              width={18}
+                              height={18}
+                              className="rounded-full ring-2 ring-white w-full h-full object-cover"
+                            />
+                          </a>
+                          <div className="absolute left-1/2 -translate-x-1/2 -bottom-1 translate-y-full pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-10 whitespace-nowrap">
+                            <div className="bg-gray-900 text-white text-[10px] rounded px-2 py-1 animate-fadeIn">
+                              @{founder.username}
+                            </div>
+                            <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45" />
                           </div>
-                          <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45" />
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
+                  <a
+                    href={story.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[10px] md:text-xs text-purple-400 hover:text-purple-600 transition-colors"
+                  >
+                    Try it →
+                  </a>
                 </div>
               </div>
             ))}
             {successStories.map((story) => (
               <div
                 key={`${story.name}-duplicate`}
-                className="flex-shrink-0 w-[260px] md:w-[300px] bg-white border-2 border-purple-200 rounded-lg p-3 md:p-4 hover:border-purple-400 transition-colors duration-200 flex flex-col"
+                className="flex-shrink-0 w-[220px] md:w-[280px] bg-white border-2 border-purple-200 rounded-lg p-2.5 md:p-4 hover:border-purple-400 transition-colors duration-200 flex flex-col"
               >
-                <div className="flex items-center gap-2 md:gap-3">
+                <div className="flex items-start gap-2 md:gap-3">
                   <Image
                     src={story.logoUrl}
                     alt={`${story.name} logo`}
-                    width={32}
-                    height={32}
-                    className="rounded-lg flex-shrink-0 md:w-10 md:h-10 w-8 h-8"
+                    width={28}
+                    height={28}
+                    className="rounded-lg flex-shrink-0 md:w-8 md:h-8 w-7 h-7"
                   />
-                  <div>
-                    <h3 className="text-base md:text-lg font-bold text-purple-600">
+                  <div className="flex-1">
+                    <h3 className="text-sm md:text-base font-bold text-purple-600">
                       {story.name}
                     </h3>
-                    <a
-                      href={story.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-[10px] md:text-xs text-purple-400 hover:text-purple-600 transition-colors"
-                    >
-                      Try it out
-                    </a>
+                    <p className="text-gray-600 text-[11px] md:text-xs mt-0.5 md:mt-1">
+                      {story.description}
+                    </p>
                   </div>
                 </div>
 
-                <p className="text-gray-600 text-xs md:text-sm mt-2 md:mt-3 min-h-[32px] md:min-h-[40px]">
-                  {story.description}
-                </p>
-
-                <div className="grid grid-cols-3 gap-2 mt-auto mb-3 md:mb-4">
+                <div className="flex flex-row justify-between gap-2 mt-2.5 md:mt-3 mb-2.5 md:mb-3">
                   {story.metrics.map((metric) => (
                     <div key={metric.label} className="text-center">
-                      <div className="text-base md:text-lg font-bold text-purple-600">
+                      <div className="text-sm md:text-base font-bold text-purple-600">
                         {metric.value}
                       </div>
-                      <div className="text-[10px] md:text-xs text-gray-500">
+                      <div className="text-[9px] md:text-[10px] text-gray-500">
                         {metric.label}
                       </div>
                     </div>
                   ))}
                 </div>
 
-                <div className="flex flex-row items-center gap-2 border-t border-purple-100 pt-2 md:pt-3">
-                  <div className="text-[10px] md:text-xs text-gray-500">
-                    Built by
-                  </div>
-                  <div className="flex flex-row -space-x-1">
-                    {story.founders.map((founder) => (
-                      <div key={founder.username} className="relative group">
-                        <a
-                          href={`https://warpcast.com/${founder.username}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center justify-center hover:bg-purple-50 p-0.5 rounded-full transition-colors w-[20px] h-[20px] md:w-[24px] md:h-[24px]"
-                        >
-                          <Image
-                            src={founder.avatarUrl}
-                            alt={founder.name}
-                            width={20}
-                            height={20}
-                            className="rounded-full ring-2 ring-white w-full h-full object-cover"
-                          />
-                        </a>
-                        <div className="absolute left-1/2 -translate-x-1/2 -bottom-1 translate-y-full pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-10 whitespace-nowrap">
-                          <div className="bg-gray-900 text-white text-[10px] md:text-xs rounded px-2 py-1 animate-fadeIn">
-                            @{founder.username}
+                <div className="flex flex-row items-center justify-between gap-2 border-t border-purple-100 pt-2 md:pt-3">
+                  <div className="flex items-center gap-2">
+                    <div className="text-[10px] md:text-xs text-gray-500">
+                      Built by
+                    </div>
+                    <div className="flex flex-row -space-x-1">
+                      {story.founders.map((founder) => (
+                        <div key={founder.username} className="relative group">
+                          <a
+                            href={`https://warpcast.com/${founder.username}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center justify-center hover:bg-purple-50 p-0.5 rounded-full transition-colors w-[18px] h-[18px] md:w-[20px] md:h-[20px]"
+                          >
+                            <Image
+                              src={founder.avatarUrl}
+                              alt={founder.name}
+                              width={18}
+                              height={18}
+                              className="rounded-full ring-2 ring-white w-full h-full object-cover"
+                            />
+                          </a>
+                          <div className="absolute left-1/2 -translate-x-1/2 -bottom-1 translate-y-full pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-10 whitespace-nowrap">
+                            <div className="bg-gray-900 text-white text-[10px] rounded px-2 py-1 animate-fadeIn">
+                              @{founder.username}
+                            </div>
+                            <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45" />
                           </div>
-                          <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45" />
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
+                  <a
+                    href={story.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[10px] md:text-xs text-purple-400 hover:text-purple-600 transition-colors"
+                  >
+                    Try it →
+                  </a>
                 </div>
               </div>
             ))}

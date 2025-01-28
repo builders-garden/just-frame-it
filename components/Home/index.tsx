@@ -127,7 +127,7 @@ export default function Home() {
       <div className="relative z-10 flex min-h-screen flex-col items-center px-4 pb-24 md:pb-0">
         <div className="w-full max-w-5xl mx-auto text-center space-y-4 py-8 md:py-24 mt-4 md:mt-8">
           <h1
-            className={`mx-2 text-purple-600 border py-1 md:py-4 border-blue-500 relative max-w-3xl mx-auto`}
+            className={`mx-4 md:mx-auto text-purple-600 border py-1 md:py-4 border-blue-500 relative max-w-3xl`}
           >
             <div className="absolute w-2 h-2 md:w-3 md:h-3 bg-white border border-blue-500 top-0 left-0 -translate-x-1/2 -translate-y-1/2"></div>
             <div className="absolute w-2 h-2 md:w-3 md:h-3 bg-white border border-blue-500 top-0 right-0 translate-x-1/2 -translate-y-1/2"></div>
@@ -139,7 +139,7 @@ export default function Home() {
               >
                 Just Frame It
               </p>
-              <p className="text-purple-500 font-semibold text-sm md:text-2xl">
+              <p className="text-purple-500 font-semibold text-xs md:text-2xl">
                 Build sprint to reframe the future of social feeds
               </p>
             </div>
