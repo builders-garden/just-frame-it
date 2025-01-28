@@ -187,9 +187,9 @@ export default function SuccessStories() {
   return (
     <div className="w-full py-6 md:py-12">
       <h2
-        className={`text-2xl md:text-4xl text-purple-600 mb-4 md:mb-6 text-center px-4 ${climateCrisis.className}`}
+        className={`text-xl md:text-2xl text-purple-600 mb-4 md:mb-6 text-center px-4 ${climateCrisis.className}`}
       >
-        Success Stories
+        Build the next...
       </h2>
       <div className="relative mx-auto max-w-[100vw] overflow-hidden">
         <div className="flex overflow-x-hidden">
@@ -197,7 +197,7 @@ export default function SuccessStories() {
             {successStories.map((story) => (
               <div
                 key={story.name}
-                className="flex-shrink-0 w-[220px] md:w-[280px] bg-white border-2 border-purple-200 rounded-lg p-2.5 md:p-4 hover:border-purple-400 transition-colors duration-200 flex flex-col justify-center"
+                className="flex-shrink-0 w-[220px] md:w-[280px] bg-white/60 border-2 border-purple-200 rounded-lg p-2.5 md:p-4 hover:border-purple-400 transition-colors duration-200 flex flex-col justify-center"
               >
                 <div className="flex items-start gap-2">
                   <Image
