@@ -168,9 +168,9 @@ const successStories: SuccessStory[] = [
       "https://imagedelivery.net/BXluQx4ige9GuW0Ia56BHw/cfbd4c9b-df12-4009-ec04-15ed68be7100/original",
     url: "https://warpcast.com/~/channel/bracket",
     metrics: [
-      { label: "DAU", value: "2k" },
-      { label: "WAU", value: "5k" },
-      { label: "Total Planted", value: "~100k" },
+      { label: "DAU", value: "10k" },
+      { label: "WAU", value: "15k" },
+      { label: "Volumes", value: "$10m" },
     ],
     founders: [
       {
