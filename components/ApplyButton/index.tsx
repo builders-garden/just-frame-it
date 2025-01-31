@@ -44,9 +44,16 @@ export default function ApplyButton({
             }}
             onError={onError}
           />
-          <span className="text-sm text-gray-400">
-            Sign in to apply for the program
-          </span>
+          <div className="flex flex-col items-center">
+            <span className="text-sm text-gray-400">Sign in to apply</span>
+            <a
+              href="https://www.farcaster.xyz/"
+              target="_blank"
+              className="text-xs text-purple-400"
+            >
+              Not on Farcaster yet? Create an account!
+            </a>
+          </div>
         </div>
       );
     }

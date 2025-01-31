@@ -30,7 +30,7 @@ const successStories: SuccessStory[] = [
     metrics: [
       { label: "DAU", value: "2k" },
       { label: "WAU", value: "5k" },
-      { label: "Planted Seeds", value: "~100k" },
+      { label: "Planted Seeds", value: "100k" },
     ],
     founders: [
       {
@@ -82,9 +82,9 @@ const successStories: SuccessStory[] = [
     logoUrl: "https://play.farcade.ai/icons/icon-512x512.png",
     url: "https://warpcast.com/~/channel/farcade",
     metrics: [
-      { label: "DAU", value: "2k" },
-      { label: "WAU", value: "5k" },
-      { label: "Total Planted", value: "~100k" },
+      { label: "DAU", value: "20k" },
+      { label: "WAU", value: "80k" },
+      { label: "Games Played", value: "2M" },
     ],
     founders: [
       {
@@ -106,36 +106,36 @@ const successStories: SuccessStory[] = [
       },
     ],
   },
-  {
-    name: "Farworld",
-    description: "Onchain Monster Collector",
-    logoUrl: "https://farworld.gg/icon-512x512.png",
-    url: "https://farworld.gg",
-    metrics: [
-      { label: "DAU", value: "2k" },
-      { label: "WAU", value: "5k" },
-      { label: "Total Planted", value: "~100k" },
-    ],
-    founders: [
-      {
-        name: "chuckstock",
-        username: "chuckstock",
-        avatarUrl: "https://i.imgur.com/9RF2vWU.gif",
-      },
-      {
-        name: "Blackstock",
-        username: "blackstock",
-        avatarUrl:
-          "https://imagedelivery.net/BXluQx4ige9GuW0Ia56BHw/49f18400-1d26-4a52-25b5-e46fcab5ca00/original",
-      },
-      {
-        name: "andrewjames",
-        username: "Andrew",
-        avatarUrl:
-          "https://imagedelivery.net/BXluQx4ige9GuW0Ia56BHw/1235dba6-4afa-4451-a7da-a0a846dbd600/original",
-      },
-    ],
-  },
+  // {
+  //   name: "Farworld",
+  //   description: "Onchain Monster Collector",
+  //   logoUrl: "https://farworld.gg/icon-512x512.png",
+  //   url: "https://farworld.gg",
+  //   metrics: [
+  //     { label: "DAU", value: "2k" },
+  //     { label: "WAU", value: "5k" },
+  //     { label: "Total Planted", value: "~100k" },
+  //   ],
+  //   founders: [
+  //     {
+  //       name: "chuckstock",
+  //       username: "chuckstock",
+  //       avatarUrl: "https://i.imgur.com/9RF2vWU.gif",
+  //     },
+  //     {
+  //       name: "Blackstock",
+  //       username: "blackstock",
+  //       avatarUrl:
+  //         "https://imagedelivery.net/BXluQx4ige9GuW0Ia56BHw/49f18400-1d26-4a52-25b5-e46fcab5ca00/original",
+  //     },
+  //     {
+  //       name: "andrewjames",
+  //       username: "Andrew",
+  //       avatarUrl:
+  //         "https://imagedelivery.net/BXluQx4ige9GuW0Ia56BHw/1235dba6-4afa-4451-a7da-a0a846dbd600/original",
+  //     },
+  //   ],
+  // },
   {
     name: "Ponder",
     description: "Surveys and social predictions",
