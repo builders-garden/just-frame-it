@@ -166,7 +166,7 @@ export default function Home() {
             onClick={() => setIsProgramInfoModalOpen(true)}
             className="mb-2 md:mb-6 text-purple-600 text-sm md:text-lg underline hover:text-purple-700 transition-colors duration-200"
           >
-            Learn More
+            Program Details
           </button>
 
           <div className="flex flex-col items-center">

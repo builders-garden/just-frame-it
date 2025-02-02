@@ -197,9 +197,9 @@ export default function SuccessStories() {
             {successStories.map((story) => (
               <div
                 key={story.name}
-                className="flex-shrink-0 w-[220px] md:w-[280px] bg-white/60 border-2 border-purple-200 rounded-lg p-2.5 md:p-4 hover:border-purple-400 transition-colors duration-200 flex flex-col justify-center"
+                className="flex-shrink-0 w-[220px] md:w-[280px] bg-white/60 border-2 border-purple-200 rounded-lg p-2.5 md:p-4 hover:border-purple-400 transition-colors duration-200 flex flex-col"
               >
-                <div className="flex items-start gap-2">
+                <div className="flex items-center gap-2 md:gap-3">
                   <Image
                     src={story.logoUrl}
                     alt={`${story.name} logo`}
@@ -208,18 +208,18 @@ export default function SuccessStories() {
                     className="rounded-lg flex-shrink-0 md:w-8 md:h-8 w-7 h-7"
                   />
                   <div className="flex-1 flex flex-col gap-0">
-                    <h3 className="text-xs md:text-base font-bold text-purple-600">
+                    <p className="text-sm md:text-base font-bold text-purple-600">
                       {story.name}
-                    </h3>
-                    <p className="text-gray-600 text-[10px] md:text-xs">
+                    </p>
+                    <p className="text-gray-600 text-[11px] md:text-xs">
                       {story.description}
                     </p>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-3 gap-2 mt-2.5 md:mt-3 mb-2.5 md:mb-3">
+                <div className="flex flex-row justify-between gap-2 mt-2.5 md:mt-3 mb-2.5 md:mb-3">
                   {story.metrics.map((metric) => (
-                    <div key={metric.label} className="text-center">
+                    <div key={metric.label} className="text-center flex-1">
                       <div className="text-sm md:text-base font-bold text-purple-600">
                         {metric.value}
                       </div>
@@ -276,9 +276,9 @@ export default function SuccessStories() {
             {successStories.map((story) => (
               <div
                 key={`${story.name}-duplicate`}
-                className="flex-shrink-0 w-[220px] md:w-[280px] bg-white border-2 border-purple-200 rounded-lg p-2.5 md:p-4 hover:border-purple-400 transition-colors duration-200 flex flex-col"
+                className="flex-shrink-0 w-[220px] md:w-[280px] bg-white/60 border-2 border-purple-200 rounded-lg p-2.5 md:p-4 hover:border-purple-400 transition-colors duration-200 flex flex-col"
               >
-                <div className="flex items-start gap-2 md:gap-3">
+                <div className="flex items-center gap-2 md:gap-3">
                   <Image
                     src={story.logoUrl}
                     alt={`${story.name} logo`}
@@ -286,11 +286,11 @@ export default function SuccessStories() {
                     height={28}
                     className="rounded-lg flex-shrink-0 md:w-8 md:h-8 w-7 h-7"
                   />
-                  <div className="flex-1">
-                    <h3 className="text-sm md:text-base font-bold text-purple-600">
+                  <div className="flex-1 flex flex-col gap-0">
+                    <p className="text-sm md:text-base font-bold text-purple-600">
                       {story.name}
-                    </h3>
-                    <p className="text-gray-600 text-[11px] md:text-xs mt-0.5 md:mt-1">
+                    </p>
+                    <p className="text-gray-600 text-[11px] md:text-xs">
                       {story.description}
                     </p>
                   </div>
@@ -298,7 +298,7 @@ export default function SuccessStories() {
 
                 <div className="flex flex-row justify-between gap-2 mt-2.5 md:mt-3 mb-2.5 md:mb-3">
                   {story.metrics.map((metric) => (
-                    <div key={metric.label} className="text-center">
+                    <div key={metric.label} className="text-center flex-1">
                       <div className="text-sm md:text-base font-bold text-purple-600">
                         {metric.value}
                       </div>
