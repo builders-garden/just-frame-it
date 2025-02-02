@@ -87,13 +87,13 @@ export default function ApplyModal({
           />
 
           <div className="fixed inset-0 overflow-y-auto z-50">
-            <div className="flex min-h-screen items-start justify-center">
+            <div className="flex min-h-screen items-start justify-center bg-white">
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.2 }}
-                className="flex flex-col gap-2 w-full min-h-screen bg-white p-6 text-left align-middle shadow-xl relative"
+                className="flex flex-col gap-2 w-full min-h-screen max-w-5xl  p-6 text-left align-middle relative"
               >
                 <button
                   onClick={onClose}

@@ -11,6 +11,7 @@ import ProgramInfoModal from "../ProgramInfoModal";
 import Image from "next/image";
 import ApplyButton from "../ApplyButton";
 import SuccessStories from "../SuccessStories";
+import Button from "../Button";
 
 const climateCrisis = Climate_Crisis({ subsets: ["latin"] });
 
@@ -124,7 +125,7 @@ export default function Home() {
         />
       </div>
 
-      <div className="relative z-10 flex min-h-screen flex-col items-center px-4 pb-24 md:pb-0">
+      <div className="relative z-10 flex min-h-screen flex-col items-center px-4 pb-24 md:pb-0 justify-evenly">
         <div className="w-full max-w-5xl mx-auto text-center space-y-4 py-8 md:py-24 mt-4 md:mt-8">
           <h1
             className={`mx-4 md:mx-auto text-purple-600 border py-1 md:py-4 border-blue-500 relative max-w-3xl`}
@@ -151,33 +152,35 @@ export default function Home() {
             <p>ONLINE - NYC - ROME</p>
           </div>
 
-          <div className="flex flex-wrap justify-center gap-2 md:gap-4 mt-4 md:mt-8 text-xs md:text-base font-bold text-purple-500">
+          {/* <div className="flex flex-wrap justify-center gap-2 md:gap-4 mt-4 md:mt-8 text-xs md:text-base font-bold text-purple-500">
             <div className="border-2 border-purple-500 px-4 py-1 md:px-8 md:py-3 bg-white/50">
               6 TEAMS
             </div>
             <div className="border-2 border-purple-500 px-4 py-1 md:px-8 md:py-3 bg-white/50">
               HYBRID BUILDATHON
             </div>
-          </div>
+          </div> */}
         </div>
 
         <div className="w-full max-w-5xl mx-auto text-center pb-4 md:pb-16 mt-auto">
-          <button
-            onClick={() => setIsProgramInfoModalOpen(true)}
-            className="mb-2 md:mb-6 text-purple-600 text-sm md:text-lg underline hover:text-purple-700 transition-colors duration-200"
-          >
-            Program Details
-          </button>
-
           <div className="flex flex-col items-center">
-            <ApplyButton
-              onSuccess={() => {
-                setIsModalOpen(true);
-              }}
-              onError={(error) => {
-                console.error("Failed to sign in", error);
-              }}
-            />
+            <div className="flex flex-row items-center justify-center gap-2">
+              <ApplyButton
+                onSuccess={() => {
+                  setIsModalOpen(true);
+                }}
+                onError={(error) => {
+                  console.error("Failed to sign in", error);
+                }}
+              />
+              <Button
+                variant="bordered"
+                onClick={() => setIsProgramInfoModalOpen(true)}
+              >
+                Learn More
+              </Button>
+            </div>
+
             <p className="text-purple-500 mt-2 md:mt-6 text-xs md:text-sm">
               Applications closing in {countdown.days} days, {countdown.hours}{" "}
               hours, {countdown.minutes} minutes, {countdown.seconds} seconds

@@ -106,7 +106,7 @@ export default function ProgramInfoModal({
               transition={{ type: "spring", duration: 0.3 }}
               className="min-h-screen bg-white"
             >
-              <div className="max-w-4xl mx-auto p-4 sm:p-8">
+              <div className="max-w-5xl mx-auto p-4 sm:p-8">
                 <button
                   onClick={onClose}
                   className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 transition-colors"
@@ -173,10 +173,20 @@ export default function ProgramInfoModal({
                         builders
                       </li>
                       <li>
-                        Biweekly demo days with live-streamed presentations
+                        Biweekly live-streamed demo days with judges voting
                       </li>
                       <li>
-                        Mid-program meetup in NYC during Farcon NYC (optional)
+                        Mid-program meetup in NYC during{" "}
+                        <span className="text-purple-600 font-semibold">
+                          <a
+                            href="https://farcon.nyc"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            Farcon NYC
+                          </a>
+                        </span>{" "}
+                        (optional to attend)
                       </li>
                       <li>Build residency in Rome for top 3 teams</li>
                     </ul>
@@ -247,14 +257,15 @@ export default function ProgramInfoModal({
                       {mentors.map((mentor) => (
                         <div
                           key={mentor.username}
-                          className="p-4 border border-gray-200 rounded-xl hover:border-purple-300 transition-colors hover:shadow-sm"
+                          className="flex flex-col justify-between p-4 border border-gray-200 rounded-xl hover:border-purple-300 transition-colors hover:shadow-sm"
                         >
-                          <div className="flex items-center gap-3 mb-2">
-                            <Image
-                              src={mentor.avatarUrl}
-                              alt={mentor.displayName}
-                              className="w-12 h-12 rounded-full object-cover"
-                              width={48}
+                          <div className="flex flex-col">
+                            <div className="flex items-center gap-3 mb-2">
+                              <Image
+                                src={mentor.avatarUrl}
+                                alt={mentor.displayName}
+                                className="w-12 h-12 rounded-full object-cover"
+                                width={48}
                               height={48}
                             />
                             <div>
@@ -266,9 +277,10 @@ export default function ProgramInfoModal({
                               </p>
                             </div>
                           </div>
-                          <p className="text-sm text-gray-600 mb-2">
+                          <p className="text-xs text-gray-600 mb-2">
                             {mentor.bio}
-                          </p>
+                            </p>
+                          </div>
                           <a
                             href={`https://warpcast.com/${mentor.username}`}
                             target="_blank"
