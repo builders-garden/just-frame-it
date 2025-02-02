@@ -20,8 +20,10 @@ export default function ApplyButton({
     connect,
     url,
     data,
+    error,
     isConnected,
     channelToken,
+    isSuccess,
   } = useFarcasterSignIn({
     onSuccess: ({ fid }) => {
       console.log("Signed in with FID", fid);
@@ -29,13 +31,16 @@ export default function ApplyButton({
       onSuccess();
     },
     onError: (error) => {
-      console.error(error);
+      console.error({
+        error,
+      });
     },
     onStatusResponse: (statusData) => {
       console.log(statusData);
     },
-    interval: 1000,
-    timeout: 30000,
+    nonce:
+      Math.random().toString(36).substring(2, 15) +
+      Math.random().toString(36).substring(2, 15),
   });
   const [isFarcasterSignInLoading, setIsFarcasterSignInLoading] =
     useState(false);
@@ -67,6 +72,10 @@ export default function ApplyButton({
       setIsQRCodeVisible(true);
     }
   }, [url, data]);
+
+  useEffect(() => {
+    console.log({ data });
+  }, [data]);
 
   const handleSignIn = async () => {
     try {
@@ -105,6 +114,7 @@ export default function ApplyButton({
             url={url || ""}
             onRetry={handleFarcasterSignIn}
             channelToken={channelToken || ""}
+            error={error?.message}
           />
         </div>
       );

@@ -6,6 +6,7 @@ interface QRCodeModalProps {
   url: string;
   onRetry: () => void;
   channelToken: string;
+  error?: string;
 }
 
 export default function QRCodeModal({
@@ -14,6 +15,7 @@ export default function QRCodeModal({
   url,
   onRetry,
   channelToken,
+  error,
 }: QRCodeModalProps) {
   if (!isOpen) return null;
 
@@ -49,6 +51,8 @@ export default function QRCodeModal({
             phone&apos;s camera.
           </p>
           <QRCode uri={url} size={200} />
+
+          {error && <p className="text-red-600 text-center text-sm">{error}</p>}
 
           <a
             href={`https://warpcast.com/~/siwf?channelToken=${channelToken}`}
