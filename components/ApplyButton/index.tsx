@@ -2,6 +2,9 @@ import { useSignIn } from "@/hooks/use-sign-in";
 import { useFrame } from "../farcaster-provider";
 import { AuthClientError, SignInButton, useProfile } from "@farcaster/auth-kit";
 import Button from "../Button";
+import { useSignIn as useFarcasterSignIn, QRCode } from "@farcaster/auth-kit";
+import { useEffect, useState } from "react";
+import QRCodeModal from "../QRCodeModal";
 
 export default function ApplyButton({
   onSuccess,
@@ -12,6 +15,58 @@ export default function ApplyButton({
 }) {
   const { isSDKLoaded, context } = useFrame();
   const { signIn, isLoading: isSigningIn, isSignedIn } = useSignIn();
+  const {
+    signIn: farcasterSignIn,
+    connect,
+    url,
+    data,
+    isConnected,
+    channelToken,
+  } = useFarcasterSignIn({
+    onSuccess: ({ fid }) => {
+      console.log("Signed in with FID", fid);
+      setIsQRCodeVisible(false);
+      onSuccess();
+    },
+    onError: (error) => {
+      console.error(error);
+    },
+    onStatusResponse: (statusData) => {
+      console.log(statusData);
+    },
+    interval: 1000,
+    timeout: 30000,
+  });
+  const [isFarcasterSignInLoading, setIsFarcasterSignInLoading] =
+    useState(false);
+  const [isQRCodeVisible, setIsQRCodeVisible] = useState(false);
+
+  const handleFarcasterSignIn = async () => {
+    if (data?.state === "completed") {
+      onSuccess();
+      return;
+    }
+    try {
+      setIsFarcasterSignInLoading(true);
+      if (!isConnected) {
+        console.log("Connecting...");
+        await connect();
+      }
+      console.log("Signing in...");
+      await farcasterSignIn();
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsFarcasterSignInLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    console.log({ url, data });
+    if (url && data?.state !== "completed") {
+      setIsQRCodeVisible(true);
+    }
+  }, [url, data]);
 
   const handleSignIn = async () => {
     try {
@@ -27,6 +82,10 @@ export default function ApplyButton({
     }
   };
 
+  const handleCloseModal = () => {
+    setIsQRCodeVisible(false);
+  };
+
   if (!context || !isSDKLoaded) {
     if (isSignedIn) {
       return (
@@ -36,24 +95,17 @@ export default function ApplyButton({
       );
     } else {
       return (
-        <div className="flex flex-col items-center justify-center gap-2">
-          <SignInButton
-            onSuccess={() => {
-              handleSignIn();
-              onSuccess();
-            }}
-            onError={onError}
+        <div>
+          <Button onClick={handleFarcasterSignIn}>
+            {isFarcasterSignInLoading ? "Signing In..." : "Apply"}
+          </Button>
+          <QRCodeModal
+            isOpen={isQRCodeVisible}
+            onClose={handleCloseModal}
+            url={url || ""}
+            onRetry={handleFarcasterSignIn}
+            channelToken={channelToken || ""}
           />
-          <div className="flex flex-col items-center">
-            <span className="text-sm text-gray-400">Sign in to apply</span>
-            <a
-              href="https://www.farcaster.xyz/"
-              target="_blank"
-              className="text-xs text-purple-400"
-            >
-              Not on Farcaster yet? Create an account!
-            </a>
-          </div>
         </div>
       );
     }

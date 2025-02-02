@@ -163,7 +163,7 @@ export default function Home() {
         </div>
 
         <div className="w-full max-w-5xl mx-auto text-center pb-4 md:pb-16 mt-auto">
-          <div className="flex flex-col items-center">
+          <div className="flex flex-col items-center gap-4">
             <div className="flex flex-row items-center justify-center gap-2">
               <ApplyButton
                 onSuccess={() => {
@@ -180,6 +180,13 @@ export default function Home() {
                 Learn More
               </Button>
             </div>
+            <a
+              href="https://www.farcaster.xyz/"
+              target="_blank"
+              className="text-xs text-purple-400"
+            >
+              Not on Farcaster yet? Create an account!
+            </a>
 
             <p className="text-purple-500 mt-2 md:mt-6 text-xs md:text-sm">
               Applications closing in {countdown.days} days, {countdown.hours}{" "}
