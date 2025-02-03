@@ -11,6 +11,7 @@ import Button from "../Button";
 import { useSignIn as useFarcasterSignIn, QRCode } from "@farcaster/auth-kit";
 import { useEffect, useState } from "react";
 import QRCodeModal from "../QRCodeModal";
+import { NeynarAuthButton, SIWN_variant } from "@neynar/react";
 
 export default function ApplyButton({
   onSuccess,
@@ -115,21 +116,7 @@ export default function ApplyButton({
         </div>
       );
     } else {
-      return (
-        <div>
-          <Button onClick={handleFarcasterSignIn}>
-            {isFarcasterSignInLoading ? "Signing In..." : "Apply"}
-          </Button>
-          <QRCodeModal
-            isOpen={isQRCodeVisible}
-            onClose={handleCloseModal}
-            url={url || ""}
-            onRetry={handleFarcasterSignIn}
-            channelToken={channelToken || ""}
-            error={error?.message}
-          />
-        </div>
-      );
+      return <NeynarAuthButton variant={SIWN_variant.FARCASTER} data-border_radius="10px" />;
     }
   }
 

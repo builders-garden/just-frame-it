@@ -1,7 +1,8 @@
 "use client";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { AuthKitProvider } from "@farcaster/auth-kit";
+import { NeynarContextProvider, Theme } from "@neynar/react";
+import "@neynar/react/dist/style.css";
 import dynamic from "next/dynamic";
 
 const Home = dynamic(() => import("@/components/Home"), {
@@ -38,11 +39,20 @@ const config = {
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthKitProvider config={config}>
+      <NeynarContextProvider
+        settings={{
+          clientId: process.env.NEXT_PUBLIC_NEYNAR_CLIENT_ID || "",
+          defaultTheme: Theme.Light,
+          eventsCallbacks: {
+            onAuthSuccess: () => {},
+            onSignout() {},
+          },
+        }}
+      >
         <FrameProvider>
           <Home />
         </FrameProvider>
-      </AuthKitProvider>
+      </NeynarContextProvider>
     </QueryClientProvider>
   );
 }
