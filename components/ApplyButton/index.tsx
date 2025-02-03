@@ -1,6 +1,12 @@
 import { useSignIn } from "@/hooks/use-sign-in";
 import { useFrame } from "../farcaster-provider";
-import { AuthClientError, SignInButton, useProfile } from "@farcaster/auth-kit";
+import {
+  AuthClientError,
+  SignInButton,
+  useProfile,
+  useSignInMessage,
+  useVerifySignInMessage,
+} from "@farcaster/auth-kit";
 import Button from "../Button";
 import { useSignIn as useFarcasterSignIn, QRCode } from "@farcaster/auth-kit";
 import { useEffect, useState } from "react";
@@ -15,6 +21,17 @@ export default function ApplyButton({
 }) {
   const { isSDKLoaded, context } = useFrame();
   const { signIn, isLoading: isSigningIn, isSignedIn } = useSignIn();
+  const { message, signature } = useSignInMessage();
+  const {
+    isSuccess: isVerifySuccess,
+    isError: isVerifyError,
+    error: verifyError,
+    data: verifyData,
+  } = useVerifySignInMessage({
+    message,
+    signature: signature as `0x${string}`,
+  });
+  console.log({ isVerifySuccess, isVerifyError, verifyError, verifyData });
   const {
     signIn: farcasterSignIn,
     connect,
@@ -67,15 +84,10 @@ export default function ApplyButton({
   };
 
   useEffect(() => {
-    console.log({ url, data });
     if (url && data?.state !== "completed") {
       setIsQRCodeVisible(true);
     }
-  }, [url, data]);
-
-  useEffect(() => {
-    console.log({ data });
-  }, [data]);
+  }, [url, data, isSuccess]);
 
   const handleSignIn = async () => {
     try {

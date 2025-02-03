@@ -28,8 +28,10 @@ const FrameProvider = dynamic(
 );
 
 const config = {
-  domain: "frame-it.builders.garden",
-  siweUri: "https://frame-it.builders.garden",
+  domain: process.env.NEXT_PUBLIC_URL
+    ? new URL(process.env.NEXT_PUBLIC_URL).hostname
+    : "frame-it.builders.garden",
+  siweUri: process.env.NEXT_PUBLIC_URL || "https://frame-it.builders.garden",
   relay: "https://relay.farcaster.xyz",
 };
 
