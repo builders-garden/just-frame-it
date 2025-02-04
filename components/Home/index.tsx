@@ -1,63 +1,28 @@
 "use client";
 
-import { useApply } from "@/hooks/use-apply";
 import { useFrame } from "../farcaster-provider";
 import SafeAreaContainer from "../SafeAreaContainer";
 import { Climate_Crisis } from "next/font/google";
-import { useState, useEffect } from "react";
-import ApplyModal, { ApplyFormData } from "../ApplyModal";
+import { useState } from "react";
+import ApplyModal from "../ApplyModal";
 import { useSignIn } from "@/hooks/use-sign-in";
 import ProgramInfoModal from "../ProgramInfoModal";
 import Image from "next/image";
 import ApplyButton from "../ApplyButton";
+import SuccessStories from "../SuccessStories";
+import Button from "../Button";
+import Countdown from "../Countdown";
+import { Tooltip } from "../Tooltip";
 
 const climateCrisis = Climate_Crisis({ subsets: ["latin"] });
 
 export default function Home() {
   const { context } = useFrame();
-  const { mutateAsync: apply, isPending } = useApply();
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { signIn, isLoading: isSigningIn } = useSignIn();
   const [isProgramInfoModalOpen, setIsProgramInfoModalOpen] = useState(false);
-  const [countdown, setCountdown] = useState({
-    days: 0,
-    hours: 0,
-    minutes: 0,
-    seconds: 0,
-  });
-
-  useEffect(() => {
-    // Set target date to March 16, 2025 23:59:59 Rome time (UTC+1 in winter, UTC+2 in summer)
-    // March is in winter time (CET), so UTC+1
-    const targetDate = new Date("2025-03-16T22:59:59Z"); // 23:59:59 Rome time (UTC+1)
-
-    const updateCountdown = () => {
-      // Convert current time to Rome time
-      const now = new Date();
-      const romeOffset = 60; // Rome timezone offset in minutes (UTC+1)
-      const localOffset = now.getTimezoneOffset();
-      const adjustedNow = new Date(
-        now.getTime() + (localOffset + romeOffset) * 60000
-      );
-
-      const diff = targetDate.getTime() - adjustedNow.getTime();
-
-      if (diff > 0) {
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor(
-          (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-        );
-        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-        setCountdown({ days, hours, minutes, seconds });
-      }
-    };
-
-    updateCountdown();
-    const interval = setInterval(updateCountdown, 1000);
-    return () => clearInterval(interval);
-  }, []);
+  const [showCopiedTooltip, setShowCopiedTooltip] = useState(false);
 
   const handleApplyClick = async () => {
     try {
@@ -72,9 +37,10 @@ export default function Home() {
     }
   };
 
-  const handleApply = async (data: ApplyFormData) => {
-    await apply(data);
-    setIsModalOpen(false);
+  const copyEmailToClipboard = () => {
+    navigator.clipboard.writeText("gm@builders.garden");
+    setShowCopiedTooltip(true);
+    setTimeout(() => setShowCopiedTooltip(false), 2000);
   };
 
   return (
@@ -123,10 +89,10 @@ export default function Home() {
         />
       </div>
 
-      <div className="relative z-10 flex min-h-screen flex-col items-center px-4 pb-24 md:pb-0">
+      <div className="w-full relative z-10 flex min-h-screen flex-col items-center px-0 pb-24 md:pb-0 justify-evenly">
         <div className="w-full max-w-5xl mx-auto text-center space-y-4 py-8 md:py-24 mt-4 md:mt-8">
           <h1
-            className={`text-purple-600 border py-1 md:py-4 border-blue-500 relative max-w-3xl mx-auto`}
+            className={`mx-4 md:mx-auto text-purple-600 border py-1 md:py-4 border-blue-500 relative max-w-3xl`}
           >
             <div className="absolute w-2 h-2 md:w-3 md:h-3 bg-white border border-blue-500 top-0 left-0 -translate-x-1/2 -translate-y-1/2"></div>
             <div className="absolute w-2 h-2 md:w-3 md:h-3 bg-white border border-blue-500 top-0 right-0 translate-x-1/2 -translate-y-1/2"></div>
@@ -138,7 +104,7 @@ export default function Home() {
               >
                 Just Frame It
               </p>
-              <p className="text-purple-500 font-semibold text-sm md:text-2xl">
+              <p className="text-purple-500 font-semibold text-xs md:text-2xl">
                 Build sprint to reframe the future of social feeds
               </p>
             </div>
@@ -150,54 +116,84 @@ export default function Home() {
             <p>ONLINE - NYC - ROME</p>
           </div>
 
-          <div className="flex flex-wrap justify-center gap-2 md:gap-4 mt-4 md:mt-8 text-xs md:text-base font-bold text-purple-500">
+          {/* <div className="flex flex-wrap justify-center gap-2 md:gap-4 mt-4 md:mt-8 text-xs md:text-base font-bold text-purple-500">
             <div className="border-2 border-purple-500 px-4 py-1 md:px-8 md:py-3 bg-white/50">
               6 TEAMS
             </div>
             <div className="border-2 border-purple-500 px-4 py-1 md:px-8 md:py-3 bg-white/50">
               HYBRID BUILDATHON
             </div>
-          </div>
+          </div> */}
         </div>
 
         <div className="w-full max-w-5xl mx-auto text-center pb-4 md:pb-16 mt-auto">
-          <button
-            onClick={() => setIsProgramInfoModalOpen(true)}
-            className="mb-2 md:mb-6 text-purple-600 text-sm md:text-lg underline hover:text-purple-700 transition-colors duration-200"
-          >
-            Learn More
-          </button>
-
-          <div className="flex flex-col items-center">
-            <ApplyButton
-              onSuccess={() => {
-                setIsModalOpen(true);
-              }}
-              onError={(error) => {
-                console.error("Failed to sign in", error);
-              }}
-            />
-            <p className="text-purple-500 mt-2 md:mt-6 text-xs md:text-sm">
-              Applications closing in {countdown.days} days, {countdown.hours}{" "}
-              hours, {countdown.minutes} minutes, {countdown.seconds} seconds
-            </p>
+          <div className="flex flex-col items-center gap-4">
+            <Countdown />
+            <div className="flex flex-row items-center justify-center gap-2 mx-auto">
+              <ApplyButton
+                onSuccess={() => {
+                  setIsModalOpen(true);
+                }}
+                onError={(error) => {
+                  console.error("Failed to sign in", error);
+                }}
+              />
+              <Button
+                variant="bordered"
+                onClick={() => setIsProgramInfoModalOpen(true)}
+              >
+                <div>Learn More</div>
+              </Button>
+            </div>
+            <a
+              href="https://www.farcaster.xyz/"
+              target="_blank"
+              className="text-xs text-purple-400"
+            >
+              Not on Farcaster yet? Create an account!
+            </a>
           </div>
         </div>
 
-        <div className="w-full flex justify-center mb-4 md:mb-8">
-          <a
-            href="https://builders.garden"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              src="/images/builders-garden-logo.png"
-              alt="Builders Garden"
-              width={90}
-              height={18}
-              className="opacity-80 hover:opacity-100 transition-opacity"
-            />
-          </a>
+        <SuccessStories />
+
+        <div className="w-full flex justify-center py-4 md:py-8">
+          <div className="flex flex-col items-center gap-8">
+            <p className="text-sm text-center">
+              Need support? <br />
+              <span>
+                <a
+                  href="https://warpcast.com/limone.eth"
+                  className="font-semibold"
+                  target="_blank"
+                >
+                  limone.eth
+                </a>
+              </span>{" "}
+              or{" "}
+              <Tooltip content="Copied!" open={showCopiedTooltip}>
+                <span
+                  className="font-semibold cursor-pointer hover:text-purple-600 transition-colors"
+                  onClick={copyEmailToClipboard}
+                >
+                  gm@builders.garden
+                </span>
+              </Tooltip>
+            </p>
+            <a
+              href="https://builders.garden"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Image
+                src="/images/builders-garden-logo.png"
+                alt="Builders Garden"
+                width={90}
+                height={18}
+                className="opacity-80 hover:opacity-100 transition-opacity"
+              />
+            </a>
+          </div>
         </div>
       </div>
 
@@ -225,8 +221,6 @@ export default function Home() {
         <ApplyModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
-          onSubmit={handleApplyClick}
-          isLoading={isPending}
         />
       )}
 

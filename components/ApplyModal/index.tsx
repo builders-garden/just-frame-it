@@ -7,43 +7,148 @@ import { useMe } from "@/hooks/use-users";
 import { useSearchUsers } from "@/hooks/use-users";
 import { useProfile } from "@farcaster/auth-kit";
 import Image from "next/image";
+import { useApply } from "@/hooks/use-apply";
 
 const climateCrisis = Climate_Crisis({ subsets: ["latin"] });
 interface ApplyModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: ApplyFormData) => void;
-  isLoading: boolean;
 }
 
 export interface ApplyFormData {
-  name: string;
-  teamMembers: string[];
+  teamMembers: Array<{
+    fid: number;
+    username: string;
+    displayName: string;
+    avatarUrl?: string;
+  }>;
   projectName: string;
-  whyAttend: string;
   projectDescription: string;
+  whyAttend: string;
   previousWork: string;
+  githubUrl: string;
+  canAttendRome: boolean;
+  creatorDisplayName: string;
+  creatorUsername: string;
+  creatorAvatarUrl?: string;
 }
 
-export default function ApplyModal({
-  isOpen,
-  onClose,
-  onSubmit,
-  isLoading,
-}: ApplyModalProps) {
+export default function ApplyModal({ isOpen, onClose }: ApplyModalProps) {
   const { data: user } = useMe();
+  const { isAuthenticated, profile } = useProfile();
+  const { mutateAsync: apply, isPending } = useApply();
+
+  // Form state
+  const [projectName, setProjectName] = useState("");
+  const [projectDescription, setProjectDescription] = useState("");
+  const [whyAttend, setWhyAttend] = useState("");
+  const [previousWork, setPreviousWork] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
-  const [hasProjectIdea, setHasProjectIdea] = useState(false);
   const [selectedTeamMembers, setSelectedTeamMembers] = useState<
     Array<{
+      fid: number;
       username: string;
+      displayName: string;
       pfp_url?: string;
     }>
   >([]);
-  const { isAuthenticated, profile } = useProfile();
+  const [githubUrl, setGithubUrl] = useState("");
+  const [canAttendRome, setCanAttendRome] = useState(false);
+
+  // Submission state
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [validationError, setValidationError] = useState<string | null>(null);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const { data: searchResults, isLoading: isSearching } =
     useSearchUsers(searchQuery);
+
+  const validateForm = (): boolean => {
+    if (!projectName.trim()) {
+      setValidationError("Project name is required");
+      return false;
+    }
+    if (!projectDescription.trim()) {
+      setValidationError("Project description is required");
+      return false;
+    }
+    if (!whyAttend.trim()) {
+      setValidationError("Please explain why you want to participate");
+      return false;
+    }
+    if (!githubUrl.trim()) {
+      setValidationError("GitHub URL is required");
+      return false;
+    }
+    return true;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setValidationError(null);
+    setIsSubmitting(true);
+
+    try {
+      const data: ApplyFormData = {
+        teamMembers: selectedTeamMembers.map((member) => ({
+          fid: member.fid,
+          username: member.username,
+          displayName: member.displayName,
+          avatarUrl: member.pfp_url,
+        })),
+        projectName: projectName.trim(),
+        projectDescription: projectDescription.trim(),
+        whyAttend: whyAttend.trim(),
+        previousWork: previousWork.trim(),
+        creatorUsername: isAuthenticated ? profile.username! : user?.username!,
+        creatorDisplayName: isAuthenticated
+          ? profile.displayName!
+          : user?.display_name!,
+        creatorAvatarUrl: isAuthenticated ? profile.pfpUrl : user?.pfp_url,
+        githubUrl: githubUrl.trim(),
+        canAttendRome: canAttendRome,
+      };
+
+      if (!validateForm()) {
+        setIsSubmitting(false);
+        return;
+      }
+
+      await apply(data, {
+        onSuccess: () => {
+          setShowSuccess(true);
+          // Close modal after showing success message for 2 seconds
+          setTimeout(() => {
+            setShowSuccess(false);
+            onClose();
+          }, 5000);
+          setIsSubmitting(false);
+        },
+        onError: () => {
+          setIsSubmitting(false);
+          setValidationError("Something went wrong. Please try again.");
+        },
+      });
+    } catch (error) {
+      setValidationError("Something went wrong. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // Reset form when modal closes
+  useEffect(() => {
+    if (!isOpen) {
+      setProjectName("");
+      setProjectDescription("");
+      setWhyAttend("");
+      setPreviousWork("");
+      setSelectedTeamMembers([]);
+      setValidationError(null);
+      setGithubUrl("");
+      setCanAttendRome(false);
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
@@ -52,27 +157,6 @@ export default function ApplyModal({
     window.addEventListener("keydown", handleEsc);
     return () => window.removeEventListener("keydown", handleEsc);
   }, [onClose]);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const form = e.target as HTMLFormElement;
-    const formData = new FormData(form);
-
-    const data: ApplyFormData = {
-      name: formData.get("name") as string,
-      teamMembers: selectedTeamMembers.map((member) => member.username),
-      projectName: hasProjectIdea
-        ? (formData.get("projectName") as string)
-        : "",
-      projectDescription: hasProjectIdea
-        ? (formData.get("projectDescription") as string)
-        : "",
-      whyAttend: formData.get("whyAttend") as string,
-      previousWork: formData.get("previousWork") as string,
-    };
-
-    onSubmit(data);
-  };
 
   return (
     <AnimatePresence>
@@ -87,13 +171,13 @@ export default function ApplyModal({
           />
 
           <div className="fixed inset-0 overflow-y-auto z-50">
-            <div className="flex min-h-screen items-start justify-center">
+            <div className="flex min-h-screen items-start justify-center bg-white">
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.2 }}
-                className="flex flex-col gap-2 w-full min-h-screen bg-white p-6 text-left align-middle shadow-xl relative"
+                className="flex flex-col gap-2 w-full min-h-screen max-w-5xl  p-6 text-left align-middle relative"
               >
                 <button
                   onClick={onClose}
@@ -164,71 +248,62 @@ export default function ApplyModal({
                         />
                       )}
                     </div>
-                    {/* <p
-                      onClick={() => {
-                        signOut();
-                        onClose();
-                      }}
-                      className="cursor-pointer text-purple-600 text-xs underline hover:text-purple-700 transition-colors duration-200"
-                    >
-                      Change account
-                    </p> */}
                   </div>
 
                   <div>
-                    <div className="flex items-center gap-2 mb-4">
-                      <input
-                        type="checkbox"
-                        id="hasProjectIdea"
-                        checked={hasProjectIdea}
-                        onChange={(e) => setHasProjectIdea(e.target.checked)}
-                        className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
-                      />
+                    <label
+                      htmlFor="githubUrl"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      GitHub Profile URL
+                    </label>
+                    <input
+                      type="url"
+                      id="githubUrl"
+                      value={githubUrl}
+                      onChange={(e) => setGithubUrl(e.target.value)}
+                      placeholder="https://github.com/yourusername"
+                      className="mt-1 block w-full border border-gray-300 px-3 py-2 focus:border-purple-500 focus:outline-none focus:ring-purple-500"
+                    />
+                  </div>
+
+                  <div className="space-y-4">
+                    <div>
                       <label
-                        htmlFor="hasProjectIdea"
-                        className="text-sm font-medium text-gray-700"
+                        htmlFor="projectName"
+                        className="block text-sm font-medium text-gray-700"
                       >
-                        Do you have an idea to build already?
+                        Project Name
                       </label>
+                      <input
+                        type="text"
+                        id="projectName"
+                        value={projectName}
+                        onChange={(e) => setProjectName(e.target.value)}
+                        placeholder="Your project name..."
+                        className="mt-1 block w-full border border-gray-300 px-3 py-2 focus:border-purple-500 focus:outline-none focus:ring-purple-500"
+                      />
+                      <p className="mt-1 text-xs text-gray-500">
+                        You can submit an existing project or a new idea
+                      </p>
                     </div>
 
-                    {hasProjectIdea && (
-                      <>
-                        <div className="space-y-4">
-                          <div>
-                            <label
-                              htmlFor="projectName"
-                              className="block text-sm font-medium text-gray-700"
-                            >
-                              Name
-                            </label>
-                            <input
-                              type="text"
-                              name="projectName"
-                              id="projectName"
-                              placeholder="Your idea name..."
-                              className="mt-1 block w-full border border-gray-300 px-3 py-2 focus:border-purple-500 focus:outline-none focus:ring-purple-500"
-                            />
-                          </div>
-
-                          <div>
-                            <label
-                              htmlFor="projectDescription"
-                              className="block text-sm font-medium text-gray-700"
-                            >
-                              Description
-                            </label>
-                            <textarea
-                              name="projectDescription"
-                              id="projectDescription"
-                              rows={3}
-                              placeholder="Describe your idea..."
-                              className="mt-1 block w-full border border-gray-300 px-3 py-2 focus:border-purple-500 focus:outline-none focus:ring-purple-500"
-                            />
-                          </div>
-                        </div>
-                      </>
-                    )}
+                    <div>
+                      <label
+                        htmlFor="projectDescription"
+                        className="block text-sm font-medium text-gray-700"
+                      >
+                        Project Description
+                      </label>
+                      <textarea
+                        id="projectDescription"
+                        value={projectDescription}
+                        onChange={(e) => setProjectDescription(e.target.value)}
+                        rows={3}
+                        placeholder="Describe your project idea..."
+                        className="mt-1 block w-full border border-gray-300 px-3 py-2 focus:border-purple-500 focus:outline-none focus:ring-purple-500"
+                      />
+                    </div>
                   </div>
 
                   <div>
@@ -268,7 +343,9 @@ export default function ApplyModal({
                                     setSelectedTeamMembers([
                                       ...selectedTeamMembers,
                                       {
+                                        fid: Number(user.fid),
                                         username: user.username,
+                                        displayName: user.display_name,
                                         pfp_url: user.pfp_url,
                                       },
                                     ]);
@@ -347,9 +424,9 @@ export default function ApplyModal({
                       Why do you want to participate?
                     </label>
                     <textarea
-                      name="whyAttend"
                       id="whyAttend"
-                      required
+                      value={whyAttend}
+                      onChange={(e) => setWhyAttend(e.target.value)}
                       rows={3}
                       className="mt-1 block w-full border border-gray-300 px-3 py-2 focus:border-purple-500 focus:outline-none focus:ring-purple-500"
                     />
@@ -364,31 +441,117 @@ export default function ApplyModal({
                       (optional)
                     </label>
                     <textarea
-                      name="previousWork"
                       id="previousWork"
+                      value={previousWork}
+                      onChange={(e) => setPreviousWork(e.target.value)}
                       rows={3}
                       placeholder="Share links to your Frames, projects, or describe your previous work..."
                       className="mt-1 block w-full border border-gray-300 px-3 py-2 focus:border-purple-500 focus:outline-none focus:ring-purple-500"
                     />
                   </div>
 
+                  <div className="flex items-start gap-2">
+                    <div className="flex items-center h-5">
+                      <input
+                        id="canAttendRome"
+                        type="checkbox"
+                        checked={canAttendRome}
+                        onChange={(e) => setCanAttendRome(e.target.checked)}
+                        className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
+                      />
+                    </div>
+                    <div className="ml-2">
+                      <label
+                        htmlFor="canAttendRome"
+                        className="text-sm font-medium text-gray-700"
+                      >
+                        I can attend the Rome residency (May 31st - June 6th,
+                        2025)
+                      </label>
+                      <p className="text-xs text-gray-500">
+                        Top 3 teams will be invited to a week-long build
+                        residency in Rome (expenses covered)
+                      </p>
+                    </div>
+                  </div>
+
+                  {validationError && (
+                    <div className="text-red-500 text-sm">
+                      {validationError}
+                    </div>
+                  )}
+
                   <div className="mt-6 flex justify-end gap-3">
                     <button
                       type="button"
                       onClick={onClose}
                       className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900"
+                      disabled={isSubmitting}
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
-                      disabled={isLoading}
-                      className="px-4 py-2 text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                      disabled={isSubmitting || isPending}
+                      className="px-4 py-2 text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center gap-2"
                     >
-                      {isLoading ? "Submitting..." : "Submit Application"}
+                      {(isSubmitting || isPending) && (
+                        <svg
+                          className="animate-spin h-4 w-4 text-white"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
+                        </svg>
+                      )}
+                      {isSubmitting || isPending
+                        ? "Submitting..."
+                        : "Submit Application"}
                     </button>
                   </div>
                 </form>
+
+                {showSuccess && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-90">
+                    <div className="text-center p-6 rounded-lg">
+                      <div className="mb-4 text-green-500">
+                        <svg
+                          className="w-16 h-16 mx-auto"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M5 13l4 4L19 7"
+                          />
+                        </svg>
+                      </div>
+                      <h3 className="text-xl font-medium text-gray-900 mb-2">
+                        Application Submitted!
+                      </h3>
+                      <p className="text-gray-500">
+                        Thank you for applying. We&apos;ll review your
+                        application soon.
+                      </p>
+                    </div>
+                  </div>
+                )}
               </motion.div>
             </div>
           </div>
