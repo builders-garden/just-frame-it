@@ -13,6 +13,8 @@ import SuccessStories from "../SuccessStories";
 import Button from "../Button";
 import Countdown from "../Countdown";
 import { Tooltip } from "../Tooltip";
+import { trackEvent } from "@/lib/posthog/client";
+import sdk from "@farcaster/frame-sdk";
 
 const climateCrisis = Climate_Crisis({ subsets: ["latin"] });
 
@@ -27,17 +29,20 @@ export default function Home() {
   });
   const [isProgramInfoModalOpen, setIsProgramInfoModalOpen] = useState(false);
   const [showCopiedTooltip, setShowCopiedTooltip] = useState(false);
+  const [showOverlay, setShowOverlay] = useState(false);
 
   const handleApplyClick = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        await signIn();
-      }
-      setIsModalOpen(true);
-    } catch (error) {
-      console.error("Failed to sign in:", error);
-      // Optionally show an error message to the user
+    if (context?.user?.fid) {
+      setShowOverlay(true);
+      await sdk.actions.addFrame();
+      trackEvent("apply_button_clicked", {
+        fid: context?.user?.fid,
+      });
+    } else {
+      window.open(
+        "https://warpcast.com/?launchFrameDomain=frame-it.builders.garden",
+        "_blank"
+      );
     }
   };
 
@@ -115,7 +120,8 @@ export default function Home() {
           </h1>
 
           <div className="flex flex-row gap-2 justify-center items-center text-purple-500 text-center text-sm md:text-xl font-semibold">
-            <p>APR 7TH - JUNE 7TH</p>
+            {/* <p>APR 7TH - JUNE 7TH</p> */}
+            <p>APR - MAY - JUNE</p>
             <p className="w-1 h-1 bg-purple-500 rounded-full"></p>
             <p>ONLINE - NYC - ROME</p>
           </div>
@@ -132,9 +138,9 @@ export default function Home() {
 
         <div className="w-full max-w-5xl mx-auto text-center pb-4 md:pb-16 mt-auto">
           <div className="flex flex-col items-center gap-4">
-            <Countdown />
+            {/* <Countdown /> */}
             <div className="flex flex-row items-center justify-center gap-2 mx-auto">
-              <ApplyButton
+              {/* <ApplyButton
                 onSuccess={() => {
                   console.log("onSuccess");
                   setIsModalOpen(true);
@@ -142,12 +148,13 @@ export default function Home() {
                 onError={(error) => {
                   console.error("Failed to sign in", error);
                 }}
-              />
+              /> */}
+              <Button onClick={handleApplyClick}>Apply</Button>
               <Button
                 variant="bordered"
                 onClick={() => setIsProgramInfoModalOpen(true)}
               >
-                <div>Learn More</div>
+                Learn More
               </Button>
             </div>
             <a
@@ -234,6 +241,38 @@ export default function Home() {
           isOpen={isProgramInfoModalOpen}
           onClose={() => setIsProgramInfoModalOpen(false)}
         />
+      )}
+
+      {showOverlay && (
+        <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-95 z-50">
+          <div className="text-center p-6 rounded-lg">
+            <div className="mb-4 text-purple-500">
+              <svg
+                className="w-16 h-16 mx-auto"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+            </div>
+            <h3 className="text-xl font-medium text-gray-900 mb-2">
+              Applications Coming Soon!
+            </h3>
+            <p className="text-gray-500 mb-6">
+              Thank you for your interest! Applications are not open yet, but by
+              saving the Frame, you&apos;ll be the first to know when they are.
+            </p>
+            <Button onClick={() => setShowOverlay(false)} variant="bordered">
+              Close
+            </Button>
+          </div>
+        </div>
       )}
     </SafeAreaContainer>
   );

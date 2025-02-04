@@ -17,11 +17,7 @@ export default function Button({
       disabled={disabled || isLoading}
       className={`
         relative overflow-hidden
-        ${
-          variant === "filled"
-            ? "px-8 py-4 md:px-12 md:py-6"
-            : "px-[30px] py-[1.2rem]"
-        }
+        px-8 py-4 md:px-12 md:py-6
         text-xl md:text-2xl font-semibold shadow-md
         focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50
         transition-colors duration-200
