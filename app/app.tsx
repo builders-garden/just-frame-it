@@ -27,18 +27,18 @@ const FrameProvider = dynamic(
   }
 );
 
-const config = {
+const farcasterConfig = {
+  rpcUrl: `https://optimism-mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
   domain: process.env.NEXT_PUBLIC_URL
     ? new URL(process.env.NEXT_PUBLIC_URL).hostname
     : "frame-it.builders.garden",
   siweUri: process.env.NEXT_PUBLIC_URL || "https://frame-it.builders.garden",
-  relay: "https://relay.farcaster.xyz",
 };
 
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthKitProvider config={config}>
+      <AuthKitProvider config={farcasterConfig}>
         <FrameProvider>
           <Home />
         </FrameProvider>
