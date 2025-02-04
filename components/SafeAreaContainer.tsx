@@ -11,7 +11,7 @@ export default function SafeAreaContainer({
 }: SafeAreaContainerProps) {
   return (
     <main
-      className="bg-white flex min-h-screen max-w-screen flex-col items-center justify-center gap-y-3"
+      className="bg-white flex max-h-screen h-screen w-full max-w-screen flex-col items-center justify-between"
       style={{
         marginTop: insets?.top ?? 0,
         marginBottom: insets?.bottom ?? 0,

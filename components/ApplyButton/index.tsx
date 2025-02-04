@@ -1,16 +1,17 @@
+"use client";
+
+import { useCallback, useState } from "react";
 import { useSignIn } from "@/hooks/use-sign-in";
-import { useFrame } from "../farcaster-provider";
 import {
   AuthClientError,
   SignInButton,
+  StatusAPIResponse,
   useProfile,
-  useSignInMessage,
-  useVerifySignInMessage,
 } from "@farcaster/auth-kit";
+import { verifyFarcasterSignInMessage } from "@/lib/farcaster-app-client";
+
+import { useFrame } from "../farcaster-provider";
 import Button from "../Button";
-import { useSignIn as useFarcasterSignIn, QRCode } from "@farcaster/auth-kit";
-import { useEffect, useState } from "react";
-import QRCodeModal from "../QRCodeModal";
 
 export default function ApplyButton({
   onSuccess,
@@ -20,76 +21,52 @@ export default function ApplyButton({
   onError: (error?: AuthClientError) => void;
 }) {
   const { isSDKLoaded, context } = useFrame();
-  const { signIn, isLoading: isSigningIn, isSignedIn } = useSignIn();
-  const { message, signature } = useSignInMessage();
+  const { signIn, isLoading: isFrameSigningIn, isSignedIn } = useSignIn();
+  const profile = useProfile();
   const {
-    isSuccess: isVerifySuccess,
-    isError: isVerifyError,
-    error: verifyError,
-    data: verifyData,
-  } = useVerifySignInMessage({
-    message,
-    signature: signature as `0x${string}`,
-  });
-  console.log({ isVerifySuccess, isVerifyError, verifyError, verifyData });
-  const {
-    signIn: farcasterSignIn,
-    connect,
-    url,
-    data,
-    error,
-    isConnected,
-    channelToken,
-    isSuccess,
-  } = useFarcasterSignIn({
-    onSuccess: ({ fid }) => {
-      console.log("Signed in with FID", fid);
-      setIsQRCodeVisible(false);
-      onSuccess();
-    },
-    onError: (error) => {
-      console.error({
-        error,
-      });
-    },
-    onStatusResponse: (statusData) => {
-      console.log(statusData);
-    },
-    nonce:
-      Math.random().toString(36).substring(2, 15) +
-      Math.random().toString(36).substring(2, 15),
-  });
-  const [isFarcasterSignInLoading, setIsFarcasterSignInLoading] =
-    useState(false);
-  const [isQRCodeVisible, setIsQRCodeVisible] = useState(false);
+    isAuthenticated,
+    profile: { fid, username, pfpUrl },
+  } = profile;
+  const [isSigningIn, setIsSigningIn] = useState(false);
 
-  const handleFarcasterSignIn = async () => {
-    if (data?.state === "completed") {
-      onSuccess();
+  const handleSuccess = useCallback(async (res: StatusAPIResponse) => {
+    setIsSigningIn(true);
+    console.log("fc ky res", res);
+    if (!res.message || !res.signature || !res.nonce) {
+      console.error("Missing message, signature or nonce");
       return;
     }
+
     try {
-      setIsFarcasterSignInLoading(true);
-      if (!isConnected) {
-        console.log("Connecting...");
-        await connect();
+      const verifyResponse = await verifyFarcasterSignInMessage(
+        res.message,
+        res.signature as `0x${string}`,
+        res.nonce
+      );
+
+      console.log("appClient response", verifyResponse);
+      const { success, fid, error } = verifyResponse;
+      if (!success) {
+        console.error("Invalid signature", error, success, fid);
+        onError(error);
+        return;
+      } else {
+        console.log("fc ky data", {
+          fid: fid.toString(),
+          username: res.username,
+          pfpUrl: res.pfpUrl,
+        });
+        onSuccess();
       }
-      console.log("Signing in...");
-      await farcasterSignIn();
     } catch (error) {
-      console.error(error);
+      console.error("Error fetching farcaster data", error);
     } finally {
-      setIsFarcasterSignInLoading(false);
+      setIsSigningIn(false);
     }
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  useEffect(() => {
-    if (url && data?.state !== "completed") {
-      setIsQRCodeVisible(true);
-    }
-  }, [url, data, isSuccess]);
-
-  const handleSignIn = async () => {
+  const handleFrameSignIn = async () => {
     try {
       const token = localStorage.getItem("token");
       if (!token) {
@@ -103,12 +80,8 @@ export default function ApplyButton({
     }
   };
 
-  const handleCloseModal = () => {
-    setIsQRCodeVisible(false);
-  };
-
   if (!context || !isSDKLoaded) {
-    if (isSignedIn) {
+    if (isAuthenticated) {
       return (
         <div className="flex flex-col items-center justify-center gap-2">
           <Button onClick={onSuccess}>Apply</Button>
@@ -116,26 +89,40 @@ export default function ApplyButton({
       );
     } else {
       return (
-        <div>
-          <Button onClick={handleFarcasterSignIn}>
-            {isFarcasterSignInLoading ? "Signing In..." : "Apply"}
-          </Button>
-          <QRCodeModal
-            isOpen={isQRCodeVisible}
-            onClose={handleCloseModal}
-            url={url || ""}
-            onRetry={handleFarcasterSignIn}
-            channelToken={channelToken || ""}
-            error={error?.message}
-          />
+        <div className="h-full">
+          <div
+            className={`
+            px-[30px] py-[1.5] relative justify-center items-center w-full overflow-hidden
+            active:translate-y-[2px] rounded-sm border 
+            text-xl md:text-2xl font-semibold shadow-md
+            focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50
+            transition-colors duration-200
+           bg-purple-600 hover:bg-purple-700 text-white
+            before:absolute before:content-[''] before:top-0 before:left-[-100%] before:w-[120%] before:h-full
+            before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent
+            before:animate-shine before:skew-x-[-25deg]
+            `}
+          >
+            <div className="text-2xl absolute h-full w-[70%] sm:w-[70%] flex items-center justify-center mx-auto">
+              {isSigningIn ? "Signing In..." : "Apply"}
+            </div>
+            <div
+              id="fc-btn-wrap"
+              className="py-2 size-full flex items-center justify-center opacity-0 w-full"
+            >
+              <SignInButton onSuccess={handleSuccess} hideSignOut />
+            </div>
+          </div>
         </div>
       );
     }
   }
 
   return (
-    <Button onClick={handleSignIn}>
-      {isSigningIn ? "Signing In..." : "Apply"}
+    <Button isLoading={isFrameSigningIn} onClick={handleFrameSignIn}>
+      <div className="px-[30px] py-[0.3rem] flex flex-row items-center justify-center gap-2">
+        Apply
+      </div>
     </Button>
   );
 }

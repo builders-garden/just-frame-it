@@ -192,7 +192,7 @@ export default function SuccessStories() {
         Build the next...
       </h2>
       <div className="relative mx-auto max-w-[100vw] overflow-hidden">
-        <div className="flex overflow-x-hidden">
+        <div className="flex overflow-x-hidden overflow-y-hidden">
           <div className="animate-scroll flex gap-3 md:gap-4 pl-4 md:pl-[max(2rem,calc((100vw-1200px)/2))] pr-4 md:pr-[max(2rem,calc((100vw-1200px)/2))]">
             {successStories.map((story) => (
               <div
