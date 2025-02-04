@@ -20,7 +20,11 @@ export default function Home() {
   const { context } = useFrame();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { signIn, isLoading: isSigningIn } = useSignIn();
+  const { signIn, isLoading: isSigningIn } = useSignIn({
+    onSuccess: () => {
+      setIsModalOpen(true);
+    },
+  });
   const [isProgramInfoModalOpen, setIsProgramInfoModalOpen] = useState(false);
   const [showCopiedTooltip, setShowCopiedTooltip] = useState(false);
 
@@ -132,6 +136,7 @@ export default function Home() {
             <div className="flex flex-row items-center justify-center gap-2 mx-auto">
               <ApplyButton
                 onSuccess={() => {
+                  console.log("onSuccess");
                   setIsModalOpen(true);
                 }}
                 onError={(error) => {

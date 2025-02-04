@@ -21,7 +21,9 @@ export default function ApplyButton({
   onError: (error?: AuthClientError) => void;
 }) {
   const { isSDKLoaded, context } = useFrame();
-  const { signIn, isLoading: isFrameSigningIn, isSignedIn } = useSignIn();
+  const { signIn, isLoading: isFrameSigningIn, isSignedIn } = useSignIn({
+    onSuccess,
+  });
   const profile = useProfile();
   const {
     isAuthenticated,
@@ -64,6 +66,7 @@ export default function ApplyButton({
       const token = localStorage.getItem("token");
       if (!token) {
         await signIn();
+        onSuccess();
       } else {
         onSuccess();
       }

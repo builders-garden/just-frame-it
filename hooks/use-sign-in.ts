@@ -9,7 +9,11 @@ import {
   useSignIn as useSignInFromFarcaster,
 } from "@farcaster/auth-kit";
 
-export const useSignIn = () => {
+export const useSignIn = ({
+  onSuccess,
+}: {
+  onSuccess: () => void;
+}) => {
   const { context } = useFrame();
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -68,6 +72,7 @@ export const useSignIn = () => {
       const data = await res.json();
       localStorage.setItem("token", data.token);
       setIsSignedIn(true);
+      onSuccess();
       // posthog.identify(context.user.fid.toString());
       return data;
     } catch (err) {
