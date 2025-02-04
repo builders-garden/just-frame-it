@@ -23,6 +23,8 @@ model Application {
   projectDescription String 
   whyAttend         String  
   previousWork      String?  
+  githubUrl         String
+  canAttendRome     Boolean  @default(false)
   
   status            String   @default("PENDING") // PENDING, APPROVED, REJECTED
   

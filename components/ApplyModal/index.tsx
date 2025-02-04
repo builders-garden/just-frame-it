@@ -26,6 +26,8 @@ export interface ApplyFormData {
   projectDescription: string;
   whyAttend: string;
   previousWork: string;
+  githubUrl: string;
+  canAttendRome: boolean;
   creatorDisplayName: string;
   creatorUsername: string;
   creatorAvatarUrl?: string;
@@ -50,6 +52,8 @@ export default function ApplyModal({ isOpen, onClose }: ApplyModalProps) {
       pfp_url?: string;
     }>
   >([]);
+  const [githubUrl, setGithubUrl] = useState("");
+  const [canAttendRome, setCanAttendRome] = useState(false);
 
   // Submission state
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -70,6 +74,10 @@ export default function ApplyModal({ isOpen, onClose }: ApplyModalProps) {
     }
     if (!whyAttend.trim()) {
       setValidationError("Please explain why you want to participate");
+      return false;
+    }
+    if (!githubUrl.trim()) {
+      setValidationError("GitHub URL is required");
       return false;
     }
     return true;
@@ -97,6 +105,8 @@ export default function ApplyModal({ isOpen, onClose }: ApplyModalProps) {
           ? profile.displayName!
           : user?.display_name!,
         creatorAvatarUrl: isAuthenticated ? profile.pfpUrl : user?.pfp_url,
+        githubUrl: githubUrl.trim(),
+        canAttendRome: canAttendRome,
       };
 
       if (!validateForm()) {
@@ -135,6 +145,8 @@ export default function ApplyModal({ isOpen, onClose }: ApplyModalProps) {
       setPreviousWork("");
       setSelectedTeamMembers([]);
       setValidationError(null);
+      setGithubUrl("");
+      setCanAttendRome(false);
     }
   }, [isOpen]);
 
@@ -236,6 +248,23 @@ export default function ApplyModal({ isOpen, onClose }: ApplyModalProps) {
                         />
                       )}
                     </div>
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="githubUrl"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      GitHub Profile URL
+                    </label>
+                    <input
+                      type="url"
+                      id="githubUrl"
+                      value={githubUrl}
+                      onChange={(e) => setGithubUrl(e.target.value)}
+                      placeholder="https://github.com/yourusername"
+                      className="mt-1 block w-full border border-gray-300 px-3 py-2 focus:border-purple-500 focus:outline-none focus:ring-purple-500"
+                    />
                   </div>
 
                   <div className="space-y-4">
@@ -421,6 +450,31 @@ export default function ApplyModal({ isOpen, onClose }: ApplyModalProps) {
                     />
                   </div>
 
+                  <div className="flex items-start gap-2">
+                    <div className="flex items-center h-5">
+                      <input
+                        id="canAttendRome"
+                        type="checkbox"
+                        checked={canAttendRome}
+                        onChange={(e) => setCanAttendRome(e.target.checked)}
+                        className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
+                      />
+                    </div>
+                    <div className="ml-2">
+                      <label
+                        htmlFor="canAttendRome"
+                        className="text-sm font-medium text-gray-700"
+                      >
+                        I can attend the Rome residency (May 31st - June 6th,
+                        2025)
+                      </label>
+                      <p className="text-xs text-gray-500">
+                        Top 3 teams will be invited to a week-long build
+                        residency in Rome (expenses covered)
+                      </p>
+                    </div>
+                  </div>
+
                   {validationError && (
                     <div className="text-red-500 text-sm">
                       {validationError}
@@ -492,8 +546,8 @@ export default function ApplyModal({ isOpen, onClose }: ApplyModalProps) {
                         Application Submitted!
                       </h3>
                       <p className="text-gray-500">
-                        Thank you for applying. We&apos;ll review your application
-                        soon.
+                        Thank you for applying. We&apos;ll review your
+                        application soon.
                       </p>
                     </div>
                   </div>

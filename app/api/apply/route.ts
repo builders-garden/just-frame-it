@@ -11,12 +11,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    console.log("fid", fid);
-
     // Get application data from request
     const data = await req.json();
 
-    console.log("data", data);
     const {
       teamMembers, // Array of {fid, username, displayName, avatarUrl}
       projectName,
@@ -26,6 +23,8 @@ export async function POST(req: NextRequest) {
       creatorDisplayName,
       creatorUsername,
       creatorAvatarUrl,
+      githubUrl,
+      canAttendRome,
     } = data;
 
     // Validate required fields
@@ -34,7 +33,8 @@ export async function POST(req: NextRequest) {
       !projectDescription ||
       !whyAttend ||
       !creatorUsername ||
-      !creatorDisplayName
+      !creatorDisplayName ||
+      !githubUrl
     ) {
       return NextResponse.json(
         { error: "Missing required fields" },
@@ -75,6 +75,8 @@ export async function POST(req: NextRequest) {
         projectDescription,
         whyAttend,
         previousWork: previousWork || "",
+        githubUrl,
+        canAttendRome,
 
         // Team member 1 (creator) is required
         teamMember1Fid: fid,

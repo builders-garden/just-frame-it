@@ -1,6 +1,5 @@
 "use client";
 
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthKitProvider } from "@farcaster/auth-kit";
 import dynamic from "next/dynamic";
 import { providers } from "ethers";
@@ -14,7 +13,6 @@ const Home = dynamic(() => import("@/components/Home"), {
   ),
 });
 
-const queryClient = new QueryClient();
 const FrameProvider = dynamic(
   () =>
     import("@/components/farcaster-provider").then((mod) => mod.FrameProvider),
@@ -39,12 +37,10 @@ const farcasterConfig = {
 
 export default function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <FrameProvider>
-        <AuthKitProvider config={farcasterConfig}>
-          <Home />
-        </AuthKitProvider>
-      </FrameProvider>
-    </QueryClientProvider>
+    <FrameProvider>
+      <AuthKitProvider config={farcasterConfig}>
+        <Home />
+      </AuthKitProvider>
+    </FrameProvider>
   );
 }

@@ -31,7 +31,6 @@ export default function ApplyButton({
 
   const handleSuccess = useCallback(async (res: StatusAPIResponse) => {
     setIsSigningIn(true);
-    console.log("fc ky res", res);
     if (!res.message || !res.signature || !res.nonce) {
       console.error("Missing message, signature or nonce");
       return;
@@ -44,18 +43,12 @@ export default function ApplyButton({
         res.nonce
       );
 
-      console.log("appClient response", verifyResponse);
       const { success, fid, error } = verifyResponse;
       if (!success) {
         console.error("Invalid signature", error, success, fid);
         onError(error);
         return;
       } else {
-        console.log("fc ky data", {
-          fid: fid.toString(),
-          username: res.username,
-          pfpUrl: res.pfpUrl,
-        });
         onSuccess();
       }
     } catch (error) {

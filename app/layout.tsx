@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Red_Hat_Display } from "next/font/google";
 import "./globals.css";
-
+import { Providers } from "@/components/providers";
 const redHatDisplay = Red_Hat_Display({ subsets: ["latin"] });
 
 export const viewport: Viewport = {
@@ -14,6 +14,8 @@ export const viewport: Viewport = {
     { media: "(prefers-color-scheme: dark)", color: "black" },
   ],
 };
+
+
 
 export const metadata: Metadata = {
   title: "Just Frame It",
@@ -28,7 +30,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="size-full min-h-screen" suppressHydrationWarning>
       <body className={`${redHatDisplay.className} bg-white size-full`}>
-        {children}
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

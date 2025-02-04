@@ -7,6 +7,8 @@ CREATE TABLE "Application" (
     "projectDescription" TEXT NOT NULL,
     "whyAttend" TEXT NOT NULL,
     "previousWork" TEXT,
+    "githubUrl" TEXT NOT NULL,
+    "canAttendRome" BOOLEAN NOT NULL DEFAULT false,
     "status" TEXT NOT NULL DEFAULT 'PENDING',
     "teamMember1Fid" INTEGER NOT NULL,
     "teamMember1DisplayName" TEXT NOT NULL,
