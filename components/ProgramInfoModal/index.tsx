@@ -73,13 +73,13 @@ const mentors: MentorInfo[] = [
 ];
 
 const timelineEvents = [
-  { title: "Applications Open", date: "February 17, 2025" },
-  { title: "Applications Close", date: "March 16, 2025" },
-  { title: "Cohort Announced", date: "April 1, 2025" },
-  { title: "Program Start", date: "April 7, 2025" },
-  { title: "NYC Meetup", date: "May 1-4, 2025" },
-  { title: "Rome Residency", date: "May 31 - June 6, 2025" },
-  { title: "Final Demo Day", date: "June 7, 2025" },
+  { title: "Applications Open", date: "February 17th, 2025" },
+  { title: "Applications Close", date: "March 16th, 2025" },
+  { title: "Cohort Announced", date: "March 24th, 2025" },
+  { title: "Program Start", date: "March 31st, 2025" },
+  { title: "NYC Meetup", date: "May 1-4th, 2025" },
+  { title: "Rome Residency", date: "May 31st - June 6th, 2025" },
+  { title: "Final Demo Day", date: "June 7th, 2025" },
 ];
 
 export default function ProgramInfoModal({
