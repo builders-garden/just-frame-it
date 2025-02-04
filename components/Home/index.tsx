@@ -1,11 +1,10 @@
 "use client";
 
-import { useApply } from "@/hooks/use-apply";
 import { useFrame } from "../farcaster-provider";
 import SafeAreaContainer from "../SafeAreaContainer";
 import { Climate_Crisis } from "next/font/google";
 import { useState } from "react";
-import ApplyModal, { ApplyFormData } from "../ApplyModal";
+import ApplyModal from "../ApplyModal";
 import { useSignIn } from "@/hooks/use-sign-in";
 import ProgramInfoModal from "../ProgramInfoModal";
 import Image from "next/image";
@@ -13,15 +12,17 @@ import ApplyButton from "../ApplyButton";
 import SuccessStories from "../SuccessStories";
 import Button from "../Button";
 import Countdown from "../Countdown";
+import { Tooltip } from "../Tooltip";
 
 const climateCrisis = Climate_Crisis({ subsets: ["latin"] });
 
 export default function Home() {
   const { context } = useFrame();
-  const { mutateAsync: apply, isPending } = useApply();
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { signIn, isLoading: isSigningIn } = useSignIn();
   const [isProgramInfoModalOpen, setIsProgramInfoModalOpen] = useState(false);
+  const [showCopiedTooltip, setShowCopiedTooltip] = useState(false);
 
   const handleApplyClick = async () => {
     try {
@@ -36,9 +37,10 @@ export default function Home() {
     }
   };
 
-  const handleApply = async (data: ApplyFormData) => {
-    await apply(data);
-    setIsModalOpen(false);
+  const copyEmailToClipboard = () => {
+    navigator.clipboard.writeText("gm@builders.garden");
+    setShowCopiedTooltip(true);
+    setTimeout(() => setShowCopiedTooltip(false), 2000);
   };
 
   return (
@@ -87,7 +89,7 @@ export default function Home() {
         />
       </div>
 
-      <div className="w-full relative z-10 flex min-h-screen flex-col items-center px-4 pb-24 md:pb-0 justify-evenly">
+      <div className="w-full relative z-10 flex min-h-screen flex-col items-center px-0 pb-24 md:pb-0 justify-evenly">
         <div className="w-full max-w-5xl mx-auto text-center space-y-4 py-8 md:py-24 mt-4 md:mt-8">
           <h1
             className={`mx-4 md:mx-auto text-purple-600 border py-1 md:py-4 border-blue-500 relative max-w-3xl`}
@@ -126,6 +128,7 @@ export default function Home() {
 
         <div className="w-full max-w-5xl mx-auto text-center pb-4 md:pb-16 mt-auto">
           <div className="flex flex-col items-center gap-4">
+            <Countdown />
             <div className="flex flex-row items-center justify-center gap-2 mx-auto">
               <ApplyButton
                 onSuccess={() => {
@@ -145,31 +148,52 @@ export default function Home() {
             <a
               href="https://www.farcaster.xyz/"
               target="_blank"
-              className="text-sm text-purple-400"
+              className="text-xs text-purple-400"
             >
               Not on Farcaster yet? Create an account!
             </a>
-
-            <Countdown />
           </div>
         </div>
 
         <SuccessStories />
 
         <div className="w-full flex justify-center py-4 md:py-8">
-          <a
-            href="https://builders.garden"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              src="/images/builders-garden-logo.png"
-              alt="Builders Garden"
-              width={90}
-              height={18}
-              className="opacity-80 hover:opacity-100 transition-opacity"
-            />
-          </a>
+          <div className="flex flex-col items-center gap-8">
+            <p className="text-sm text-center">
+              Need support? <br />
+              <span>
+                <a
+                  href="https://warpcast.com/limone.eth"
+                  className="font-semibold"
+                  target="_blank"
+                >
+                  limone.eth
+                </a>
+              </span>{" "}
+              or{" "}
+              <Tooltip content="Copied!" open={showCopiedTooltip}>
+                <span
+                  className="font-semibold cursor-pointer hover:text-purple-600 transition-colors"
+                  onClick={copyEmailToClipboard}
+                >
+                  gm@builders.garden
+                </span>
+              </Tooltip>
+            </p>
+            <a
+              href="https://builders.garden"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Image
+                src="/images/builders-garden-logo.png"
+                alt="Builders Garden"
+                width={90}
+                height={18}
+                className="opacity-80 hover:opacity-100 transition-opacity"
+              />
+            </a>
+          </div>
         </div>
       </div>
 
@@ -197,8 +221,6 @@ export default function Home() {
         <ApplyModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
-          onSubmit={handleApplyClick}
-          isLoading={isPending}
         />
       )}
 
