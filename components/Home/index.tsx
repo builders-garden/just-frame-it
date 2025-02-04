@@ -87,7 +87,7 @@ export default function Home() {
         />
       </div>
 
-      <div className="relative z-10 flex min-h-screen flex-col items-center px-4 pb-24 md:pb-0 justify-evenly">
+      <div className="w-full relative z-10 flex min-h-screen flex-col items-center px-4 pb-24 md:pb-0 justify-evenly">
         <div className="w-full max-w-5xl mx-auto text-center space-y-4 py-8 md:py-24 mt-4 md:mt-8">
           <h1
             className={`mx-4 md:mx-auto text-purple-600 border py-1 md:py-4 border-blue-500 relative max-w-3xl`}
@@ -126,7 +126,7 @@ export default function Home() {
 
         <div className="w-full max-w-5xl mx-auto text-center pb-4 md:pb-16 mt-auto">
           <div className="flex flex-col items-center gap-4">
-            <div className="flex flex-row items-center justify-center gap-2">
+            <div className="flex flex-row items-center justify-center gap-2 mx-auto">
               <ApplyButton
                 onSuccess={() => {
                   setIsModalOpen(true);
@@ -139,7 +139,7 @@ export default function Home() {
                 variant="bordered"
                 onClick={() => setIsProgramInfoModalOpen(true)}
               >
-                Learn More
+                <div>Learn More</div>
               </Button>
             </div>
             <a
@@ -156,7 +156,7 @@ export default function Home() {
 
         <SuccessStories />
 
-        <div className="w-full flex justify-center mb-4 md:mb-8">
+        <div className="w-full flex justify-center py-4 md:py-8">
           <a
             href="https://builders.garden"
             target="_blank"

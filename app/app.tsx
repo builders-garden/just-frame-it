@@ -3,6 +3,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthKitProvider } from "@farcaster/auth-kit";
 import dynamic from "next/dynamic";
+import { providers } from "ethers";
 
 const Home = dynamic(() => import("@/components/Home"), {
   ssr: false,
@@ -27,22 +28,23 @@ const FrameProvider = dynamic(
   }
 );
 
-const config = {
+const farcasterConfig = {
+  rpcUrl: `https://optimism-mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_PROJECT_ID}`,
   domain: process.env.NEXT_PUBLIC_URL
     ? new URL(process.env.NEXT_PUBLIC_URL).hostname
     : "frame-it.builders.garden",
   siweUri: process.env.NEXT_PUBLIC_URL || "https://frame-it.builders.garden",
-  relay: "https://relay.farcaster.xyz",
+  provider: new providers.JsonRpcProvider(undefined, 10),
 };
 
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthKitProvider config={config}>
-        <FrameProvider>
+      <FrameProvider>
+        <AuthKitProvider config={farcasterConfig}>
           <Home />
-        </FrameProvider>
-      </AuthKitProvider>
+        </AuthKitProvider>
+      </FrameProvider>
     </QueryClientProvider>
   );
 }
