@@ -29,7 +29,7 @@ export default function ApplicationsPage() {
 
   const handlePasswordSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (password === "sonic") {
+    if (password === process.env.NEXT_PUBLIC_PASSWORD) {
       setIsAuthenticated(true);
     } else {
       alert("Incorrect password");

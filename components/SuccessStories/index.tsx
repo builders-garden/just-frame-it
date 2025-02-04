@@ -199,7 +199,9 @@ export default function SuccessStories() {
                 key={story.name}
                 className="flex-shrink-0 w-[220px] md:w-[280px] bg-white/60 border-2 border-purple-200 rounded-lg p-2.5 md:p-4 hover:border-purple-400 transition-colors duration-200 flex flex-col"
               >
-                <div className="flex items-center gap-2 md:gap-3">
+                <div className="flex items-center gap-2 md:gap-3 cursor-pointer" onClick={() => {
+                  window.open(story.url, "_blank");
+                }}>
                   <Image
                     src={story.logoUrl}
                     alt={`${story.name} logo`}
@@ -278,7 +280,9 @@ export default function SuccessStories() {
                 key={`${story.name}-duplicate`}
                 className="flex-shrink-0 w-[220px] md:w-[280px] bg-white/60 border-2 border-purple-200 rounded-lg p-2.5 md:p-4 hover:border-purple-400 transition-colors duration-200 flex flex-col"
               >
-                <div className="flex items-center gap-2 md:gap-3">
+                <div className="flex items-center gap-2 md:gap-3 cursor-pointer" onClick={() => {
+                  window.open(story.url, "_blank");
+                }}>
                   <Image
                     src={story.logoUrl}
                     alt={`${story.name} logo`}
