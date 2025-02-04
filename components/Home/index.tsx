@@ -4,7 +4,7 @@ import { useApply } from "@/hooks/use-apply";
 import { useFrame } from "../farcaster-provider";
 import SafeAreaContainer from "../SafeAreaContainer";
 import { Climate_Crisis } from "next/font/google";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import ApplyModal, { ApplyFormData } from "../ApplyModal";
 import { useSignIn } from "@/hooks/use-sign-in";
 import ProgramInfoModal from "../ProgramInfoModal";
@@ -12,6 +12,7 @@ import Image from "next/image";
 import ApplyButton from "../ApplyButton";
 import SuccessStories from "../SuccessStories";
 import Button from "../Button";
+import Countdown from "../Countdown";
 
 const climateCrisis = Climate_Crisis({ subsets: ["latin"] });
 
@@ -21,45 +22,6 @@ export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { signIn, isLoading: isSigningIn } = useSignIn();
   const [isProgramInfoModalOpen, setIsProgramInfoModalOpen] = useState(false);
-  const [countdown, setCountdown] = useState({
-    days: 0,
-    hours: 0,
-    minutes: 0,
-    seconds: 0,
-  });
-
-  useEffect(() => {
-    // Set target date to March 16, 2025 23:59:59 Rome time (UTC+1 in winter, UTC+2 in summer)
-    // March is in winter time (CET), so UTC+1
-    const targetDate = new Date("2025-03-16T22:59:59Z"); // 23:59:59 Rome time (UTC+1)
-
-    const updateCountdown = () => {
-      // Convert current time to Rome time
-      const now = new Date();
-      const romeOffset = 60; // Rome timezone offset in minutes (UTC+1)
-      const localOffset = now.getTimezoneOffset();
-      const adjustedNow = new Date(
-        now.getTime() + (localOffset + romeOffset) * 60000
-      );
-
-      const diff = targetDate.getTime() - adjustedNow.getTime();
-
-      if (diff > 0) {
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor(
-          (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-        );
-        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-        setCountdown({ days, hours, minutes, seconds });
-      }
-    };
-
-    updateCountdown();
-    const interval = setInterval(updateCountdown, 1000);
-    return () => clearInterval(interval);
-  }, []);
 
   const handleApplyClick = async () => {
     try {
@@ -183,15 +145,12 @@ export default function Home() {
             <a
               href="https://www.farcaster.xyz/"
               target="_blank"
-              className="text-xs text-purple-400"
+              className="text-sm text-purple-400"
             >
               Not on Farcaster yet? Create an account!
             </a>
 
-            <p className="text-purple-500 mt-2 md:mt-6 text-xs md:text-sm">
-              Applications closing in {countdown.days} days, {countdown.hours}{" "}
-              hours, {countdown.minutes} minutes, {countdown.seconds} seconds
-            </p>
+            <Countdown />
           </div>
         </div>
 

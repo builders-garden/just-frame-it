@@ -107,40 +107,41 @@ export default function ProgramInfoModal({
               className="min-h-screen bg-white"
             >
               <div className="max-w-5xl mx-auto p-4 sm:p-8">
-                <button
-                  onClick={onClose}
-                  className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 transition-colors"
-                  aria-label="Close modal"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
+                <div className="flex flex-row items-center justify-between mb-6">
+                  <div className="flex flex-row items-center gap-2">
+                    <p className="text-2xl sm:text-3xl font-bold text-purple-600">
+                      About
+                    </p>
+                    <p
+                      className={`${climateCrisis.className} text-2xl sm:text-3xl font-bold text-purple-600`}
+                    >
+                      Just Frame It
+                    </p>
+                  </div>
+                  <button
+                    onClick={onClose}
+                    className=" text-gray-500 hover:text-gray-700 transition-colors"
+                    aria-label="Close modal"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </button>
-
-                <div className="flex flex-row items-center gap-2 mb-6">
-                  <p className="text-xl sm:text-2xl font-bold text-purple-600">
-                    About
-                  </p>
-                  <p
-                    className={`${climateCrisis.className} text-xl sm:text-2xl font-bold text-purple-600`}
-                  >
-                    Just Frame It
-                  </p>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-6 w-6"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
                 </div>
 
                 <div className="space-y-6 text-gray-700">
-                  <p className="text-sm sm:text-base leading-relaxed">
+                  <p className="text-lg leading-relaxed">
                     <span className="text-purple-500 font-semibold">
                       Just Frame It
                     </span>{" "}
@@ -166,7 +167,7 @@ export default function ProgramInfoModal({
                     <h3 className="font-bold text-lg text-purple-600">
                       Program Structure:
                     </h3>
-                    <ul className="list-disc pl-5 space-y-2 text-sm sm:text-base">
+                    <ul className="list-disc pl-5 space-y-2 text-lg">
                       <li>6 teams with up to 3 builders each</li>
                       <li>
                         Online collaboration & mentorship with experienced
@@ -253,7 +254,7 @@ export default function ProgramInfoModal({
                     <h3 className="font-bold text-lg text-purple-600">
                       Program Mentors:
                     </h3>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                       {mentors.map((mentor) => (
                         <div
                           key={mentor.username}
@@ -266,19 +267,19 @@ export default function ProgramInfoModal({
                                 alt={mentor.displayName}
                                 className="w-12 h-12 rounded-full object-cover"
                                 width={48}
-                              height={48}
-                            />
-                            <div>
-                              <h4 className="font-semibold text-purple-600">
-                                {mentor.displayName}
-                              </h4>
-                              <p className="text-sm text-gray-500">
-                                @{mentor.username}
-                              </p>
+                                height={48}
+                              />
+                              <div>
+                                <h4 className="font-semibold text-purple-600">
+                                  {mentor.displayName}
+                                </h4>
+                                <p className="text-xs text-gray-500">
+                                  @{mentor.username}
+                                </p>
+                              </div>
                             </div>
-                          </div>
-                          <p className="text-xs text-gray-600 mb-2">
-                            {mentor.bio}
+                            <p className="text-xs text-gray-600 mb-2">
+                              {mentor.bio}
                             </p>
                           </div>
                           <a
