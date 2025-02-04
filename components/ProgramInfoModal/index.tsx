@@ -141,27 +141,39 @@ export default function ProgramInfoModal({
                 </div>
 
                 <div className="space-y-6 text-gray-700">
-                  <p className="text-lg leading-relaxed">
-                    <span className="text-purple-500 font-semibold">
-                      Just Frame It
-                    </span>{" "}
-                    is a two-month builder program designed to empower
-                    developers, product creators, and founders to build{" "}
-                    <span className="text-purple-500 font-semibold">
+                  <div className="space-y-2">
+                    <p className="text-lg leading-relaxed">
+                      <span className="text-purple-500 font-semibold">
+                        Just Frame It
+                      </span>{" "}
+                      is a two-month builder program designed to empower
+                      developers, product creators, and founders to build{" "}
+                      <span className="text-purple-500 font-semibold">
+                        <a
+                          href="https://docs.farcaster.xyz/developers/frames/v2/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Frames
+                        </a>
+                      </span>{" "}
+                      on Farcaster. Frames are a way to build interactive apps
+                      that run directly in a Farcaster social feed. By
+                      leveraging Warpcast&apos;s engaged user base, Frames offer
+                      a simplified distribution model and significantly reduced
+                      development costs.
+                    </p>
+                    <p className="text-xs text-purple-500">
                       <a
                         href="https://docs.farcaster.xyz/developers/frames/v2/"
                         target="_blank"
                         rel="noopener noreferrer"
+                        className="hover:underline"
                       >
-                        Frames
+                        What is a Frame →
                       </a>
-                    </span>{" "}
-                    on Farcaster. Frames are a way to build interactive apps
-                    that run directly in a Farcaster social feed. By leveraging
-                    Warpcast&apos;s engaged user base, Frames offer a simplified
-                    distribution model and significantly reduced development
-                    costs.
-                  </p>
+                    </p>
+                  </div>
 
                   <div className="space-y-3">
                     <h3 className="font-bold text-lg text-purple-600">
