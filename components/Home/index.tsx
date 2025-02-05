@@ -15,7 +15,7 @@ import Countdown from "../Countdown";
 import { Tooltip } from "../Tooltip";
 import { trackEvent } from "@/lib/posthog/client";
 import sdk from "@farcaster/frame-sdk";
-import { Check, Hourglass } from "lucide-react";
+import { Check, CheckCircle, CircleCheck, Hourglass } from "lucide-react";
 
 const climateCrisis = Climate_Crisis({ subsets: ["latin"] });
 
@@ -38,7 +38,7 @@ export default function Home() {
       try {
         trackEvent("apply_button_clicked", {
           fid: context?.user?.fid,
-          context: "frame"
+          context: "frame",
         });
         await sdk.actions.addFrame();
       } catch (error) {
@@ -49,7 +49,7 @@ export default function Home() {
     } else {
       trackEvent("apply_button_clicked", {
         fid: context?.user?.fid,
-        context: "web"
+        context: "web",
       });
       window.open(
         "https://warpcast.com/?launchFrameDomain=frame-it.builders.garden",
@@ -296,7 +296,17 @@ export default function Home() {
                   }
                 }}
               >
-                {context?.client.added ? "Frame Saved" : "Save Frame"}
+                {context?.client.added ? (
+                  <div className="flex flex-row items-center justify-center gap-2 border-none">
+                    <CircleCheck
+                      className="inline"
+                      size={24}
+                    />
+                    Frame Already Saved{" "}
+                  </div>
+                ) : (
+                  "Save Frame"
+                )}
               </Button>
               <Button
                 className="w-full"
