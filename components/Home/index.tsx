@@ -188,7 +188,7 @@ export default function Home() {
         <div className="w-full flex justify-center py-4 md:py-8">
           <div className="flex flex-col items-center gap-8">
             <p className="text-sm text-center">
-              Need support? <br />
+              Any questions? <br />
               <span>
                 <a
                   href="https://warpcast.com/limone.eth"
