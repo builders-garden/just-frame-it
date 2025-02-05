@@ -280,7 +280,7 @@ export default function Home() {
             </h3>
             <p className="text-gray-500 mb-6">
               Thank you for your interest! Applications are not open yet. Save
-              the Frame, and you&apos;ll be the first to know when they are.
+              the Frame, and you&apos;ll be the first to know when they open.
             </p>
             <div className="flex flex-col gap-2 justify-center items-center">
               <Button
@@ -298,10 +298,7 @@ export default function Home() {
               >
                 {context?.client.added ? (
                   <div className="flex flex-row items-center justify-center gap-2 border-none">
-                    <CircleCheck
-                      className="inline"
-                      size={24}
-                    />
+                    <CircleCheck className="inline" size={24} />
                     Frame Already Saved{" "}
                   </div>
                 ) : (
