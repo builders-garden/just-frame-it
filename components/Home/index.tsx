@@ -21,6 +21,7 @@ const climateCrisis = Climate_Crisis({ subsets: ["latin"] });
 
 export default function Home() {
   const { context } = useFrame();
+  const [isFrameAdded, setIsFrameAdded] = useState(context?.client.added);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { signIn, isLoading: isSigningIn } = useSignIn({
@@ -40,7 +41,10 @@ export default function Home() {
           fid: context?.user?.fid,
           context: "frame",
         });
-        await sdk.actions.addFrame();
+        const details = await sdk.actions.addFrame();
+        if (details.notificationDetails?.token) {
+          setIsFrameAdded(true);
+        }
       } catch (error) {
         console.error("Failed to save frame", error);
       } finally {
@@ -296,7 +300,7 @@ export default function Home() {
                   }
                 }}
               >
-                {context?.client.added ? (
+                {context?.client.added || isFrameAdded ? (
                   <div className="flex flex-row items-center justify-center gap-2 border-none">
                     <CircleCheck className="inline" size={24} />
                     Frame Already Saved{" "}
