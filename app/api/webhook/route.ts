@@ -1,12 +1,9 @@
-import { fetchUser } from "@/lib/neynar";
 import { sendFrameNotification } from "@/lib/notifs";
 import { trackEvent } from "@/lib/posthog/server";
 import {
   deleteUserNotificationDetails,
-  getUserNotificationDetails,
   setUserNotificationDetails,
 } from "@/lib/prisma/queries";
-
 import {
   ParseWebhookEvent,
   parseWebhookEvent,
@@ -16,7 +13,6 @@ import { NextRequest } from "next/server";
 
 export async function POST(request: NextRequest) {
   const requestJson = await request.json();
-
   let data;
   try {
     data = await parseWebhookEvent(requestJson, verifyAppKeyWithNeynar);
