@@ -191,17 +191,20 @@ export default function SuccessStories() {
       >
         Build the next...
       </h2>
-      <div className="relative mx-auto max-w-[100vw] overflow-hidden">
-        <div className="flex overflow-x-hidden overflow-y-hidden">
+      <div className="relative mx-auto max-w-[100vw]">
+        <div className="flex overflow-x-hidden">
           <div className="animate-scroll flex gap-3 md:gap-4 pl-4 md:pl-[max(2rem,calc((100vw-1200px)/2))] pr-4 md:pr-[max(2rem,calc((100vw-1200px)/2))]">
             {successStories.map((story) => (
               <div
                 key={story.name}
                 className="flex-shrink-0 w-[220px] md:w-[280px] bg-white/60 border-2 border-purple-200 rounded-lg p-2.5 md:p-4 hover:border-purple-400 transition-colors duration-200 flex flex-col"
               >
-                <div className="flex items-center gap-2 md:gap-3 cursor-pointer" onClick={() => {
-                  window.open(story.url, "_blank");
-                }}>
+                <div
+                  className="flex items-center gap-2 md:gap-3 cursor-pointer"
+                  onClick={() => {
+                    window.open(story.url, "_blank");
+                  }}
+                >
                   <Image
                     src={story.logoUrl}
                     alt={`${story.name} logo`}
@@ -254,7 +257,7 @@ export default function SuccessStories() {
                               className="rounded-full ring-2 ring-white w-full h-full object-cover"
                             />
                           </a>
-                          <div className="absolute left-1/2 -translate-x-1/2 -bottom-1 translate-y-full pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-10 whitespace-nowrap">
+                          <div className="absolute left-1/2 -translate-x-1/2 -bottom-1 translate-y-full pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-50 whitespace-nowrap">
                             <div className="bg-gray-900 text-white text-[10px] rounded px-2 py-1 animate-fadeIn">
                               @{founder.username}
                             </div>
@@ -280,9 +283,12 @@ export default function SuccessStories() {
                 key={`${story.name}-duplicate`}
                 className="flex-shrink-0 w-[220px] md:w-[280px] bg-white/60 border-2 border-purple-200 rounded-lg p-2.5 md:p-4 hover:border-purple-400 transition-colors duration-200 flex flex-col"
               >
-                <div className="flex items-center gap-2 md:gap-3 cursor-pointer" onClick={() => {
-                  window.open(story.url, "_blank");
-                }}>
+                <div
+                  className="flex items-center gap-2 md:gap-3 cursor-pointer"
+                  onClick={() => {
+                    window.open(story.url, "_blank");
+                  }}
+                >
                   <Image
                     src={story.logoUrl}
                     alt={`${story.name} logo`}
@@ -335,7 +341,7 @@ export default function SuccessStories() {
                               className="rounded-full ring-2 ring-white w-full h-full object-cover"
                             />
                           </a>
-                          <div className="absolute left-1/2 -translate-x-1/2 -bottom-1 translate-y-full pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-10 whitespace-nowrap">
+                          <div className="absolute left-1/2 -translate-x-1/2 -bottom-1 translate-y-full pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-50 whitespace-nowrap">
                             <div className="bg-gray-900 text-white text-[10px] rounded px-2 py-1 animate-fadeIn">
                               @{founder.username}
                             </div>

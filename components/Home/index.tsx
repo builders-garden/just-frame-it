@@ -168,7 +168,14 @@ export default function Home() {
               <Button onClick={handleApplyClick}>Apply</Button>
               <Button
                 variant="bordered"
-                onClick={() => setIsProgramInfoModalOpen(true)}
+                onClick={() => {
+                  posthog.identify(context?.user?.fid?.toString());
+                  trackEvent("learn_more_button_clicked", {
+                    fid: context?.user?.fid,
+                    context: context?.user?.fid ? "frame" : "web",
+                  });
+                  setIsProgramInfoModalOpen(true);
+                }}
               >
                 Learn More
               </Button>
