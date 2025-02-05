@@ -15,6 +15,7 @@ import Countdown from "../Countdown";
 import { Tooltip } from "../Tooltip";
 import { trackEvent } from "@/lib/posthog/client";
 import sdk from "@farcaster/frame-sdk";
+import { Check, Hourglass } from "lucide-react";
 
 const climateCrisis = Climate_Crisis({ subsets: ["latin"] });
 
@@ -34,10 +35,16 @@ export default function Home() {
   const handleApplyClick = async () => {
     if (context?.user?.fid) {
       setShowOverlay(true);
-      await sdk.actions.addFrame();
-      trackEvent("apply_button_clicked", {
-        fid: context?.user?.fid,
-      });
+      try {
+        trackEvent("apply_button_clicked", {
+          fid: context?.user?.fid,
+        });
+        await sdk.actions.addFrame();
+      } catch (error) {
+        console.error("Failed to save frame", error);
+      } finally {
+        setShowOverlay(true);
+      }
     } else {
       window.open(
         "https://warpcast.com/?launchFrameDomain=frame-it.builders.garden",
@@ -247,30 +254,38 @@ export default function Home() {
         <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-95 z-50">
           <div className="text-center p-6 rounded-lg">
             <div className="mb-4 text-purple-500">
-              <svg
-                className="w-16 h-16 mx-auto"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
+              <Hourglass className="w-16 h-16 mx-auto" strokeWidth={2} />
             </div>
             <h3 className="text-xl font-medium text-gray-900 mb-2">
               Applications Coming Soon!
             </h3>
             <p className="text-gray-500 mb-6">
-              Thank you for your interest! Applications are not open yet, but by
-              saving the Frame, you&apos;ll be the first to know when they are.
+              Thank you for your interest! Applications are not open yet. Save
+              the Frame, and you&apos;ll be the first to know when they are.
             </p>
-            <Button onClick={() => setShowOverlay(false)} variant="bordered">
-              Close
-            </Button>
+            <div className="flex flex-col gap-2 justify-center items-center">
+              <Button
+                className="w-full"
+                onClick={async () => {
+                  try {
+                    await sdk.actions.addFrame();
+                  } catch (error) {
+                    console.error("Failed to save frame", error);
+                  } finally {
+                    setShowOverlay(false);
+                  }
+                }}
+              >
+                Save Frame
+              </Button>
+              <Button
+                className="w-full"
+                onClick={() => setShowOverlay(false)}
+                variant="bordered"
+              >
+                Close
+              </Button>
+            </div>
           </div>
         </div>
       )}

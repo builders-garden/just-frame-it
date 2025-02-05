@@ -4,12 +4,14 @@ export default function Button({
   disabled,
   isLoading,
   variant = "filled",
+  className,
 }: {
   children: React.ReactNode;
   onClick: () => void;
   disabled?: boolean;
   isLoading?: boolean;
   variant?: "filled" | "bordered";
+  className?: string;
 }) {
   return (
     <button
@@ -34,6 +36,7 @@ export default function Button({
         before:absolute before:content-[''] before:top-0 before:left-[-100%] before:w-[120%] before:h-full
         before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent
         before:animate-shine before:skew-x-[-25deg]
+        ${className}
       `}
     >
       {isLoading ? (

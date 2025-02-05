@@ -9,9 +9,9 @@
     "name": "Just Frame It",
     "iconUrl": "https://frame-it.builders.garden/icon.png",
     "homeUrl": "https://frame-it.builders.garden",
-    "imageUrl": "https://frame-it.builders.garden/image.png",
+    "imageUrl": "https://frame-it.builders.garden/images/feed.png",
     "buttonTitle": "Apply Now",
-    "splashImageUrl": "https://frame-it.builders.garden/splash.png",
+    "splashImageUrl": "https://frame-it.builders.garden/images/splash.png",
     "splashBackgroundColor": "#ffffff",
     "webhookUrl": "https://frame-it.builders.garden/api/webhook"
   }
