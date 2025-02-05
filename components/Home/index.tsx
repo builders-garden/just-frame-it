@@ -199,19 +199,33 @@ export default function Home() {
                 </span>
               </Tooltip>
             </p>
-            <a
-              href="https://builders.garden"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Image
-                src="/images/builders-garden-logo.png"
-                alt="Builders Garden"
-                width={90}
-                height={18}
-                className="opacity-80 hover:opacity-100 transition-opacity"
-              />
-            </a>
+            <div className="flex flex-row gap-2 justify-center items-center">
+              <a
+                href="https://builders.garden"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Image
+                  src="/images/builders-garden-logo.png"
+                  alt="Builders Garden"
+                  width={90}
+                  height={18}
+                  className="opacity-80 hover:opacity-100 transition-opacity"
+                />
+              </a>
+              <a
+                href="https://urbe.build"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Image
+                  src="/images/urbe-color.png"
+                  alt="Urbe"
+                  width={90}
+                  height={18}
+                />
+              </a>
+            </div>
           </div>
         </div>
       </div>
