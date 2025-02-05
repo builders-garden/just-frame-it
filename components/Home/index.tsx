@@ -38,6 +38,7 @@ export default function Home() {
       try {
         trackEvent("apply_button_clicked", {
           fid: context?.user?.fid,
+          context: "frame"
         });
         await sdk.actions.addFrame();
       } catch (error) {
@@ -46,6 +47,10 @@ export default function Home() {
         setShowOverlay(true);
       }
     } else {
+      trackEvent("apply_button_clicked", {
+        fid: context?.user?.fid,
+        context: "web"
+      });
       window.open(
         "https://warpcast.com/?launchFrameDomain=frame-it.builders.garden",
         "_blank"
