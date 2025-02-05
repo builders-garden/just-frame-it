@@ -280,6 +280,7 @@ export default function Home() {
             <div className="flex flex-col gap-2 justify-center items-center">
               <Button
                 className="w-full"
+                disabled={context?.client.added}
                 onClick={async () => {
                   try {
                     await sdk.actions.addFrame();
@@ -290,7 +291,7 @@ export default function Home() {
                   }
                 }}
               >
-                Save Frame
+                {context?.client.added ? "Frame Saved" : "Save Frame"}
               </Button>
               <Button
                 className="w-full"
