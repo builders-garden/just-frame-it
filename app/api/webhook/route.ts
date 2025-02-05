@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
         await setUserNotificationDetails(fid, event.notificationDetails!);
         await sendFrameNotification({
           fid,
-          title: "Thanks for pre-joining Just Frame It!",
+          title: "Thanks for your interest!",
           body: "We'll be in touch soon to let you know when applications open.",
         });
         trackEvent(fid, "frame_added", {
