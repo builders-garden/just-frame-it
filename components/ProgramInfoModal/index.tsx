@@ -73,13 +73,18 @@ const mentors: MentorInfo[] = [
 ];
 
 const timelineEvents = [
-  { title: "Applications Open", date: "February 17th, 2025" },
-  { title: "Applications Close", date: "March 16th, 2025" },
-  { title: "Cohort Announced", date: "March 24th, 2025" },
-  { title: "Program Start", date: "March 31st, 2025" },
-  { title: "NYC Meetup", date: "May 1-4th, 2025" },
-  { title: "Rome Residency", date: "May 31st - June 6th, 2025" },
-  { title: "Final Demo Day", date: "June 7th, 2025" },
+  // { title: "Applications Open", date: "February 17th, 2025" },
+  // { title: "Applications Close", date: "March 16th, 2025" },
+  // { title: "Cohort Announced", date: "March 24th, 2025" },
+  // { title: "Program Start", date: "March 31st, 2025" },
+  // { title: "NYC Meetup", date: "May 1-4th, 2025" },
+  // { title: "Rome Build Residency", date: "May 31st - June 6th, 2025" },
+  // { title: "Final Demo Day", date: "June 7th, 2025" },
+  { title: "Applications Open", date: "February" },
+  { title: "Cohort Announced", date: "March" },
+  { title: "Program Start", date: "April" },
+  { title: "NYC Meetup (Farcon)", date: "May" },
+  { title: "Rome Build Residency", date: "June (1-week)" },
 ];
 
 export default function ProgramInfoModal({
@@ -233,7 +238,7 @@ export default function ProgramInfoModal({
                       <div className="absolute left-0 right-0 top-1/2 h-0.5 bg-purple-200"></div>
 
                       {/* Timeline events */}
-                      <div className="grid grid-cols-7">
+                      <div className="grid grid-cols-5">
                         {timelineEvents.map((event, index) => (
                           <div key={event.title} className="relative">
                             {/* Circle marker */}
