@@ -8,14 +8,13 @@ import ApplyModal from "../ApplyModal";
 import { useSignIn } from "@/hooks/use-sign-in";
 import ProgramInfoModal from "../ProgramInfoModal";
 import Image from "next/image";
-import ApplyButton from "../ApplyButton";
 import SuccessStories from "../SuccessStories";
 import Button from "../Button";
-import Countdown from "../Countdown";
 import { Tooltip } from "../Tooltip";
 import { trackEvent } from "@/lib/posthog/client";
 import sdk from "@farcaster/frame-sdk";
-import { Check, CheckCircle, CircleCheck, Hourglass } from "lucide-react";
+import { CircleCheck, Hourglass } from "lucide-react";
+import posthog from "posthog-js";
 
 const climateCrisis = Climate_Crisis({ subsets: ["latin"] });
 
@@ -35,6 +34,7 @@ export default function Home() {
 
   const handleApplyClick = async () => {
     if (context?.user?.fid) {
+      posthog.identify(context?.user?.fid?.toString());
       setShowOverlay(true);
       try {
         trackEvent("apply_button_clicked", {
