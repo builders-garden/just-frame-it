@@ -49,7 +49,7 @@ export async function getApplications({
         OR: [
           { teamMember1Username: { contains: username } },
           { teamMember2Username: { contains: username } },
-          { teamMember3Username: { contains: username} },
+          { teamMember3Username: { contains: username } },
         ],
       }
     : {};
@@ -71,4 +71,45 @@ export async function getApplications({
     total,
     pages: Math.ceil(total / limit),
   };
+}
+
+export async function getUserNotificationDetails(fid: number) {
+  return prisma.notificationDetails.findUnique({
+    where: {
+      fid,
+    },
+  });
+}
+
+export async function setUserNotificationDetails(
+  fid: number,
+  details: { url: string; token: string }
+) {
+  return prisma.notificationDetails.upsert({
+    where: {
+      fid,
+    },
+    create: {
+      fid,
+      url: details.url,
+      token: details.token,
+    },
+    update: {
+      url: details.url,
+      token: details.token,
+    },
+  });
+}
+
+export async function deleteUserNotificationDetails(fid: number) {
+  return prisma.notificationDetails
+    .delete({
+      where: {
+        fid,
+      },
+    })
+    .catch(() => {
+      // Ignore error if record doesn't exist
+      return null;
+    });
 }
