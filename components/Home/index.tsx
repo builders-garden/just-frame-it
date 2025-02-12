@@ -115,8 +115,8 @@ export default function Home() {
         />
       </div>
 
-      <div className="w-full relative z-10 flex min-h-screen flex-col items-center px-0 pb-24 md:pb-0 justify-evenly">
-        <div className="w-full max-w-5xl mx-auto text-center space-y-4 py-8 md:py-24 mt-4 md:mt-8">
+      <div className="w-full relative z-10 flex flex-col items-center px-0 md:pb-0 justify-between gap-8 md:gap-0">
+        <div className="w-full max-w-5xl mx-auto text-center space-y-4 py-8 md:pb-16 mt-4 md:mt-8">
           <h1
             className={`mx-4 md:mx-auto text-purple-600 border py-1 md:py-4 border-blue-500 relative max-w-3xl`}
           >

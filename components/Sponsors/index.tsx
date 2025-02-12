@@ -15,7 +15,7 @@ export default function Sponsors() {
             alt="Sponsor 1"
             width={80}
             height={26}
-            className="object-contain"
+            className="object-contain w-[80px] md:w-[120px] h-auto"
           />
         </a>
         <a
@@ -29,7 +29,7 @@ export default function Sponsors() {
             alt="Sponsor 3"
             width={100}
             height={32}
-            className="object-contain"
+            className="object-contain w-[100px] md:w-[150px] h-auto"
           />
         </a>
         <a
@@ -43,7 +43,7 @@ export default function Sponsors() {
             alt="Sponsor 2"
             width={32}
             height={10}
-            className="object-contain rounded-lg"
+            className="object-contain rounded-lg w-[32px] md:w-[48px] h-auto"
           />
         </a>
       </div>
