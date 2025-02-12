@@ -15,6 +15,7 @@ import { trackEvent } from "@/lib/posthog/client";
 import sdk from "@farcaster/frame-sdk";
 import { CircleCheck, Hourglass } from "lucide-react";
 import posthog from "posthog-js";
+import Sponsors from "../Sponsors";
 
 const climateCrisis = Climate_Crisis({ subsets: ["latin"] });
 
@@ -135,7 +136,7 @@ export default function Home() {
             </div>
           </h1>
 
-          <div className="flex flex-row gap-2 justify-center items-center text-purple-500 text-center text-sm md:text-xl font-semibold">
+          <div className="flex flex-row gap-2 justify-center items-center text-black text-center text-sm md:text-xl font-semibold">
             {/* <p>APR 7TH - JUNE 7TH</p> */}
             <p>APR - MAY - JUNE</p>
             <p className="w-1 h-1 bg-purple-500 rounded-full"></p>
@@ -183,18 +184,20 @@ export default function Home() {
             <a
               href="https://www.farcaster.xyz/"
               target="_blank"
-              className="text-xs text-purple-400"
+              className="text-xs text-purple-400 underline"
             >
               Not on Farcaster yet? Create an account!
             </a>
           </div>
         </div>
 
+        <Sponsors />
+
         <SuccessStories />
 
-        <div className="w-full flex justify-center py-4 md:py-8">
+        <div className="w-full flex justify-center py-4 md:py-8 text-gray-400">
           <div className="flex flex-col items-center gap-8">
-            <p className="text-sm text-center">
+            <p className="text-sm text-center ">
               Any questions? <br />
               <span>
                 <a
@@ -215,14 +218,14 @@ export default function Home() {
                 </span>
               </Tooltip>
             </p>
-            <div className="flex flex-row gap-2 justify-center items-center">
+            <div className="flex flex-row gap-8 justify-center items-center">
               <a
                 href="https://builders.garden"
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 <Image
-                  src="/images/builders-garden-logo.png"
+                  src="/images/builders-garden-logo.svg"
                   alt="Builders Garden"
                   width={90}
                   height={18}
@@ -235,7 +238,7 @@ export default function Home() {
                 rel="noopener noreferrer"
               >
                 <Image
-                  src="/images/urbe-color.png"
+                  src="/images/urbe-logo.svg"
                   alt="Urbe"
                   width={90}
                   height={18}
