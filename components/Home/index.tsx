@@ -139,7 +139,7 @@ export default function Home() {
           <div className="flex flex-row gap-2 justify-center items-center text-black text-center text-sm md:text-xl font-semibold">
             {/* <p>APR 7TH - JUNE 7TH</p> */}
             <p>APR - MAY - JUNE</p>
-            <p className="w-1 h-1 bg-purple-500 rounded-full"></p>
+            <p className="w-1 h-1 bg-black rounded-full"></p>
             <p>ONLINE - NYC - ROME</p>
           </div>
 
