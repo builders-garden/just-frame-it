@@ -206,7 +206,7 @@ export default function ProgramInfoModal({
                         </span>{" "}
                         (optional to attend)
                       </li>
-                      <li>Build residency in Rome for top 3 teams</li>
+                      <li>Build residency in Rome for top 3 teams (expenses covered)</li>
                     </ul>
                   </div>
 
