@@ -59,6 +59,7 @@ export default function ApplyModal({ isOpen, onClose }: ApplyModalProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   const { data: searchResults, isLoading: isSearching } =
     useSearchUsers(searchQuery);
@@ -117,7 +118,7 @@ export default function ApplyModal({ isOpen, onClose }: ApplyModalProps) {
       await apply(data, {
         onSuccess: () => {
           setShowSuccess(true);
-          // Close modal after showing success message for 2 seconds
+          // Close modal after showing success message for 5 seconds
           setTimeout(() => {
             setShowSuccess(false);
             onClose();
@@ -157,6 +158,21 @@ export default function ApplyModal({ isOpen, onClose }: ApplyModalProps) {
     window.addEventListener("keydown", handleEsc);
     return () => window.removeEventListener("keydown", handleEsc);
   }, [onClose]);
+
+  useEffect(() => {
+    if (showSuccess) {
+      // Start progress at 0 when success message shows
+      setProgress(0);
+
+      // Update progress every 50ms
+      const interval = setInterval(() => {
+        setProgress((prev) => Math.min(prev + 1, 100));
+      }, 50);
+
+      // Clear interval when component unmounts or success message is hidden
+      return () => clearInterval(interval);
+    }
+  }, [showSuccess]);
 
   return (
     <AnimatePresence>
@@ -544,10 +560,16 @@ export default function ApplyModal({ isOpen, onClose }: ApplyModalProps) {
                       <h3 className="text-xl font-medium text-gray-900 mb-2">
                         Application Submitted!
                       </h3>
-                      <p className="text-gray-500">
+                      <p className="text-gray-500 mb-4">
                         Thank you for applying. We&apos;ll review your
                         application soon.
                       </p>
+                      <div className="w-full bg-gray-200 h-1 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-green-500 transition-all duration-50 ease-linear"
+                          style={{ width: `${progress}%` }}
+                        />
+                      </div>
                     </div>
                   </div>
                 )}
