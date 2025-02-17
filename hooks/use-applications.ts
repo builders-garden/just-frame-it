@@ -23,6 +23,7 @@ interface Application {
 interface ApplicationsResponse {
   applications: Application[];
   total: number;
+  totalCount: number;
   pages: number;
 }
 

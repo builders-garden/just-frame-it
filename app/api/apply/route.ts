@@ -1,5 +1,6 @@
 import { NextResponse, NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { trackEvent } from "@/lib/posthog/server";
 
 export async function POST(req: NextRequest) {
   try {
@@ -100,6 +101,12 @@ export async function POST(req: NextRequest) {
           teamMember3AvatarUrl: teamMembers[1].avatarUrl || null,
         }),
       },
+    });
+
+    trackEvent(fid, "application_submitted", {
+      fid,
+      projectName,
+      canAttendRome,
     });
 
     return NextResponse.json({

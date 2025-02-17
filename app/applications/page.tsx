@@ -71,7 +71,20 @@ export default function ApplicationsPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-6">Applications</h1>
+      <div className="flex flex-row items-center mb-6 gap-4">
+        <h1 className="text-2xl font-bold">Applications</h1>
+        {data && (
+          <div className="text-sm text-gray-600">
+            {data.total === data.totalCount ? (
+              <span>{data.totalCount} total applications</span>
+            ) : (
+              <span>
+                {data.total} filtered / {data.totalCount} total applications
+              </span>
+            )}
+          </div>
+        )}
+      </div>
 
       <div className="mb-6">
         <input
@@ -101,6 +114,31 @@ export default function ApplicationsPage() {
           {error instanceof Error
             ? error.message
             : "An error occurred while loading applications"}
+        </div>
+      ) : data?.applications.length === 0 ? (
+        <div className="text-center py-12 border rounded-lg bg-white">
+          <svg
+            className="mx-auto h-12 w-12 text-gray-400"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            aria-hidden="true"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V7a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+            />
+          </svg>
+          <h3 className="mt-2 text-sm font-medium text-gray-900">
+            No applications found
+          </h3>
+          <p className="mt-1 text-sm text-gray-500">
+            {username
+              ? "Try adjusting your search criteria"
+              : "No applications have been submitted yet"}
+          </p>
         </div>
       ) : (
         <>
@@ -207,7 +245,10 @@ export default function ApplicationsPage() {
                 Previous
               </button>
               <span className="px-4 py-2 text-sm md:text-base">
-                Page {page} of {data.pages}
+                Page {page} of {data.pages} ({data.total} filtered
+                {data.total !== data.totalCount &&
+                  ` out of ${data.totalCount} total`}
+                )
               </span>
               <button
                 onClick={() => setPage((p) => Math.min(data.pages, p + 1))}

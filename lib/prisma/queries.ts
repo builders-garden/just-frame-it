@@ -54,7 +54,7 @@ export async function getApplications({
       }
     : {};
 
-  const [applications, total] = await Promise.all([
+  const [applications, total, totalCount] = await Promise.all([
     prisma.application.findMany({
       where,
       skip,
@@ -64,11 +64,13 @@ export async function getApplications({
       },
     }),
     prisma.application.count({ where }),
+    prisma.application.count(),
   ]);
 
   return {
     applications,
     total,
+    totalCount,
     pages: Math.ceil(total / limit),
   };
 }
