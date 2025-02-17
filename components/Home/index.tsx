@@ -16,6 +16,7 @@ import sdk from "@farcaster/frame-sdk";
 import { CircleCheck, Hourglass } from "lucide-react";
 import posthog from "posthog-js";
 import Sponsors from "../Sponsors";
+import ApplyButton from "../ApplyButton";
 
 const climateCrisis = Climate_Crisis({ subsets: ["latin"] });
 
@@ -137,8 +138,7 @@ export default function Home() {
           </h1>
 
           <div className="flex flex-row gap-2 justify-center items-center text-black text-center text-sm md:text-xl font-semibold">
-            {/* <p>APR 7TH - JUNE 7TH</p> */}
-            <p>APR - MAY - JUNE</p>
+            <p>MAR 31ST - JUNE 22ND</p>
             <p className="w-1 h-1 bg-black rounded-full"></p>
             <p>ONLINE - NYC - ROME</p>
           </div>
@@ -157,7 +157,7 @@ export default function Home() {
           <div className="flex flex-col items-center gap-4">
             {/* <Countdown /> */}
             <div className="flex flex-row items-center justify-center gap-2 mx-auto">
-              {/* <ApplyButton
+              <ApplyButton
                 onSuccess={() => {
                   console.log("onSuccess");
                   setIsModalOpen(true);
@@ -165,8 +165,8 @@ export default function Home() {
                 onError={(error) => {
                   console.error("Failed to sign in", error);
                 }}
-              /> */}
-              <Button onClick={handleApplyClick}>Apply</Button>
+              />
+              {/* <Button onClick={handleApplyClick}>Apply</Button> */}
               <Button
                 variant="bordered"
                 onClick={() => {

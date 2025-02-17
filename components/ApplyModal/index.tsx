@@ -465,8 +465,7 @@ export default function ApplyModal({ isOpen, onClose }: ApplyModalProps) {
                         htmlFor="canAttendRome"
                         className="text-sm font-medium text-gray-700"
                       >
-                        I can attend the Rome residency (May 31st - June 6th,
-                        2025)
+                        I can attend the Rome residency (June 14th - 22nd, 2025)
                       </label>
                       <p className="text-xs text-gray-500">
                         Top 3 teams will be invited to a week-long build

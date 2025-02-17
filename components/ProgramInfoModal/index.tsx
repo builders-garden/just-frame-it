@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { Climate_Crisis } from "next/font/google";
 import Image from "next/image";
+import { title } from "process";
 
 const climateCrisis = Climate_Crisis({ subsets: ["latin"] });
 
@@ -38,6 +39,13 @@ const mentors: MentorInfo[] = [
     bio: "Farcaster, Warpcast, Yoink",
   },
   {
+    displayName: "ted (not lasso)",
+    username: "ted",
+    avatarUrl:
+      "https://openseauserdata.com/files/fd28c65d9b5192168fb259009a3afd36.png",
+    bio: "Farcaster, Warpcast, Yoink",
+  },
+  {
     displayName: "Stephan",
     username: "stephancill",
     avatarUrl:
@@ -58,6 +66,13 @@ const mentors: MentorInfo[] = [
     bio: "Clankermon, FC Trivia, Jeeves",
   },
   {
+    displayName: "Chintan Turakhia",
+    username: "chintan",
+    avatarUrl:
+      "https://i.seadn.io/gae/j1lh_bdmLxwRcCbk8OS7xHWcMlQXWfv_MTZF5nMBdg9MvSSseeAtfQ4rdEgASTAN8lT7kk-mN8H5dm4uAidlrHA5vWva3nKdCnqZ?w=500&auto=format",
+    bio: "Coinbase Wallet",
+  },
+  {
     displayName: "Colin Johnson",
     username: "cojo.eth",
     avatarUrl: "https://i.imgur.com/5kWzCaA.jpg",
@@ -70,21 +85,30 @@ const mentors: MentorInfo[] = [
       "https://imagedelivery.net/BXluQx4ige9GuW0Ia56BHw/1d3c1cdd-db51-481d-4da2-c438b910b000/rectcrop3",
     bio: "Bracket, Bracky",
   },
+  {
+    displayName: "Daniel",
+    username: "pirosb3",
+    avatarUrl:
+      "https://imagedelivery.net/BXluQx4ige9GuW0Ia56BHw/7229dfa5-4873-42d0-9dd0-69f4f3fc4d00/original",
+    bio: "Bountycaster",
+  },
+  {
+    displayName: "Chris Carella",
+    username: "ccarella.eth",
+    avatarUrl:
+      "https://imagedelivery.net/BXluQx4ige9GuW0Ia56BHw/06f8c85d-fc77-4e76-91bf-6f3063bda400/rectcrop3",
+    bio: "Scout Game, Purple DAO",
+  },
 ];
 
 const timelineEvents = [
-  // { title: "Applications Open", date: "February 17th, 2025" },
-  // { title: "Applications Close", date: "March 16th, 2025" },
-  // { title: "Cohort Announced", date: "March 24th, 2025" },
-  // { title: "Program Start", date: "March 31st, 2025" },
-  // { title: "NYC Meetup", date: "May 1-4th, 2025" },
-  // { title: "Rome Build Residency", date: "May 31st - June 6th, 2025" },
-  // { title: "Final Demo Day", date: "June 7th, 2025" },
-  { title: "Applications Open", date: "February" },
-  { title: "Cohort Announced", date: "March" },
-  { title: "Program Start", date: "April" },
-  { title: "NYC Meetup (Farcon)", date: "May" },
-  { title: "Rome Build Residency", date: "June (1-week)" },
+  { title: "Applications Open", date: "February 17th, 2025" },
+  { title: "Applications Close", date: "March 16th, 2025" },
+  { title: "Program Start", date: "March 31st, 2025" },
+  { title: "NYC Meetup", date: "May 1-4th, 2025" },
+  { title: "Program Ends", date: "May 23rd, 2025" },
+  { title: "Rome Residency", date: "June 14th - 22nd, 2025" },
+  { title: "Final Demo Day", date: "June 22nd, 2025" },
 ];
 
 export default function ProgramInfoModal({
@@ -206,14 +230,27 @@ export default function ProgramInfoModal({
                         </span>{" "}
                         (optional to attend)
                       </li>
-                      <li>Build residency in Rome for top 3 teams (expenses covered)</li>
+                      <li>
+                        Build residency in Rome for top 3 teams (expenses
+                        covered)
+                      </li>
                     </ul>
                   </div>
 
                   <div className="space-y-3">
-                    <h3 className="font-bold text-lg text-purple-600">
-                      Timeline:
-                    </h3>
+                    <div>
+                      <h3 className="font-bold text-lg text-purple-600">
+                        Timeline:
+                      </h3>
+                      <a
+                        href="https://builders-garden.notion.site/Timeline-199679ed099e808aaf23ed1d1843de2c?pvs=4"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs text-purple-500  hover:underline font-medium inline-flex items-center gap-1 hover:gap-2 transition-all"
+                      >
+                        More details →
+                      </a>
+                    </div>
 
                     {/* Mobile Timeline (Vertical) */}
                     <div className="block sm:hidden relative pl-8 space-y-6 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:bg-purple-200">
@@ -238,7 +275,7 @@ export default function ProgramInfoModal({
                       <div className="absolute left-0 right-0 top-1/2 h-0.5 bg-purple-200"></div>
 
                       {/* Timeline events */}
-                      <div className="grid grid-cols-5">
+                      <div className="grid grid-cols-7">
                         {timelineEvents.map((event, index) => (
                           <div key={event.title} className="relative">
                             {/* Circle marker */}
@@ -269,7 +306,7 @@ export default function ProgramInfoModal({
 
                   <div className="space-y-3">
                     <h3 className="font-bold text-lg text-purple-600">
-                      Program Mentors:
+                      Mentors and Judges:
                     </h3>
                     <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                       {mentors.map((mentor) => (
