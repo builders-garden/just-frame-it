@@ -17,6 +17,7 @@ import { CircleCheck, Hourglass } from "lucide-react";
 import posthog from "posthog-js";
 import Sponsors from "../Sponsors";
 import ApplyButton from "../ApplyButton";
+import Countdown from "../Countdown";
 
 const climateCrisis = Climate_Crisis({ subsets: ["latin"] });
 
@@ -155,7 +156,7 @@ export default function Home() {
 
         <div className="w-full max-w-5xl mx-auto text-center pb-4 md:pb-16 mt-auto">
           <div className="flex flex-col items-center gap-4">
-            {/* <Countdown /> */}
+            <Countdown />
             <div className="flex flex-row items-center justify-center gap-2 mx-auto">
               <ApplyButton
                 onSuccess={() => {
