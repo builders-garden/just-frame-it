@@ -296,7 +296,7 @@ export default function ApplyModal({ isOpen, onClose }: ApplyModalProps) {
                         id="projectName"
                         value={projectName}
                         onChange={(e) => setProjectName(e.target.value)}
-                        placeholder="Your project name..."
+                        placeholder="Your project name"
                         className="mt-1 block w-full border border-gray-300 px-3 py-2 focus:border-purple-500 focus:outline-none focus:ring-purple-500"
                       />
                       <p className="mt-1 text-xs text-gray-500">
@@ -316,7 +316,7 @@ export default function ApplyModal({ isOpen, onClose }: ApplyModalProps) {
                         value={projectDescription}
                         onChange={(e) => setProjectDescription(e.target.value)}
                         rows={3}
-                        placeholder="Describe your project idea..."
+                        placeholder="Describe your project idea and include links to any relevant resources"
                         className="mt-1 block w-full border border-gray-300 px-3 py-2 focus:border-purple-500 focus:outline-none focus:ring-purple-500"
                       />
                     </div>
