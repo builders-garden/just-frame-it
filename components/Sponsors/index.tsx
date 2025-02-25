@@ -3,7 +3,7 @@ import Image from "next/image";
 export default function Sponsors() {
   return (
     <div className="w-full max-w-5xl mx-auto">
-      <div className="flex flex-row gap-12 justify-center items-center">
+      <div className="flex flex-row gap-8 justify-center items-center">
         <a
           href="https://www.base.org/"
           target="_blank"
@@ -41,9 +41,9 @@ export default function Sponsors() {
           <Image
             src="/images/warpcast-logo.svg"
             alt="Sponsor 2"
-            width={32}
-            height={10}
-            className="object-contain rounded-lg w-[32px] md:w-[48px] h-auto"
+            width={100}
+            height={32}
+            className="object-contain w-[100px] md:w-[150px] h-auto"
           />
         </a>
       </div>
