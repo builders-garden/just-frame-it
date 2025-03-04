@@ -372,12 +372,14 @@ export default function VoteModal({ isOpen, onClose }: VoteModalProps) {
                           username={app.teamMember1Username}
                           displayName={app.teamMember1DisplayName}
                           avatarUrl={app.teamMember1AvatarUrl ?? undefined}
+                          mode="vertical"
                         />
                         {app.teamMember2Username && (
                           <TeamMember
                             username={app.teamMember2Username}
                             displayName={app.teamMember2DisplayName ?? ""}
                             avatarUrl={app.teamMember2AvatarUrl ?? undefined}
+                            mode="vertical"
                           />
                         )}
                         {app.teamMember3Username && (
@@ -385,6 +387,7 @@ export default function VoteModal({ isOpen, onClose }: VoteModalProps) {
                             username={app.teamMember3Username}
                             displayName={app.teamMember3DisplayName ?? ""}
                             avatarUrl={app.teamMember3AvatarUrl ?? undefined}
+                            mode="vertical"
                           />
                         )}
                       </div>
