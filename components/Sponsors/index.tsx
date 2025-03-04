@@ -43,6 +43,14 @@ const sponsorData = [
     className: "w-[50px] md:w-[75px]",
   },
   {
+    name: "Privy",
+    href: "https://www.privy.io/",
+    imageSrc: "/images/privy-logo.svg",
+    width: 50,
+    height: 16,
+    className: "w-[50px] md:w-[75px]",
+  },
+  {
     name: "MBD",
     href: "https://mbd.xyz/",
     imageSrc: "/images/mbd-logo.svg",
