@@ -1,20 +1,15 @@
-import { NextResponse, NextRequest } from "next/server";
-import { getApplications } from "@/lib/prisma/queries";
+import { prisma } from "@/lib/prisma";
+import { NextResponse } from "next/server";
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
-    const searchParams = req.nextUrl.searchParams;
-    const username = searchParams.get('username') || undefined;
-    const limit = Number(searchParams.get('limit')) || 10;
-    const page = Number(searchParams.get('page')) || 1;
-
-    const result = await getApplications({
-      username,
-      limit,
-      page,
+    const applications = await prisma.application.findMany({
+      include: {
+        votes: true,
+      },
     });
 
-    return NextResponse.json(result);
+    return NextResponse.json(applications);
   } catch (error) {
     console.error("Error fetching applications:", error);
     return NextResponse.json(
@@ -22,4 +17,4 @@ export async function GET(req: NextRequest) {
       { status: 500 }
     );
   }
-} 
+}
