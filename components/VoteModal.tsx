@@ -1,0 +1,489 @@
+import { TeamMember } from "@/components/TeamMember";
+import { useApplications } from "@/hooks/use-applications";
+import { useSubmitVote, useVotes } from "@/hooks/use-votes";
+import { ALLOWED_VOTER_FIDS } from "@/lib/constants";
+import { CircularProgress, Slider, Typography } from "@mui/material";
+import { useState } from "react";
+import { useWalletClient } from "wagmi";
+import { useFrame } from "./farcaster-provider";
+
+interface VoteModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+export default function VoteModal({ isOpen, onClose }: VoteModalProps) {
+  const [username, setUsername] = useState("");
+  const [debouncedUsername, setDebouncedUsername] = useState("");
+  const [page, setPage] = useState(1);
+  const [votesMap, setVotesMap] = useState<
+    Record<string, { experience: number; idea: number; virality: number }>
+  >({});
+  const [lastVotedId, setLastVotedId] = useState<string | null>(null);
+  const limit = 10;
+  const { context } = useFrame();
+  const { data: walletClient } = useWalletClient();
+
+  const { data: applicationsData, isLoading: isLoadingApplications } =
+    useApplications({
+      username: debouncedUsername,
+      page,
+      limit,
+    });
+
+  const { data: votes, isLoading: isLoadingVotes } = useVotes();
+  const { mutate: submitVote, isPending: isSubmittingVote } = useSubmitVote();
+
+  if (!isOpen) return null;
+
+  if (!context?.user?.fid || !ALLOWED_VOTER_FIDS.includes(context?.user?.fid)) {
+    return (
+      <div className="fixed inset-0 bg-white flex items-center justify-center z-50">
+        <div className="max-w-2xl w-full mx-4">
+          <div className="text-center py-12">
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              Access Denied
+            </h3>
+            <p className="text-gray-600">
+              You are not authorized to vote on applications.
+            </p>
+          </div>
+          <button
+            onClick={onClose}
+            className="w-full bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUsername(e.target.value);
+    setPage(1);
+  };
+
+  const handleVoteChange = (
+    applicationId: string,
+    field: "experience" | "idea" | "virality",
+    value: number
+  ) => {
+    setVotesMap((prev) => ({
+      ...prev,
+      [applicationId]: {
+        ...prev[applicationId],
+        [field]: value,
+      },
+    }));
+  };
+
+  const handleSliderChange = (
+    applicationId: string,
+    field: "experience" | "idea" | "virality",
+    _event: Event,
+    value: number | number[]
+  ) => {
+    handleVoteChange(applicationId, field, value as number);
+  };
+
+  const handleIncrement = (
+    applicationId: string,
+    field: "experience" | "idea" | "virality",
+    currentValue: number | string
+  ) => {
+    const numValue = typeof currentValue === "string" ? 0 : currentValue;
+    handleVoteChange(applicationId, field, Math.min(10, numValue + 1));
+  };
+
+  const handleDecrement = (
+    applicationId: string,
+    field: "experience" | "idea" | "virality",
+    currentValue: number | string
+  ) => {
+    const numValue = typeof currentValue === "string" ? 0 : currentValue;
+    handleVoteChange(applicationId, field, Math.max(1, numValue - 1));
+  };
+
+  const handleInputChange = (
+    applicationId: string,
+    field: "experience" | "idea" | "virality",
+    value: string
+  ) => {
+    const numValue = parseInt(value) || 1;
+    handleVoteChange(applicationId, field, Math.min(10, Math.max(1, numValue)));
+  };
+
+  const handleSubmitVote = async (applicationId: string) => {
+    const vote = votesMap[applicationId];
+    console.log("vote", vote);
+    if (!vote || !vote.experience || !vote.idea || !vote.virality) return;
+
+    try {
+      const message = `I confirm my vote for application ${applicationId} with scores: Experience=${vote.experience}, Idea=${vote.idea}, Virality=${vote.virality}`;
+      const signature = await walletClient?.signMessage({
+        message,
+      });
+
+      if (!signature) {
+        throw new Error("Failed to sign message");
+      }
+
+      console.log("submitting vote", {
+        signature,
+        message,
+        applicationId,
+        ...vote,
+      });
+
+      await submitVote({
+        applicationId,
+        ...vote,
+        signature: signature!,
+        message,
+      });
+
+      setLastVotedId(applicationId);
+      setVotesMap((prev) => {
+        const newMap = { ...prev };
+        delete newMap[applicationId];
+        return newMap;
+      });
+    } catch (error) {
+      console.error("Failed to submit vote:", error);
+      alert("Failed to submit vote. Please try again.");
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 bg-white z-50 overflow-y-auto">
+      <div className="max-w-7xl w-full mx-auto px-4 py-8">
+        <div className="flex flex-row items-center justify-between mb-6">
+          <h1 className="text-2xl font-bold">Vote on Applications</h1>
+          <button
+            onClick={onClose}
+            className="text-gray-500 hover:text-gray-700"
+          >
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
+
+        {applicationsData && (
+          <div className="text-sm text-gray-600 mb-4">
+            {applicationsData.total === applicationsData.totalCount ? (
+              <span>{applicationsData.totalCount} total applications</span>
+            ) : (
+              <span>
+                {applicationsData.total} filtered /{" "}
+                {applicationsData.totalCount} total applications
+              </span>
+            )}
+          </div>
+        )}
+
+        <div className="mb-6">
+          <input
+            type="text"
+            placeholder="Filter by username..."
+            value={username}
+            onChange={handleUsernameChange}
+            className="w-full px-4 py-2 border rounded-lg"
+          />
+        </div>
+
+        {isLoadingApplications || username !== debouncedUsername ? (
+          <div className="flex justify-center items-center h-64">
+            <CircularProgress />
+          </div>
+        ) : applicationsData?.applications.length === 0 ? (
+          <div className="text-center py-12 border rounded-lg">
+            <svg
+              className="mx-auto h-12 w-12 text-gray-400"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V7a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              />
+            </svg>
+            <h3 className="mt-2 text-sm font-medium text-gray-900">
+              No applications found
+            </h3>
+            <p className="mt-1 text-sm text-gray-500">
+              {username
+                ? "Try adjusting your search criteria"
+                : "No applications have been submitted yet"}
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-6">
+            {applicationsData?.applications.map((app) => {
+              const existingVote = votes?.find(
+                (v) => v.applicationId === app.id
+              );
+              const currentVote = votesMap[app.id] ||
+                existingVote || { experience: 1, idea: 1, virality: 1 };
+
+              const calculateTotal = () => {
+                const exp = Number(currentVote.experience) || 0;
+                const idea = Number(currentVote.idea) || 0;
+                const vir = Number(currentVote.virality) || 0;
+                return exp + idea + vir;
+              };
+
+              return (
+                <div
+                  key={app.id}
+                  className="border rounded-lg p-6 shadow-sm flex flex-col"
+                >
+                  <div className="flex flex-col gap-4">
+                    <div className="flex flex-col sm:justify-between sm:items-start gap-4">
+                      <div className="flex flex-row gap-2">
+                        <h2 className="text-xl font-semibold break-words">
+                          {app.projectName}
+                        </h2>
+                        {app.githubUrl && (
+                          <a
+                            href={app.githubUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <svg
+                              className="w-6 h-6"
+                              fill="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                fillRule="evenodd"
+                                d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.604-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.464-1.11-1.464-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.137 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z"
+                                clipRule="evenodd"
+                              />
+                            </svg>
+                          </a>
+                        )}
+                      </div>
+                      <div className="flex flex-col">
+                        <label className="text-sm font-semibold text-gray-400">
+                          Project Description
+                        </label>
+                        <p className="text-gray-600">
+                          {app.projectDescription}
+                        </p>
+                      </div>
+                      <div className="flex flex-col">
+                        <label className="text-sm font-semibold text-gray-400">
+                          Reason to attend
+                        </label>
+                        <p className="text-gray-600">{app.whyAttend}</p>
+                      </div>
+                      <div className="flex flex-col">
+                        <label className="text-sm font-semibold text-gray-400">
+                          Can attend in Rome?
+                        </label>
+                        <p className="text-gray-600">
+                          {app.canAttendRome ? "Yes" : "No"}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex flex-col">
+                      <p className="text-sm font-semibold text-gray-400">
+                        Team Members:
+                      </p>
+                      <div className="flex flex-row gap-4">
+                        <TeamMember
+                          username={app.teamMember1Username}
+                          displayName={app.teamMember1DisplayName}
+                          avatarUrl={app.teamMember1AvatarUrl ?? undefined}
+                        />
+                        {app.teamMember2Username && (
+                          <TeamMember
+                            username={app.teamMember2Username}
+                            displayName={app.teamMember2DisplayName ?? ""}
+                            avatarUrl={app.teamMember2AvatarUrl ?? undefined}
+                          />
+                        )}
+                        {app.teamMember3Username && (
+                          <TeamMember
+                            username={app.teamMember3Username}
+                            displayName={app.teamMember3DisplayName ?? ""}
+                            avatarUrl={app.teamMember3AvatarUrl ?? undefined}
+                          />
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col gap-3 min-w-[200px] border-t-2 border-gray-200 pt-4">
+                    {existingVote && (
+                      <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-2">
+                        <div className="flex items-center gap-2 text-green-700">
+                          <svg
+                            className="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M5 13l4 4L19 7"
+                            />
+                          </svg>
+                          <span className="text-sm font-medium">
+                            You have already voted on this application
+                          </span>
+                        </div>
+                      </div>
+                    )}
+                    {lastVotedId === app.id && !existingVote && (
+                      <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-2">
+                        <div className="flex items-center gap-2 text-green-700">
+                          <svg
+                            className="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M5 13l4 4L19 7"
+                            />
+                          </svg>
+                          <span className="text-sm font-medium">
+                            Vote submitted successfully!
+                          </span>
+                        </div>
+                      </div>
+                    )}
+                    <div className="flex justify-between items-center mb-2">
+                      <Typography variant="subtitle2" className="text-gray-700">
+                        Total Points
+                      </Typography>
+                      <Typography
+                        variant="h6"
+                        className="text-blue-600 font-semibold"
+                      >
+                        {calculateTotal()}/30
+                      </Typography>
+                    </div>
+                    <div>
+                      <Typography
+                        variant="subtitle2"
+                        className="text-gray-700 mb-1"
+                      >
+                        Experience (1-10)
+                      </Typography>
+                      <div className="flex items-center gap-4">
+                        <Typography className="w-8 text-center">
+                          {currentVote.experience}
+                        </Typography>
+                        <Slider
+                          value={currentVote.experience}
+                          onChange={(e, value) =>
+                            handleSliderChange(app.id, "experience", e, value)
+                          }
+                          min={1}
+                          max={10}
+                          step={1}
+                          marks
+                          className="flex-1"
+                          disabled={lastVotedId === app.id && !existingVote}
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <Typography
+                        variant="subtitle2"
+                        className="text-gray-700 mb-1"
+                      >
+                        Idea (1-10)
+                      </Typography>
+                      <div className="flex items-center gap-4">
+                        <Typography className="w-8 text-center">
+                          {currentVote.idea}
+                        </Typography>
+                        <Slider
+                          value={currentVote.idea}
+                          onChange={(e, value) =>
+                            handleSliderChange(app.id, "idea", e, value)
+                          }
+                          min={1}
+                          max={10}
+                          step={1}
+                          marks
+                          className="flex-1"
+                          disabled={lastVotedId === app.id && !existingVote}
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <Typography
+                        variant="subtitle2"
+                        className="text-gray-700 mb-1"
+                      >
+                        Virality (1-10)
+                      </Typography>
+                      <div className="flex items-center gap-4">
+                        <Typography className="w-8 text-center">
+                          {currentVote.virality}
+                        </Typography>
+                        <Slider
+                          value={currentVote.virality}
+                          onChange={(e, value) =>
+                            handleSliderChange(app.id, "virality", e, value)
+                          }
+                          min={1}
+                          max={10}
+                          step={1}
+                          marks
+                          className="flex-1"
+                          disabled={lastVotedId === app.id && !existingVote}
+                        />
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => handleSubmitVote(app.id)}
+                      disabled={
+                        isSubmittingVote ||
+                        (lastVotedId === app.id && !existingVote)
+                      }
+                      className="w-full bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 disabled:opacity-50 mt-2"
+                    >
+                      {isSubmittingVote
+                        ? "Submitting..."
+                        : lastVotedId === app.id && !existingVote
+                        ? "Vote Submitted!"
+                        : existingVote
+                        ? "Update Vote"
+                        : "Submit Vote"}
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

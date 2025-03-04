@@ -1,29 +1,34 @@
 "use client";
 
-import { useFrame } from "../farcaster-provider";
-import SafeAreaContainer from "../SafeAreaContainer";
-import { Climate_Crisis } from "next/font/google";
-import { useState } from "react";
-import ApplyModal from "../ApplyModal";
 import { useSignIn } from "@/hooks/use-sign-in";
-import ProgramInfoModal from "../ProgramInfoModal";
-import Image from "next/image";
-import SuccessStories from "../SuccessStories";
-import Button from "../Button";
-import { Tooltip } from "../Tooltip";
+import { ALLOWED_VOTER_FIDS } from "@/lib/constants";
 import { trackEvent } from "@/lib/posthog/client";
+import { useProfile } from "@farcaster/auth-kit";
 import sdk from "@farcaster/frame-sdk";
 import { CircleCheck, Hourglass } from "lucide-react";
+import { Climate_Crisis } from "next/font/google";
+import Image from "next/image";
 import posthog from "posthog-js";
-import Sponsors from "../Sponsors";
+import { useState } from "react";
 import ApplyButton from "../ApplyButton";
+import ApplyModal from "../ApplyModal";
+import Button from "../Button";
 import Countdown from "../Countdown";
+import { useFrame } from "../farcaster-provider";
+import ProgramInfoModal from "../ProgramInfoModal";
+import SafeAreaContainer from "../SafeAreaContainer";
+import Sponsors from "../Sponsors";
+import SuccessStories from "../SuccessStories";
+import { Tooltip } from "../Tooltip";
+import VoteModal from "../VoteModal";
 
 const climateCrisis = Climate_Crisis({ subsets: ["latin"] });
 
 export default function Home() {
   const { context } = useFrame();
   const [isFrameAdded, setIsFrameAdded] = useState(context?.client.added);
+  const [isVoteModalOpen, setIsVoteModalOpen] = useState(false);
+  const { profile } = useProfile();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { signIn, isLoading: isSigningIn } = useSignIn({
@@ -118,6 +123,21 @@ export default function Home() {
       </div>
 
       <div className="w-full relative z-10 flex flex-col items-center px-0 md:pb-0 justify-between gap-8 md:gap-0">
+        {(profile?.fid && ALLOWED_VOTER_FIDS.includes(profile.fid)) ||
+          (context?.user?.fid &&
+            ALLOWED_VOTER_FIDS.includes(context.user.fid) && (
+              <div className="w-fit max-w-5xl mx-auto px-4 pt-4">
+                <div
+                  className="border rounded-lg p-4 bg-white shadow-sm flex flex-row justify-between"
+                  onClick={() => {
+                    setIsVoteModalOpen(true);
+                  }}
+                >
+                  Applications
+                </div>
+              </div>
+            ))}
+
         <div className="w-full max-w-5xl mx-auto text-center space-y-4 py-8 md:pb-16 mt-4 md:mt-8">
           <h1
             className={`mx-4 md:mx-auto text-purple-600 border py-1 md:py-4 border-blue-500 relative max-w-3xl`}
@@ -167,7 +187,6 @@ export default function Home() {
                   console.error("Failed to sign in", error);
                 }}
               />
-              {/* <Button onClick={handleApplyClick}>Apply</Button> */}
               <Button
                 variant="bordered"
                 onClick={() => {
@@ -181,6 +200,20 @@ export default function Home() {
               >
                 Learn More
               </Button>
+              {profile?.fid && ALLOWED_VOTER_FIDS.includes(profile.fid) && (
+                <Button
+                  variant="bordered"
+                  onClick={() => {
+                    trackEvent("vote_button_clicked", {
+                      fid: profile.fid,
+                      context: "web",
+                    });
+                    setIsVoteModalOpen(true);
+                  }}
+                >
+                  Vote
+                </Button>
+              )}
             </div>
             <a
               href="https://www.farcaster.xyz/"
@@ -281,6 +314,13 @@ export default function Home() {
         <ProgramInfoModal
           isOpen={isProgramInfoModalOpen}
           onClose={() => setIsProgramInfoModalOpen(false)}
+        />
+      )}
+
+      {isVoteModalOpen && (
+        <VoteModal
+          isOpen={isVoteModalOpen}
+          onClose={() => setIsVoteModalOpen(false)}
         />
       )}
 
