@@ -20,6 +20,12 @@ export default function VoteModal({ isOpen, onClose }: VoteModalProps) {
     Record<string, { experience: number; idea: number; virality: number }>
   >({});
   const [lastVotedId, setLastVotedId] = useState<string | null>(null);
+  const [expandedDescriptions, setExpandedDescriptions] = useState<
+    Record<string, boolean>
+  >({});
+  const [expandedWhyAttend, setExpandedWhyAttend] = useState<
+    Record<string, boolean>
+  >({});
   const limit = 10;
   const { context } = useFrame();
   const { data: walletClient } = useWalletClient();
@@ -69,13 +75,21 @@ export default function VoteModal({ isOpen, onClose }: VoteModalProps) {
     field: "experience" | "idea" | "virality",
     value: number
   ) => {
-    setVotesMap((prev) => ({
-      ...prev,
-      [applicationId]: {
-        ...prev[applicationId],
-        [field]: value,
-      },
-    }));
+    setVotesMap((prev) => {
+      const existingVote = votes?.find(
+        (v) => v.applicationId === applicationId
+      );
+      const currentValues = prev[applicationId] ||
+        existingVote || { experience: 1, idea: 1, virality: 1 };
+
+      return {
+        ...prev,
+        [applicationId]: {
+          ...currentValues,
+          [field]: value,
+        },
+      };
+    });
   };
 
   const handleSliderChange = (
@@ -116,7 +130,6 @@ export default function VoteModal({ isOpen, onClose }: VoteModalProps) {
 
   const handleSubmitVote = async (applicationId: string) => {
     const vote = votesMap[applicationId];
-    console.log("vote", vote);
     if (!vote || !vote.experience || !vote.idea || !vote.virality) return;
 
     try {
@@ -129,13 +142,6 @@ export default function VoteModal({ isOpen, onClose }: VoteModalProps) {
         throw new Error("Failed to sign message");
       }
 
-      console.log("submitting vote", {
-        signature,
-        message,
-        applicationId,
-        ...vote,
-      });
-
       await submitVote({
         applicationId,
         ...vote,
@@ -146,13 +152,36 @@ export default function VoteModal({ isOpen, onClose }: VoteModalProps) {
       setLastVotedId(applicationId);
       setVotesMap((prev) => {
         const newMap = { ...prev };
-        delete newMap[applicationId];
+        newMap[applicationId] = {
+          experience: vote.experience,
+          idea: vote.idea,
+          virality: vote.virality,
+        };
         return newMap;
       });
     } catch (error) {
       console.error("Failed to submit vote:", error);
       alert("Failed to submit vote. Please try again.");
     }
+  };
+
+  const toggleDescription = (appId: string) => {
+    setExpandedDescriptions((prev) => ({
+      ...prev,
+      [appId]: !prev[appId],
+    }));
+  };
+
+  const toggleWhyAttend = (appId: string) => {
+    setExpandedWhyAttend((prev) => ({
+      ...prev,
+      [appId]: !prev[appId],
+    }));
+  };
+
+  const truncateText = (text: string, isExpanded: boolean) => {
+    if (isExpanded) return text;
+    return text.length > 120 ? text.substring(0, 120) + "..." : text;
   };
 
   return (
@@ -283,15 +312,47 @@ export default function VoteModal({ isOpen, onClose }: VoteModalProps) {
                         <label className="text-sm font-semibold text-gray-400">
                           Project Description
                         </label>
-                        <p className="text-gray-600">
-                          {app.projectDescription}
-                        </p>
+                        <div className="flex flex-col gap-1">
+                          <p className="text-gray-600">
+                            {truncateText(
+                              app.projectDescription,
+                              expandedDescriptions[app.id] || false
+                            )}
+                          </p>
+                          {app.projectDescription.length > 60 && (
+                            <button
+                              onClick={() => toggleDescription(app.id)}
+                              className="text-blue-500 hover:text-blue-700 text-sm font-medium self-start"
+                            >
+                              {expandedDescriptions[app.id]
+                                ? "Show Less"
+                                : "Show More"}
+                            </button>
+                          )}
+                        </div>
                       </div>
                       <div className="flex flex-col">
                         <label className="text-sm font-semibold text-gray-400">
                           Reason to attend
                         </label>
-                        <p className="text-gray-600">{app.whyAttend}</p>
+                        <div className="flex flex-col gap-1">
+                          <p className="text-gray-600">
+                            {truncateText(
+                              app.whyAttend,
+                              expandedWhyAttend[app.id] || false
+                            )}
+                          </p>
+                          {app.whyAttend.length > 60 && (
+                            <button
+                              onClick={() => toggleWhyAttend(app.id)}
+                              className="text-blue-500 hover:text-blue-700 text-sm font-medium self-start"
+                            >
+                              {expandedWhyAttend[app.id]
+                                ? "Show Less"
+                                : "Show More"}
+                            </button>
+                          )}
+                        </div>
                       </div>
                       <div className="flex flex-col">
                         <label className="text-sm font-semibold text-gray-400">
@@ -302,7 +363,7 @@ export default function VoteModal({ isOpen, onClose }: VoteModalProps) {
                         </p>
                       </div>
                     </div>
-                    <div className="flex flex-col">
+                    <div className="flex flex-col mb-2">
                       <p className="text-sm font-semibold text-gray-400">
                         Team Members:
                       </p>

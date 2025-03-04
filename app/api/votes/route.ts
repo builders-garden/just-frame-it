@@ -70,7 +70,6 @@ export async function POST(req: NextRequest) {
     // Verify the signature
     try {
       const voter = await fetchUser(fid.toString());
-      console.log("voter", voter);
 
       // First try custody address
       let isValidSignature = false;
@@ -87,7 +86,7 @@ export async function POST(req: NextRequest) {
         for (const address of voter.verifications) {
           isValidSignature = await verifyMessage({
             address: address as `0x${string}`,
-            message, 
+            message,
             signature,
           });
           if (isValidSignature) break;
@@ -96,7 +95,10 @@ export async function POST(req: NextRequest) {
 
       if (!isValidSignature) {
         return NextResponse.json(
-          { error: "Invalid signature - not signed by custody or verified address" },
+          {
+            error:
+              "Invalid signature - not signed by custody or verified address",
+          },
           { status: 401 }
         );
       }

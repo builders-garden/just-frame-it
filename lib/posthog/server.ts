@@ -12,7 +12,6 @@ export const trackEvent = (
   if (process.env.NEXT_PUBLIC_POSTHOG_DISABLED === "true") {
     return;
   }
-  console.log("tracking event", event, properties);
   posthog.capture({
     distinctId: fid.toString(),
     event,

@@ -180,7 +180,6 @@ export default function Home() {
             <div className="flex flex-row items-center justify-center gap-2 mx-auto">
               <ApplyButton
                 onSuccess={() => {
-                  console.log("onSuccess");
                   setIsModalOpen(true);
                 }}
                 onError={(error) => {
