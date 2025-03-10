@@ -43,6 +43,14 @@ const sponsorData = [
     className: "w-[50px] md:w-[75px]",
   },
   {
+    name: "Daimo Pay",
+    href: "https://pay.daimo.com/",
+    imageSrc: "/images/daimo-logo.svg",
+    width: 50,
+    height: 16,
+    className: "w-[50px] md:w-[75px]",
+  },
+  {
     name: "Privy",
     href: "https://www.privy.io/",
     imageSrc: "/images/privy-logo.svg",
