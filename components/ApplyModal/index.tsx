@@ -493,7 +493,7 @@ export default function ApplyModal({ isOpen, onClose }: ApplyModalProps) {
                   <div className="mt-4 p-4 bg-purple-50 rounded-lg">
                     <p className="text-sm text-purple-700">
                       <strong>Important:</strong> All projects submitted to Just
-                      Frame It are required to build and deploy any onchain logic on Base.
+                      Frame It are required to build and deploy on Base.
                     </p>
                   </div>
 
