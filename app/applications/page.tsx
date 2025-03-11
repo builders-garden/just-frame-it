@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useApplications } from "@/hooks/use-applications";
 import { TeamMember } from "@/components/TeamMember";
+import { useApplications } from "@/hooks/use-applications";
 import { CircularProgress } from "@mui/material";
+import { useEffect, useState } from "react";
 
 export default function ApplicationsPage() {
   const [username, setUsername] = useState("");
@@ -156,6 +156,16 @@ export default function ApplicationsPage() {
                     <p className="text-gray-600 mt-2 text-sm md:text-base">
                       {app.projectDescription}
                     </p>
+                    {app.previousWork && (
+                      <div className="mt-4">
+                        <h3 className="font-medium text-gray-900 mb-2 text-sm md:text-base">
+                          Previous Work
+                        </h3>
+                        <p className="text-gray-600 text-sm md:text-base">
+                          {app.previousWork}
+                        </p>
+                      </div>
+                    )}
                   </div>
                   {app.githubUrl && (
                     <a

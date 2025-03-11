@@ -1,7 +1,6 @@
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { Climate_Crisis } from "next/font/google";
 import Image from "next/image";
-import { title } from "process";
 
 const climateCrisis = Climate_Crisis({ subsets: ["latin"] });
 
@@ -235,6 +234,13 @@ export default function ProgramInfoModal({
                         covered)
                       </li>
                     </ul>
+                  </div>
+
+                  <div className="p-4 bg-purple-50 rounded-lg">
+                    <p className="text-sm text-purple-700">
+                      <strong>Important:</strong> All projects submitted to Just
+                      Frame It are required to build and deploy on Base.
+                    </p>
                   </div>
 
                   <div className="space-y-3">

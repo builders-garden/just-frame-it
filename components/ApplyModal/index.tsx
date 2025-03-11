@@ -1,13 +1,12 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
-import { useEffect, useState } from "react";
-import { Climate_Crisis } from "next/font/google";
-import { useMe } from "@/hooks/use-users";
-import { useSearchUsers } from "@/hooks/use-users";
-import { useProfile } from "@farcaster/auth-kit";
-import Image from "next/image";
 import { useApply } from "@/hooks/use-apply";
+import { useMe, useSearchUsers } from "@/hooks/use-users";
+import { useProfile } from "@farcaster/auth-kit";
+import { AnimatePresence, motion } from "framer-motion";
+import { Climate_Crisis } from "next/font/google";
+import Image from "next/image";
+import { useEffect, useState } from "react";
 
 const climateCrisis = Climate_Crisis({ subsets: ["latin"] });
 interface ApplyModalProps {
@@ -481,13 +480,21 @@ export default function ApplyModal({ isOpen, onClose }: ApplyModalProps) {
                         htmlFor="canAttendRome"
                         className="text-sm font-medium text-gray-700"
                       >
-                        We can attend the Rome residency (June 14th - 22nd, 2025)
+                        We can attend the Rome residency (June 14th - 22nd,
+                        2025)
                       </label>
                       <p className="text-xs text-gray-500">
                         Top 3 teams will be invited to a week-long build
                         residency in Rome (expenses covered)
                       </p>
                     </div>
+                  </div>
+
+                  <div className="mt-4 p-4 bg-purple-50 rounded-lg">
+                    <p className="text-sm text-purple-700">
+                      <strong>Important:</strong> All projects submitted to Just
+                      Frame It are required to build and deploy on Base.
+                    </p>
                   </div>
 
                   {validationError && (
