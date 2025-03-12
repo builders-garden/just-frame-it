@@ -58,8 +58,12 @@ export default function VoteModal({ isOpen, onClose }: VoteModalProps) {
     scrollToTop();
   };
 
-  const handleNext = (maxIndex: number) => {
-    setCurrentIndex((prev) => Math.min(maxIndex - 1, prev + 1));
+  const handleNext = (maxIndex: number, afterVote: boolean = false) => {
+    if (!afterVote) {
+      setCurrentIndex((prev) => Math.min(maxIndex - 1, prev + 1));
+    } else {
+      setCurrentIndex(0);
+    }
     scrollToTop();
   };
 
