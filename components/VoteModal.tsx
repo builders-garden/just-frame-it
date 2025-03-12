@@ -196,7 +196,7 @@ export default function VoteModal({ isOpen, onClose }: VoteModalProps) {
 
       // If there are more applications to vote on, move to the next one
       if (currentIndex < filteredApps.length - 1) {
-        handleNext(filteredApps.length);
+        handleNext(filteredApps.length, true);
       } else if (filteredApps.length > 0) {
         // If we're at the last index but there are still apps, reset to the first one
         setCurrentIndex(0);
