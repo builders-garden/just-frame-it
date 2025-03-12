@@ -199,20 +199,6 @@ export default function Home() {
               >
                 Learn More
               </Button>
-              {profile?.fid && ALLOWED_VOTER_FIDS.includes(profile.fid) && (
-                <Button
-                  variant="bordered"
-                  onClick={() => {
-                    trackEvent("vote_button_clicked", {
-                      fid: profile.fid,
-                      context: "web",
-                    });
-                    setIsVoteModalOpen(true);
-                  }}
-                >
-                  Vote
-                </Button>
-              )}
             </div>
             <a
               href="https://www.farcaster.xyz/"
