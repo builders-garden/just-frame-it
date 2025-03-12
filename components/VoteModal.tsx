@@ -1,9 +1,9 @@
 import { TeamMember } from "@/components/TeamMember";
 import { useApplications } from "@/hooks/use-applications";
-import { useSubmitVote, useVotes } from "@/hooks/use-votes";
+import { useSubmitVote } from "@/hooks/use-votes";
 import { ALLOWED_VOTER_FIDS } from "@/lib/constants";
 import { CircularProgress, Slider, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useWalletClient } from "wagmi";
 import { useFrame } from "./farcaster-provider";
 
@@ -34,22 +34,33 @@ export default function VoteModal({ isOpen, onClose }: VoteModalProps) {
   const limit = 100;
   const { context } = useFrame();
   const { data: walletClient } = useWalletClient();
+  const modalContainerRef = useRef<HTMLDivElement>(null);
 
-  const { data: applicationsData, isLoading: isLoadingApplications } =
-    useApplications({
-      page,
-      limit,
-    });
+  const {
+    data: applicationsData,
+    isLoading: isLoadingApplications,
+    refetch: refetchApplications,
+  } = useApplications({
+    page,
+    limit,
+  });
 
-  const { data: votes, isLoading: isLoadingVotes } = useVotes();
   const { mutate: submitVote, isPending: isSubmittingVote } = useSubmitVote();
+
+  const scrollToTop = () => {
+    if (modalContainerRef.current) {
+      modalContainerRef.current.scrollTop = 0;
+    }
+  };
 
   const handlePrevious = () => {
     setCurrentIndex((prev) => Math.max(0, prev - 1));
+    scrollToTop();
   };
 
   const handleNext = (maxIndex: number) => {
     setCurrentIndex((prev) => Math.min(maxIndex - 1, prev + 1));
+    scrollToTop();
   };
 
   useEffect(() => {
@@ -60,8 +71,16 @@ export default function VoteModal({ isOpen, onClose }: VoteModalProps) {
         const filteredApps =
           applicationsData?.applications.filter((app) =>
             activeTab === "voted"
-              ? votes?.some((v) => v.applicationId === app.id)
-              : !votes?.some((v) => v.applicationId === app.id)
+              ? app?.votes?.some(
+                  (v) =>
+                    v.applicationId === app.id &&
+                    v.voterFid === context?.user?.fid
+                )
+              : !app?.votes?.every(
+                  (v) =>
+                    v.applicationId === app.id &&
+                    v.voterFid !== context?.user?.fid
+                )
           ) || [];
         handleNext(filteredApps.length);
       }
@@ -69,7 +88,7 @@ export default function VoteModal({ isOpen, onClose }: VoteModalProps) {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [activeTab, applicationsData?.applications, votes]);
+  }, [activeTab, applicationsData?.applications, context?.user?.fid]);
 
   if (!isOpen) return null;
 
@@ -102,9 +121,9 @@ export default function VoteModal({ isOpen, onClose }: VoteModalProps) {
     value: number
   ) => {
     setVotesMap((prev) => {
-      const existingVote = votes?.find(
-        (v) => v.applicationId === applicationId
-      );
+      const existingVote = applicationsData?.applications
+        .find((app) => app.id === applicationId)
+        ?.votes.find((v) => v.voterFid === context?.user?.fid);
       const currentValues = prev[applicationId] ||
         existingVote || { experience: 1, idea: 1, virality: 1 };
 
@@ -148,16 +167,36 @@ export default function VoteModal({ isOpen, onClose }: VoteModalProps) {
         message,
       });
 
-      setLastVotedId(applicationId);
+      // Clear the vote from the votesMap
       setVotesMap((prev) => {
         const newMap = { ...prev };
-        newMap[applicationId] = {
-          experience: vote.experience,
-          idea: vote.idea,
-          virality: vote.virality,
-        };
+        delete newMap[applicationId];
         return newMap;
       });
+
+      setLastVotedId(applicationId);
+
+      // Wait a short moment before refetching to ensure the backend has processed the vote
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      await refetchApplications();
+
+      // Get the current filtered apps after refetch
+      const filteredApps =
+        applicationsData?.applications.filter(
+          (app) =>
+            !app.votes?.some(
+              (v) =>
+                v.applicationId === app.id && v.voterFid === context?.user?.fid
+            )
+        ) || [];
+
+      // If there are more applications to vote on, move to the next one
+      if (currentIndex < filteredApps.length - 1) {
+        handleNext(filteredApps.length);
+      } else if (filteredApps.length > 0) {
+        // If we're at the last index but there are still apps, reset to the first one
+        setCurrentIndex(0);
+      }
     } catch (error) {
       console.error("Failed to submit vote:", error);
       alert("Failed to submit vote. Please try again.");
@@ -202,7 +241,20 @@ export default function VoteModal({ isOpen, onClose }: VoteModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 bg-white z-50 overflow-y-auto">
+    <div
+      ref={modalContainerRef}
+      className="fixed inset-0 bg-white z-50 overflow-y-auto"
+    >
+      {isSubmittingVote && (
+        <div className="fixed inset-0 bg-purple-500/30 backdrop-blur-sm z-[60] flex items-center justify-center">
+          <div className="flex flex-col items-center gap-4">
+            <CircularProgress sx={{ color: "white" }} />
+            <Typography className="text-white font-medium">
+              Submitting your vote...
+            </Typography>
+          </div>
+        </div>
+      )}
       <div className="max-w-7xl w-full mx-auto px-4 py-8">
         <div className="flex flex-row items-center justify-between mb-6">
           <h1 className="text-2xl font-bold">Vote on Applications</h1>
@@ -293,7 +345,12 @@ export default function VoteModal({ isOpen, onClose }: VoteModalProps) {
                 {(() => {
                   const filteredApps =
                     applicationsData?.applications.filter(
-                      (app) => !votes?.some((v) => v.applicationId === app.id)
+                      (app) =>
+                        !app.votes?.some(
+                          (v) =>
+                            v.applicationId === app.id &&
+                            v.voterFid === context?.user?.fid
+                        )
                     ) || [];
 
                   if (filteredApps.length === 0) return null;
@@ -671,14 +728,20 @@ export default function VoteModal({ isOpen, onClose }: VoteModalProps) {
                 {(() => {
                   const filteredApps =
                     applicationsData?.applications.filter((app) =>
-                      votes?.some((v) => v.applicationId === app.id)
+                      app.votes?.some(
+                        (v) =>
+                          v.applicationId === app.id &&
+                          v.voterFid === context?.user?.fid
+                      )
                     ) || [];
 
                   if (filteredApps.length === 0) return null;
 
                   const app = filteredApps[currentIndex];
-                  const existingVote = votes?.find(
-                    (v) => v.applicationId === app.id
+                  const existingVote = app?.votes?.find(
+                    (v) =>
+                      v.applicationId === app.id &&
+                      v.voterFid === context?.user?.fid
                   );
                   const currentVote = votesMap[app.id] ||
                     existingVote || { experience: 1, idea: 1, virality: 1 };

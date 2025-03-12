@@ -1,3 +1,4 @@
+import { Vote } from "@prisma/client";
 import { useApiQuery } from "./use-api-query";
 
 interface Application {
@@ -18,6 +19,7 @@ interface Application {
   teamMember3DisplayName: string | null;
   teamMember3AvatarUrl: string | null;
   createdAt: string;
+  votes: Vote[];
 }
 
 interface ApplicationsResponse {
