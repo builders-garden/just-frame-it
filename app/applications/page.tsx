@@ -75,13 +75,7 @@ export default function ApplicationsPage() {
         <h1 className="text-2xl font-bold">Applications</h1>
         {data && (
           <div className="text-sm text-gray-600">
-            {data.total === data.totalCount ? (
-              <span>{data.totalCount} total applications</span>
-            ) : (
-              <span>
-                {data.total} filtered / {data.totalCount} total applications
-              </span>
-            )}
+            <span>{data.total} total applications</span>
           </div>
         )}
       </div>
@@ -255,10 +249,7 @@ export default function ApplicationsPage() {
                 Previous
               </button>
               <span className="px-4 py-2 text-sm md:text-base">
-                Page {page} of {data.pages} ({data.total} filtered
-                {data.total !== data.totalCount &&
-                  ` out of ${data.totalCount} total`}
-                )
+                Page {page} of {data.pages} ({data.total} total)
               </span>
               <button
                 onClick={() => setPage((p) => Math.min(data.pages, p + 1))}

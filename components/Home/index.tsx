@@ -126,7 +126,7 @@ export default function Home() {
         {(profile?.fid && ALLOWED_VOTER_FIDS.includes(profile.fid)) ||
           (context?.user?.fid &&
             ALLOWED_VOTER_FIDS.includes(context.user.fid) && (
-              <div className="w-fit max-w-5xl mx-auto px-4 pt-4">
+              <div className="w-fit max-w-5xl mx-auto px-4 pt-4 cursor-pointer">
                 <div
                   className="border rounded-lg p-4 bg-white shadow-sm flex flex-row justify-between"
                   onClick={() => {

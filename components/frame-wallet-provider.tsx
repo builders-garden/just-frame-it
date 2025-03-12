@@ -2,6 +2,7 @@ import { frameConnector } from "@/lib/frame-connector";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createConfig, http, WagmiProvider } from "wagmi";
 import { baseSepolia } from "wagmi/chains";
+import {injected} from "wagmi/connectors"
 
 export const config = createConfig({
   chains: [baseSepolia],
