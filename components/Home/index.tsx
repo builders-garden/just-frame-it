@@ -137,7 +137,6 @@ export default function Home() {
                 </div>
               </div>
             ))}
-
         <div className="w-full max-w-5xl mx-auto text-center space-y-4 py-8 md:pb-16 mt-4 md:mt-8">
           <h1
             className={`mx-4 md:mx-auto text-purple-600 border py-1 md:py-4 border-blue-500 relative max-w-3xl`}
