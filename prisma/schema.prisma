@@ -46,6 +46,8 @@ model Application {
   teamMember3Username   String?
   teamMember3AvatarUrl  String?
 
+  votes         Vote[]
+
   @@index([teamMember1Fid])
 }
 
@@ -57,4 +59,23 @@ model NotificationDetails {
   updatedAt DateTime @updatedAt
 
   @@index([fid])
+}
+
+model Vote {
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  applicationId String
+  voterFid      Int
+  experience    Int      // 1-10
+  idea          Int      // 1-10
+  virality      Int      // 1-10
+  signature     String   // The signed message
+  
+  application   Application @relation(fields: [applicationId], references: [id])
+  
+  @@unique([applicationId, voterFid])
+  @@index([voterFid])
+  @@index([applicationId])
 }
