@@ -576,7 +576,7 @@ export default function VoteModal({ isOpen, onClose }: VoteModalProps) {
                               variant="h6"
                               className="text-blue-600 font-semibold"
                             >
-                              {calculateTotal(currentVote)}/15
+                              {calculateTotal(currentVote)}/12
                             </Typography>
                           </div>
                           <div>
@@ -584,7 +584,7 @@ export default function VoteModal({ isOpen, onClose }: VoteModalProps) {
                               variant="subtitle2"
                               className="text-gray-700 mb-1"
                             >
-                              Experience (1-5)
+                              Experience (1-4)
                             </Typography>
                             <div className="flex items-center gap-4">
                               <Typography className="w-8 text-center">
@@ -601,7 +601,7 @@ export default function VoteModal({ isOpen, onClose }: VoteModalProps) {
                                   )
                                 }
                                 min={1}
-                                max={5}
+                                max={4}
                                 step={1}
                                 marks
                                 className="flex-1"
@@ -613,7 +613,7 @@ export default function VoteModal({ isOpen, onClose }: VoteModalProps) {
                               variant="subtitle2"
                               className="text-gray-700 mb-1"
                             >
-                              Idea (1-5)
+                              Idea (1-4)
                             </Typography>
                             <div className="flex items-center gap-4">
                               <Typography className="w-8 text-center">
@@ -625,7 +625,7 @@ export default function VoteModal({ isOpen, onClose }: VoteModalProps) {
                                   handleSliderChange(app.id, "idea", e, value)
                                 }
                                 min={1}
-                                max={5}
+                                max={4}
                                 step={1}
                                 marks
                                 className="flex-1"
@@ -637,7 +637,7 @@ export default function VoteModal({ isOpen, onClose }: VoteModalProps) {
                               variant="subtitle2"
                               className="text-gray-700 mb-1"
                             >
-                              Virality (1-5)
+                              Virality (1-4)
                             </Typography>
                             <div className="flex items-center gap-4">
                               <Typography className="w-8 text-center">
@@ -654,7 +654,7 @@ export default function VoteModal({ isOpen, onClose }: VoteModalProps) {
                                   )
                                 }
                                 min={1}
-                                max={5}
+                                max={4}
                                 step={1}
                                 marks
                                 className="flex-1"
@@ -980,7 +980,7 @@ export default function VoteModal({ isOpen, onClose }: VoteModalProps) {
                               variant="h6"
                               className="text-blue-600 font-semibold"
                             >
-                              {calculateTotal(currentVote)}/15
+                              {calculateTotal(currentVote)}/12
                             </Typography>
                           </div>
                           <div>
@@ -988,7 +988,7 @@ export default function VoteModal({ isOpen, onClose }: VoteModalProps) {
                               variant="subtitle2"
                               className="text-gray-700 mb-1"
                             >
-                              Experience (1-5)
+                              Experience (1-4)
                             </Typography>
                             <div className="flex items-center gap-4">
                               <Typography className="w-8 text-center">
@@ -1005,7 +1005,7 @@ export default function VoteModal({ isOpen, onClose }: VoteModalProps) {
                                   )
                                 }
                                 min={1}
-                                max={5}
+                                max={4}
                                 step={1}
                                 marks
                               />
@@ -1016,7 +1016,7 @@ export default function VoteModal({ isOpen, onClose }: VoteModalProps) {
                               variant="subtitle2"
                               className="text-gray-700 mb-1"
                             >
-                              Idea (1-5)
+                              Idea (1-4)
                             </Typography>
                             <div className="flex items-center gap-4">
                               <Typography className="w-8 text-center">
@@ -1028,7 +1028,7 @@ export default function VoteModal({ isOpen, onClose }: VoteModalProps) {
                                   handleSliderChange(app.id, "idea", e, value)
                                 }
                                 min={1}
-                                max={5}
+                                max={4}
                                 step={1}
                                 marks
                               />
@@ -1039,7 +1039,7 @@ export default function VoteModal({ isOpen, onClose }: VoteModalProps) {
                               variant="subtitle2"
                               className="text-gray-700 mb-1"
                             >
-                              Virality (1-5)
+                              Virality (1-4)
                             </Typography>
                             <div className="flex items-center gap-4">
                               <Typography className="w-8 text-center">
@@ -1056,7 +1056,7 @@ export default function VoteModal({ isOpen, onClose }: VoteModalProps) {
                                   )
                                 }
                                 min={1}
-                                max={5}
+                                max={4}
                                 step={1}
                                 marks
                               />
