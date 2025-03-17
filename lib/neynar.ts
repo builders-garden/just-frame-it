@@ -52,3 +52,32 @@ export const searchUsers = async (
   }
   return data.result.users;
 };
+
+type NeynarResponse = {
+  users: NeynarUser[];
+};
+
+export const fetchUsers = async (fids: string[]): Promise<NeynarUser[]> => {
+  const response = await fetch(
+    `https://api.neynar.com/v2/farcaster/user/bulk?fids=${fids.join(",")}`,
+    {
+      headers: {
+        "x-api-key": process.env.NEYNAR_API_KEY!,
+      },
+    }
+  );
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(
+      `Failed to fetch Farcaster user on Neynar: ${JSON.stringify(errorData)}`
+    );
+  }
+
+  const data = (await response.json()) as NeynarResponse;
+
+  if (!data.users?.[0]) {
+    throw new Error("No user found in Neynar response");
+  }
+
+  return data.users;
+};

@@ -1,4 +1,6 @@
+import sdk from "@farcaster/frame-sdk";
 import Image from "next/image";
+import { useFrame } from "./farcaster-provider";
 
 interface TeamMemberProps {
   username: string;
@@ -13,6 +15,7 @@ export function TeamMember({
   avatarUrl,
   mode = "horizontal",
 }: TeamMemberProps) {
+  const { context } = useFrame();
   const isHorizontalMode = mode === "horizontal";
   const containerClasses = isHorizontalMode
     ? "flex items-center space-x-3"
@@ -23,7 +26,9 @@ export function TeamMember({
     !isHorizontalMode ? "border border-gray-300" : ""
   }`;
 
-  const contentClasses = isHorizontalMode ? "" : "flex flex-col items-start gap-0";
+  const contentClasses = isHorizontalMode
+    ? ""
+    : "flex flex-col items-start gap-0";
 
   const nameClasses = isHorizontalMode
     ? "text-gray-900 hover:text-blue-600 font-medium"
@@ -38,7 +43,9 @@ export function TeamMember({
       className={`${containerClasses} cursor-pointer hover:bg-purple-100 hover:rounded-lg p-2 transition-colors duration-200`}
       onClick={() =>
         !isHorizontalMode &&
-        window.open(`https://warpcast.com/${username}`, "_blank")
+        (context
+          ? sdk?.actions.openUrl(`https://warpcast.com/${username}`)
+          : window.open(`https://warpcast.com/${username}`, "_blank"))
       }
     >
       <div className="flex-shrink-0">

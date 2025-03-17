@@ -2,6 +2,7 @@ import { TeamMember } from "@/components/TeamMember";
 import { useApplications } from "@/hooks/use-applications";
 import { useSubmitVote } from "@/hooks/use-votes";
 import { ALLOWED_VOTER_FIDS } from "@/lib/constants";
+import sdk from "@farcaster/frame-sdk";
 import { CircularProgress, Slider, Typography } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { useWalletClient } from "wagmi";
@@ -434,10 +435,15 @@ export default function VoteModal({ isOpen, onClose }: VoteModalProps) {
                                 {app.projectName}
                               </h2>
                               {app.githubUrl && (
-                                <a
-                                  href={app.githubUrl}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
+                                <div
+                                  onClick={async () => {
+                                    if (context) {
+                                      await sdk?.actions.openUrl(app.githubUrl);
+                                    } else {
+                                      window.open(app.githubUrl, "_blank");
+                                    }
+                                  }}
+                                  className="cursor-pointer"
                                 >
                                   <svg
                                     className="w-6 h-6"
@@ -450,7 +456,7 @@ export default function VoteModal({ isOpen, onClose }: VoteModalProps) {
                                       clipRule="evenodd"
                                     />
                                   </svg>
-                                </a>
+                                </div>
                               )}
                             </div>
                             <div className="flex flex-row gap-4 shrink-0">
@@ -818,10 +824,15 @@ export default function VoteModal({ isOpen, onClose }: VoteModalProps) {
                                 {app.projectName}
                               </h2>
                               {app.githubUrl && (
-                                <a
-                                  href={app.githubUrl}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
+                                <div
+                                  onClick={async () => {
+                                    if (context) {
+                                      await sdk?.actions.openUrl(app.githubUrl);
+                                    } else {
+                                      window.open(app.githubUrl, "_blank");
+                                    }
+                                  }}
+                                  className="cursor-pointer"
                                 >
                                   <svg
                                     className="w-6 h-6"
@@ -834,7 +845,7 @@ export default function VoteModal({ isOpen, onClose }: VoteModalProps) {
                                       clipRule="evenodd"
                                     />
                                   </svg>
-                                </a>
+                                </div>
                               )}
                             </div>
                             <div className="flex flex-row gap-4 shrink-0">

@@ -1,35 +1,40 @@
 "use client";
 
-import { CircularProgress } from "@mui/material";
 import { ApplicationRanking } from "@/components/votes/ApplicationRanking";
-import { VoteDisplay } from "@/components/votes/VoteDisplay";
+import { useApplications } from "@/hooks/use-applications";
+import { CircularProgress } from "@mui/material";
+import { Application, Vote } from "@prisma/client";
 import { useEffect, useState } from "react";
+
+type ApplicationWithScores = Application & {
+  votes: Vote[];
+  totalScore: number;
+  voteCount: number;
+};
 
 export default function VotesPage() {
   const [password, setPassword] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [applications, setApplications] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      fetchApplications();
-    }
-  }, [isAuthenticated]);
+  const { data, isLoading: isLoadingApplications } = useApplications({
+    enabled: isAuthenticated,
+    limit: 100,
+  });
 
-  const fetchApplications = async () => {
-    try {
-      const response = await fetch("/api/applications");
-      if (!response.ok) throw new Error("Failed to fetch applications");
-      const data = await response.json();
-      setApplications(data);
-    } catch (err) {
-      setError(err instanceof Error ? err : new Error("An error occurred"));
-    } finally {
+  useEffect(() => {
+    if (data) {
       setIsLoading(false);
     }
-  };
+  }, [data]);
+
+  useEffect(() => {
+    if (error) {
+      setError(error);
+      setIsLoading(false);
+    }
+  }, [error]);
 
   const handlePasswordSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -87,15 +92,15 @@ export default function VotesPage() {
   }
 
   // Calculate total scores for each application
-  const applicationScores = applications.map((app) => ({
+  const applicationScores = (data?.applications.map((app) => ({
     ...app,
     totalScore: app.votes.reduce(
-      (acc: number, vote: any) =>
+      (acc: number, vote: Vote) =>
         acc + (vote.experience + vote.idea + vote.virality),
       0
     ),
     voteCount: app.votes.length,
-  }));
+  })) ?? []) as unknown as ApplicationWithScores[];
 
   // Sort applications by total score
   const rankedApplications = applicationScores.sort(

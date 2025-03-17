@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Climate_Crisis } from "next/font/google";
 import Image from "next/image";
+import Mentors from "../Mentors";
 
 const climateCrisis = Climate_Crisis({ subsets: ["latin"] });
 
@@ -38,11 +39,11 @@ const mentors: MentorInfo[] = [
     bio: "Farcaster, Warpcast, Yoink",
   },
   {
-    displayName: "ted (not lasso)",
-    username: "ted",
+    displayName: "Linda Xie",
+    username: "linda",
     avatarUrl:
-      "https://openseauserdata.com/files/fd28c65d9b5192168fb259009a3afd36.png",
-    bio: "Farcaster, Warpcast, Yoink",
+      "https://i.seadn.io/gae/r6CW_kgQygQhI7-4JdWt_Nbf_bjFNnEM7dSns1nZGrijJvUMaLnpAFuBLwjsHXTkyX8zfgpRJCYibtm7ojeA2_ASQwSJgh7yKEFVMOI?w=500&auto=format",
+    bio: "Farcaster, Warpcast, Bountycaster",
   },
   {
     displayName: "Stephan",
@@ -72,10 +73,32 @@ const mentors: MentorInfo[] = [
     bio: "Coinbase Wallet",
   },
   {
-    displayName: "Colin Johnson",
-    username: "cojo.eth",
-    avatarUrl: "https://i.imgur.com/5kWzCaA.jpg",
-    bio: "Ponder, Survey",
+    displayName: "eric.base.eth🔵",
+    username: "ericbrown.eth",
+    avatarUrl:
+      "https://imagedelivery.net/BXluQx4ige9GuW0Ia56BHw/bd38e921-a5f7-418b-3fab-9fb6a7dfd400/original",
+    bio: "Base",
+  },
+  {
+    displayName: "wbnns.base.eth🔵",
+    username: "wbnns",
+    avatarUrl:
+      "https://wrpcd.net/cdn-cgi/imagedelivery/BXluQx4ige9GuW0Ia56BHw/25fac8e0-0bbb-4127-5a47-4a81e03d7100/anim=false,fit=contain,f=auto,w=336",
+    bio: "Base",
+  },
+  {
+    displayName: "will",
+    username: "w",
+    avatarUrl:
+      "https://pbs.twimg.com/profile_images/1457405137085894659/N1iYPAc9_400x400.jpg",
+    bio: "Splits",
+  },
+  {
+    displayName: "abram",
+    username: "jared.eth",
+    avatarUrl:
+      "https://warpcast.com/abram",
+    bio: "Base",
   },
   {
     displayName: "tldr (tim reilly)",
@@ -310,51 +333,7 @@ export default function ProgramInfoModal({
                     </div>
                   </div>
 
-                  <div className="space-y-3">
-                    <h3 className="font-bold text-lg text-purple-600">
-                      Mentors and Judges:
-                    </h3>
-                    <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                      {mentors.map((mentor) => (
-                        <div
-                          key={mentor.username}
-                          className="flex flex-col justify-between p-4 border border-gray-200 rounded-xl hover:border-purple-300 transition-colors hover:shadow-sm"
-                        >
-                          <div className="flex flex-col">
-                            <div className="flex items-center gap-3 mb-2">
-                              <Image
-                                src={mentor.avatarUrl}
-                                alt={mentor.displayName}
-                                className="w-12 h-12 rounded-full object-cover"
-                                width={48}
-                                height={48}
-                              />
-                              <div>
-                                <h4 className="font-semibold text-purple-600">
-                                  {mentor.displayName}
-                                </h4>
-                                <p className="text-xs text-gray-500">
-                                  @{mentor.username}
-                                </p>
-                              </div>
-                            </div>
-                            <p className="text-xs text-gray-600 mb-2">
-                              {mentor.bio}
-                            </p>
-                          </div>
-                          <a
-                            href={`https://warpcast.com/${mentor.username}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-sm text-purple-600 hover:text-purple-700 font-medium inline-flex items-center gap-1 hover:gap-2 transition-all"
-                          >
-                            View Profile
-                            <span className="text-xs">→</span>
-                          </a>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+                  <Mentors />
 
                   <div className="space-y-3">
                     <h3 className="font-bold text-lg text-purple-600">

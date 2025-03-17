@@ -10,7 +10,8 @@ export default async function middleware(req: NextRequest) {
   if (
     req.nextUrl.pathname === "/api/auth/sign-in" ||
     req.nextUrl.pathname === "/api/applications" ||
-    req.nextUrl.pathname.includes("/api/webhook")
+    req.nextUrl.pathname.includes("/api/webhook") ||
+    req.nextUrl.pathname.includes("/api/farcaster/users")
   ) {
     return NextResponse.next();
   }
