@@ -4,10 +4,10 @@ import { FrameContext } from "@farcaster/frame-core/dist/context";
 import sdk from "@farcaster/frame-sdk";
 import {
   createContext,
+  ReactNode,
   useContext,
   useEffect,
   useState,
-  ReactNode,
 } from "react";
 
 interface FrameContextValue {
@@ -46,7 +46,9 @@ export function FrameProvider({ children }: FrameProviderProps) {
         } else {
           setError("Failed to load Farcaster context");
         }
-        await sdk.actions.ready();
+        await sdk.actions.ready({
+          disableNativeGestures: true,
+        });
       } catch (err) {
         setError(
           err instanceof Error ? err.message : "Failed to initialize SDK"
