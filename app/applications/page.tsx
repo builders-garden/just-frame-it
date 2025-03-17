@@ -26,26 +26,26 @@ const convertUrlsToLinks = (text: string) => {
 };
 
 export default function ApplicationsPage() {
-  const [username, setUsername] = useState("");
-  const [debouncedUsername, setDebouncedUsername] = useState("");
+  const [projectName, setProjectName] = useState("");
+  const [debouncedProjectName, setDebouncedProjectName] = useState("");
   const [page, setPage] = useState(1);
   const [password, setPassword] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const limit = 10;
 
   const { data, isLoading, error } = useApplications({
-    username: debouncedUsername,
+    projectName: debouncedProjectName,
     page,
     limit,
   });
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setDebouncedUsername(username);
+      setDebouncedProjectName(projectName);
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [username]);
+  }, [projectName]);
 
   const handlePasswordSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,8 +56,8 @@ export default function ApplicationsPage() {
     }
   };
 
-  const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUsername(e.target.value);
+  const handleProjectNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setProjectName(e.target.value);
     setPage(1);
   };
 
@@ -103,14 +103,14 @@ export default function ApplicationsPage() {
       <div className="mb-6">
         <input
           type="text"
-          placeholder="Filter by username..."
-          value={username}
-          onChange={handleUsernameChange}
+          placeholder="Filter by project name..."
+          value={projectName}
+          onChange={handleProjectNameChange}
           className="w-full px-4 py-2 border rounded-lg"
         />
       </div>
 
-      {isLoading || username !== debouncedUsername ? (
+      {isLoading || projectName !== debouncedProjectName ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
           {[...Array(4)].map((_, i) => (
             <div
@@ -149,7 +149,7 @@ export default function ApplicationsPage() {
             No applications found
           </h3>
           <p className="mt-1 text-sm text-gray-500">
-            {username
+            {projectName
               ? "Try adjusting your search criteria"
               : "No applications have been submitted yet"}
           </p>

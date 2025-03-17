@@ -6,17 +6,15 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "10");
-    const username = searchParams.get("username");
+    const projectName = searchParams.get("projectName");
 
     const skip = (page - 1) * limit;
 
-    const where = username
+    const where = projectName
       ? {
-          OR: [
-            { teamMember1Username: username },
-            { teamMember2Username: username },
-            { teamMember3Username: username },
-          ],
+          projectName: {
+            contains: projectName,
+          },
         }
       : {};
 

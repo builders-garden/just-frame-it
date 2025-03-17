@@ -29,24 +29,24 @@ interface ApplicationsResponse {
 }
 
 export function useApplications({
-  username,
+  projectName,
   limit = 10,
   page = 1,
   enabled = true,
 }: {
-  username?: string;
+  projectName?: string;
   limit?: number;
   page?: number;
   enabled?: boolean;
 }) {
   const queryParams = new URLSearchParams({
-    ...(username && { username }),
+    ...(projectName && { projectName }),
     limit: limit.toString(),
     page: page.toString(),
   });
 
   return useApiQuery<ApplicationsResponse>({
-    queryKey: ["applications", { username, limit, page }],
+    queryKey: ["applications", { projectName, limit, page }],
     url: `/api/applications?${queryParams}`,
     enabled,
     isProtected: true,
