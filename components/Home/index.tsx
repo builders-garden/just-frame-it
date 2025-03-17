@@ -122,20 +122,6 @@ export default function Home() {
       </div>
 
       <div className="w-full relative z-10 flex flex-col items-center px-0 md:pb-0 justify-between gap-8 md:gap-0">
-        {(profile?.fid && ALLOWED_VOTER_FIDS.includes(profile.fid)) ||
-          (context?.user?.fid &&
-            ALLOWED_VOTER_FIDS.includes(context.user.fid) && (
-              <div className="w-fit max-w-5xl mx-auto px-4 pt-4 cursor-pointer">
-                <div
-                  className="border rounded-lg p-4 bg-white shadow-sm flex flex-row justify-between"
-                  onClick={() => {
-                    setIsVoteModalOpen(true);
-                  }}
-                >
-                  Applications
-                </div>
-              </div>
-            ))}
         <div className="w-full max-w-5xl mx-auto text-center space-y-4 py-8 md:pb-16 mt-4 md:mt-8">
           <h1
             className={`mx-4 md:mx-auto text-purple-600 border py-1 md:py-4 border-blue-500 relative max-w-3xl`}
@@ -184,6 +170,18 @@ export default function Home() {
                   console.error("Failed to sign in", error);
                 }}
               /> */}
+              {(profile?.fid && ALLOWED_VOTER_FIDS.includes(profile.fid)) ||
+                (context?.user?.fid &&
+                  ALLOWED_VOTER_FIDS.includes(context.user.fid) && (
+                    <Button
+                      className="px-[30px] py-[1.4rem] flex flex-row items-center justify-center gap-2"
+                      onClick={() => {
+                        setIsVoteModalOpen(true);
+                      }}
+                    >
+                      Review Applications
+                    </Button>
+                  ))}
               <Button
                 variant="bordered"
                 onClick={() => {
