@@ -92,7 +92,7 @@ export default function VotesPage() {
   }
 
   // Calculate total scores for each application
-  const applicationScores = (data?.applications.map((app) => ({
+  const applicationScores = (data?.applications?.map((app) => ({
     ...app,
     totalScore: app.votes.reduce(
       (acc: number, vote: Vote) =>

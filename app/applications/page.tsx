@@ -157,7 +157,7 @@ export default function ApplicationsPage() {
       ) : (
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-            {data?.applications.map((app) => (
+            {data?.applications?.map((app) => (
               <div
                 key={app.id}
                 className="border rounded-lg p-4 md:p-6 bg-white shadow-sm hover:shadow-md transition-shadow"
