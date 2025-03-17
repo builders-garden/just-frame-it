@@ -6,6 +6,7 @@ import { providers } from "ethers";
 import posthog from "posthog-js";
 import { PostHogProvider } from "posthog-js/react";
 import FrameWalletProvider from "./frame-wallet-provider";
+import dynamic from "next/dynamic";
 const queryClient = new QueryClient();
 
 if (typeof window !== "undefined") {
@@ -15,6 +16,19 @@ if (typeof window !== "undefined") {
     person_profiles: "always", // or 'always' to create profiles for anonymous users as well
   });
 }
+
+const FrameProvider = dynamic(
+  () =>
+    import("@/components/farcaster-provider").then((mod) => mod.FrameProvider),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-purple-600" />
+      </div>
+    ),
+  }
+);
 
 const farcasterConfig = {
   rpcUrl: `https://optimism-mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_PROJECT_ID}`,
@@ -27,12 +41,16 @@ const farcasterConfig = {
 
 export const Providers = ({ children }: { children: React.ReactNode }) => {
   return (
-    <FrameWalletProvider>
-      <PostHogProvider client={posthog}>
-        <QueryClientProvider client={queryClient}>
-          <AuthKitProvider config={farcasterConfig}>{children}</AuthKitProvider>
-        </QueryClientProvider>
-      </PostHogProvider>
-    </FrameWalletProvider>
+    <FrameProvider>
+      <FrameWalletProvider>
+        <PostHogProvider client={posthog}>
+          <QueryClientProvider client={queryClient}>
+            <AuthKitProvider config={farcasterConfig}>
+              {children}
+            </AuthKitProvider>
+          </QueryClientProvider>
+        </PostHogProvider>
+      </FrameWalletProvider>
+    </FrameProvider>
   );
 };
