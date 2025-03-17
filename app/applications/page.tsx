@@ -5,6 +5,26 @@ import { useApplications } from "@/hooks/use-applications";
 import { CircularProgress } from "@mui/material";
 import { useEffect, useState } from "react";
 
+const convertUrlsToLinks = (text: string) => {
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  return text.split(urlRegex).map((part, index) => {
+    if (part.match(urlRegex)) {
+      return (
+        <a
+          key={index}
+          href={part}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-600 hover:text-blue-800 underline"
+        >
+          {part}
+        </a>
+      );
+    }
+    return part;
+  });
+};
+
 export default function ApplicationsPage() {
   const [username, setUsername] = useState("");
   const [debouncedUsername, setDebouncedUsername] = useState("");
@@ -148,7 +168,7 @@ export default function ApplicationsPage() {
                       {app.projectName}
                     </h2>
                     <p className="text-gray-600 mt-2 text-sm md:text-base">
-                      {app.projectDescription}
+                      {convertUrlsToLinks(app.projectDescription)}
                     </p>
                     {app.previousWork && (
                       <div className="mt-4">
@@ -156,7 +176,7 @@ export default function ApplicationsPage() {
                           Previous Work
                         </h3>
                         <p className="text-gray-600 text-sm md:text-base">
-                          {app.previousWork}
+                          {convertUrlsToLinks(app.previousWork)}
                         </p>
                       </div>
                     )}
@@ -216,7 +236,7 @@ export default function ApplicationsPage() {
                       Why do you want to attend?
                     </h3>
                     <p className="text-gray-600 text-sm md:text-base">
-                      {app.whyAttend}
+                      {convertUrlsToLinks(app.whyAttend)}
                     </p>
                   </div>
 
