@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 interface CountdownValues {
   days: number;
@@ -14,6 +14,7 @@ export default function Countdown() {
     minutes: 0,
     seconds: 0,
   });
+  const [isExpired, setIsExpired] = useState(false);
 
   useEffect(() => {
     // Set target date to March 16, 2025 23:59:59 Rome time (UTC+1 in winter, UTC+2 in summer)
@@ -40,6 +41,9 @@ export default function Countdown() {
         const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
         setCountdown({ days, hours, minutes, seconds });
+        setIsExpired(false);
+      } else {
+        setIsExpired(true);
       }
     };
 
@@ -50,8 +54,14 @@ export default function Countdown() {
 
   return (
     <p className="text-purple-500 mt-2 md:mt-6">
-      Applications closing in {countdown.days}d, {countdown.hours}hr,{" "}
-      {countdown.minutes}m, {countdown.seconds}s
+      {isExpired ? (
+        "Applications closed"
+      ) : (
+        <>
+          Applications closing in {countdown.days}d, {countdown.hours}hr,{" "}
+          {countdown.minutes}m, {countdown.seconds}s
+        </>
+      )}
     </p>
   );
 }

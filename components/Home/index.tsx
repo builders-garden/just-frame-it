@@ -10,7 +10,6 @@ import { Climate_Crisis } from "next/font/google";
 import Image from "next/image";
 import posthog from "posthog-js";
 import { useState } from "react";
-import ApplyButton from "../ApplyButton";
 import ApplyModal from "../ApplyModal";
 import Button from "../Button";
 import Countdown from "../Countdown";
@@ -177,14 +176,14 @@ export default function Home() {
           <div className="flex flex-col items-center gap-4">
             <Countdown />
             <div className="flex flex-row items-center justify-center gap-2 mx-auto">
-              <ApplyButton
+              {/* <ApplyButton
                 onSuccess={() => {
                   setIsModalOpen(true);
                 }}
                 onError={(error) => {
                   console.error("Failed to sign in", error);
                 }}
-              />
+              /> */}
               <Button
                 variant="bordered"
                 onClick={() => {
