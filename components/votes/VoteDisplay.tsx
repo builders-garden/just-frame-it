@@ -12,7 +12,6 @@ export function VoteDisplay({ applications, voterFid }: VoteDisplayProps) {
     <div className="space-y-6">
       {applications.map((app) => {
         const userVote = app.votes.find((vote) => vote.voterFid === voterFid);
-
         return (
           <div key={app.id} className="bg-white rounded-lg shadow p-6">
             <div className="flex justify-between items-start">

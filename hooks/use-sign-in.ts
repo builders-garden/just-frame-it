@@ -1,19 +1,11 @@
-import { sdk } from "@farcaster/frame-sdk";
 import { useFrame } from "@/components/farcaster-provider";
-import { useCallback, useEffect, useState } from "react";
 import { MESSAGE_EXPIRATION_TIME } from "@/lib/constants";
+import { useProfile, useSignInMessage } from "@farcaster/auth-kit";
+import { sdk } from "@farcaster/frame-sdk";
 import posthog from "posthog-js";
-import {
-  useProfile,
-  useSignInMessage,
-  useSignIn as useSignInFromFarcaster,
-} from "@farcaster/auth-kit";
+import { useCallback, useEffect, useState } from "react";
 
-export const useSignIn = ({
-  onSuccess,
-}: {
-  onSuccess: () => void;
-}) => {
+export const useSignIn = ({ onSuccess }: { onSuccess: () => void }) => {
   const { context } = useFrame();
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -91,9 +83,7 @@ export const useSignIn = ({
   }, []);
 
   useEffect(() => {
-    if (isAuthenticated) {
-      signIn();
-    }
+    signIn();
   }, [isAuthenticated, signIn]);
 
   useEffect(() => {
