@@ -32,7 +32,7 @@ export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { signIn, isLoading: isSigningIn } = useSignIn({
     onSuccess: () => {
-      setIsModalOpen(true);
+      console.log("sign in success");
     },
   });
   const [isProgramInfoModalOpen, setIsProgramInfoModalOpen] = useState(false);
