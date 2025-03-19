@@ -28,6 +28,9 @@ export function ApplicationRanking({ applications }: ApplicationRankingProps) {
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Votes
             </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Attendance
+            </th>
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
@@ -49,6 +52,17 @@ export function ApplicationRanking({ applications }: ApplicationRankingProps) {
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                 {app.voteCount}
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                <span
+                  className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                    app.canAttendRome
+                      ? "bg-green-100 text-green-800"
+                      : "bg-red-100 text-red-800"
+                  }`}
+                >
+                  {app.canAttendRome ? "Can Attend" : "Cannot Attend"}
+                </span>
               </td>
             </tr>
           ))}
