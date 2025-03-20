@@ -2,6 +2,8 @@
 
 import { ApplicationRanking } from "@/components/votes/ApplicationRanking";
 import { useApplications } from "@/hooks/use-applications";
+import { useFarcasterUsers } from "@/hooks/use-farcaster-users";
+import { ALLOWED_VOTER_FIDS } from "@/lib/constants";
 import { CircularProgress } from "@mui/material";
 import { Application, Vote } from "@prisma/client";
 import { useEffect, useState } from "react";
@@ -17,6 +19,9 @@ export default function VotesPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+  const { data: farcasterUsers } = useFarcasterUsers(
+    ALLOWED_VOTER_FIDS.map((fid) => fid.toString())
+  ) as { data: { fid: string; pfp_url: string }[] | undefined };
 
   const { data, isLoading: isLoadingApplications } = useApplications({
     enabled: isAuthenticated,
@@ -115,7 +120,10 @@ export default function VotesPage() {
         {/* Application Rankings */}
         <section>
           <h2 className="text-2xl font-semibold mb-4">Application Rankings</h2>
-          <ApplicationRanking applications={rankedApplications} />
+          <ApplicationRanking
+            applications={rankedApplications}
+            farcasterUsers={farcasterUsers || []}
+          />
         </section>
 
         {/* Individual Votes
