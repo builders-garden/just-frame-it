@@ -122,6 +122,7 @@ export function ApplicationRanking({
           isOpen={!!selectedApplication}
           onClose={() => setSelectedApplication(null)}
           application={selectedApplication}
+          farcasterUsers={farcasterUsers}
         />
       )}
     </>

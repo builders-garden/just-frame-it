@@ -1,6 +1,7 @@
 import { TeamMember } from "@/components/TeamMember";
 import { Application, Vote } from "@prisma/client";
 import { AnimatePresence, motion } from "framer-motion";
+import Image from "next/image";
 
 type ApplicationWithScores = Application & {
   votes: Vote[];
@@ -12,12 +13,14 @@ interface ApplicationDetailsModalProps {
   isOpen: boolean;
   onClose: () => void;
   application: ApplicationWithScores;
+  farcasterUsers: { fid: string; pfp_url: string }[];
 }
 
 export function ApplicationDetailsModal({
   isOpen,
   onClose,
   application,
+  farcasterUsers,
 }: ApplicationDetailsModalProps) {
   return (
     <AnimatePresence>
@@ -169,22 +172,37 @@ export function ApplicationDetailsModal({
                     </div>
 
                     <div>
-                      <h3 className="text-lg font-semibold mb-2">Voter FIDs</h3>
+                      <h3 className="text-lg font-semibold mb-2">Voters</h3>
                       <div className="flex flex-wrap gap-2">
-                        {application.votes.map((vote) => (
-                          <div
-                            key={vote.id}
-                            className="flex items-center gap-2 bg-gray-50 px-3 py-2 rounded-lg"
-                          >
-                            <span className="text-sm font-medium text-gray-900">
-                              FID: {vote.voterFid}
-                            </span>
-                            <span className="text-sm text-gray-500">
-                              Score:{" "}
-                              {vote.experience + vote.idea + vote.virality}
-                            </span>
-                          </div>
-                        ))}
+                        {application.votes.map((vote) => {
+                          const user = farcasterUsers.find(
+                            (u) => u.fid.toString() === vote.voterFid.toString()
+                          );
+                          return (
+                            <div
+                              key={vote.id}
+                              className="flex items-center gap-2 bg-gray-50 px-3 py-2 rounded-lg"
+                            >
+                              {user?.pfp_url ? (
+                                <Image
+                                  src={user.pfp_url}
+                                  alt={`Voter ${vote.voterFid}`}
+                                  width={24}
+                                  height={24}
+                                  className="rounded-full"
+                                />
+                              ) : (
+                                <span className="text-sm font-medium text-gray-900">
+                                  FID: {vote.voterFid}
+                                </span>
+                              )}
+                              <span className="text-sm text-gray-500">
+                                Score:{" "}
+                                {vote.experience + vote.idea + vote.virality}
+                              </span>
+                            </div>
+                          );
+                        })}
                       </div>
                     </div>
                   </div>
