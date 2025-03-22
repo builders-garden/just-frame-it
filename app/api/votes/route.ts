@@ -1,8 +1,6 @@
 import { ALLOWED_VOTER_FIDS } from "@/lib/constants";
-import { fetchUser } from "@/lib/neynar";
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
-import { verifyMessage } from "viem";
 
 export async function POST(req: NextRequest) {
   try {
@@ -22,18 +20,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { applicationId, experience, idea, virality, signature, message } =
+    const { applicationId, experience, idea, virality } =
       await req.json();
 
     // Validate required fields
-    if (
-      !applicationId ||
-      !experience ||
-      !idea ||
-      !virality ||
-      !signature ||
-      !message
-    ) {
+    if (!applicationId || !experience || !idea || !virality) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 }
@@ -67,48 +58,48 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Verify the signature
-    try {
-      const voter = await fetchUser(fid.toString());
+    // // Verify the signature
+    // try {
+    //   const voter = await fetchUser(fid.toString());
 
-      // First try custody address
-      let isValidSignature = false;
-      if (voter.custody_address) {
-        isValidSignature = await verifyMessage({
-          address: voter.custody_address as `0x${string}`,
-          message,
-          signature,
-        });
-      }
+    //   // First try custody address
+    //   let isValidSignature = false;
+    //   if (voter.custody_address) {
+    //     isValidSignature = await verifyMessage({
+    //       address: voter.custody_address as `0x${string}`,
+    //       message,
+    //       signature,
+    //     });
+    //   }
 
-      // If custody fails, try verification addresses
-      if (!isValidSignature && voter.verifications) {
-        for (const address of voter.verifications) {
-          isValidSignature = await verifyMessage({
-            address: address as `0x${string}`,
-            message,
-            signature,
-          });
-          if (isValidSignature) break;
-        }
-      }
+    //   // If custody fails, try verification addresses
+    //   if (!isValidSignature && voter.verifications) {
+    //     for (const address of voter.verifications) {
+    //       isValidSignature = await verifyMessage({
+    //         address: address as `0x${string}`,
+    //         message,
+    //         signature,
+    //       });
+    //       if (isValidSignature) break;
+    //     }
+    //   }
 
-      if (!isValidSignature) {
-        return NextResponse.json(
-          {
-            error:
-              "Invalid signature - not signed by custody or verified address",
-          },
-          { status: 401 }
-        );
-      }
-    } catch (error) {
-      console.error("Error verifying signature:", error);
-      return NextResponse.json(
-        { error: "Failed to verify signature" },
-        { status: 400 }
-      );
-    }
+    //   if (!isValidSignature) {
+    //     return NextResponse.json(
+    //       {
+    //         error:
+    //           "Invalid signature - not signed by custody or verified address",
+    //       },
+    //       { status: 401 }
+    //     );
+    //   }
+    // } catch (error) {
+    //   console.error("Error verifying signature:", error);
+    //   return NextResponse.json(
+    //     { error: "Failed to verify signature" },
+    //     { status: 400 }
+    //   );
+    // }
 
     // Create or update vote
     const vote = await prisma.vote.upsert({
@@ -124,13 +115,13 @@ export async function POST(req: NextRequest) {
         experience,
         idea,
         virality,
-        signature,
+        signature: "n/a",
       },
       update: {
         experience,
         idea,
         virality,
-        signature,
+        signature: "n/a",
       },
     });
 

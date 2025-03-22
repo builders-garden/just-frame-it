@@ -156,20 +156,20 @@ export default function VoteModal({ isOpen, onClose }: VoteModalProps) {
     if (!vote || !vote.experience || !vote.idea || !vote.virality) return;
 
     try {
-      const message = `I confirm my vote for application ${applicationId} with scores: Experience=${vote.experience}, Idea=${vote.idea}, Virality=${vote.virality}`;
-      const signature = await walletClient?.signMessage({
-        message,
-      });
+      // const message = `I confirm my vote for application ${applicationId} with scores: Experience=${vote.experience}, Idea=${vote.idea}, Virality=${vote.virality}`;
+      // const signature = await walletClient?.signMessage({
+      //   message,
+      // });
 
-      if (!signature) {
-        throw new Error("Failed to sign message");
-      }
+      // if (!signature) {
+      //   throw new Error("Failed to sign message");
+      // }
 
       await submitVote({
         applicationId,
         ...vote,
-        signature: signature!,
-        message,
+        signature: "n/a",
+        message: "n/a",
       });
 
       // Clear the vote from the votesMap
