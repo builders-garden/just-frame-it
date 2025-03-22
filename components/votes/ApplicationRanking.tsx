@@ -3,6 +3,9 @@ import Image from "next/image";
 import { useState } from "react";
 import { ApplicationDetailsModal } from "./ApplicationDetailsModal";
 
+type SortField = "totalScore" | "avgScore";
+type SortDirection = "asc" | "desc";
+
 type ApplicationWithScores = Application & {
   votes: Vote[];
   totalScore: number;
@@ -20,6 +23,39 @@ export function ApplicationRanking({
 }: ApplicationRankingProps) {
   const [selectedApplication, setSelectedApplication] =
     useState<ApplicationWithScores | null>(null);
+  const [sortField, setSortField] = useState<SortField>("totalScore");
+  const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
+
+  const handleSort = (field: SortField) => {
+    if (sortField === field) {
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+    } else {
+      setSortField(field);
+      setSortDirection("desc");
+    }
+  };
+
+  const sortedApplications = [...applications].sort((a, b) => {
+    const aValue =
+      sortField === "avgScore"
+        ? a.voteCount > 0
+          ? a.totalScore / a.voteCount
+          : 0
+        : a.totalScore;
+    const bValue =
+      sortField === "avgScore"
+        ? b.voteCount > 0
+          ? b.totalScore / b.voteCount
+          : 0
+        : b.totalScore;
+
+    return sortDirection === "asc" ? aValue - bValue : bValue - aValue;
+  });
+
+  const getSortIcon = (field: SortField) => {
+    if (sortField !== field) return "↕️";
+    return sortDirection === "asc" ? "↑" : "↓";
+  };
 
   return (
     <>
@@ -33,11 +69,17 @@ export function ApplicationRanking({
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Project
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Total Score
+              <th
+                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                onClick={() => handleSort("totalScore")}
+              >
+                Total Score {getSortIcon("totalScore")}
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Avg Score
+              <th
+                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                onClick={() => handleSort("avgScore")}
+              >
+                Avg Score {getSortIcon("avgScore")}
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Votes
@@ -51,7 +93,7 @@ export function ApplicationRanking({
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {applications.map((app, index) => (
+            {sortedApplications.map((app, index) => (
               <tr
                 key={app.id}
                 className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
