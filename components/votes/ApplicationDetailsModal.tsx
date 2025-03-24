@@ -172,6 +172,49 @@ export function ApplicationDetailsModal({
                     </div>
 
                     <div>
+                      <h3 className="text-lg font-semibold mb-2">
+                        Average Scores
+                      </h3>
+                      <div className="grid grid-cols-3 gap-4">
+                        <div className="bg-gray-50 p-4 rounded-lg">
+                          <p className="text-sm text-gray-500 mb-1">
+                            Experience
+                          </p>
+                          <p className="text-lg font-semibold">
+                            {(
+                              application.votes.reduce(
+                                (acc, vote) => acc + vote.experience,
+                                0
+                              ) / application.voteCount
+                            ).toFixed(1)}
+                          </p>
+                        </div>
+                        <div className="bg-gray-50 p-4 rounded-lg">
+                          <p className="text-sm text-gray-500 mb-1">Idea</p>
+                          <p className="text-lg font-semibold">
+                            {(
+                              application.votes.reduce(
+                                (acc, vote) => acc + vote.idea,
+                                0
+                              ) / application.voteCount
+                            ).toFixed(1)}
+                          </p>
+                        </div>
+                        <div className="bg-gray-50 p-4 rounded-lg">
+                          <p className="text-sm text-gray-500 mb-1">Virality</p>
+                          <p className="text-lg font-semibold">
+                            {(
+                              application.votes.reduce(
+                                (acc, vote) => acc + vote.virality,
+                                0
+                              ) / application.voteCount
+                            ).toFixed(1)}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div>
                       <h3 className="text-lg font-semibold mb-2">Voters</h3>
                       <div className="flex flex-wrap gap-2">
                         {application.votes.map((vote) => {
