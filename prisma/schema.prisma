@@ -79,3 +79,27 @@ model Vote {
   @@index([voterFid])
   @@index([applicationId])
 }
+
+model ProgressUpdate {
+  id                  String   @id @default(cuid())
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  
+  teamName            String
+  demoLink            String?
+  keyFeatures         String
+  technicalMilestones String
+  userEngagement      String
+  challenges          String
+  nextSteps           String
+  additionalNotes     String?
+  
+  // Author information
+  authorFid           Int
+  authorDisplayName   String
+  authorUsername      String
+  authorAvatarUrl     String?
+  
+  @@index([authorFid])
+  @@index([teamName])
+}

@@ -12,79 +12,93 @@ export const useSignIn = ({ onSuccess }: { onSuccess: () => void }) => {
   const [error, setError] = useState<string | null>(null);
   const { message, signature } = useSignInMessage();
   const { isAuthenticated, profile } = useProfile();
-
-  const signIn = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      setError(null);
-
-      let result: { message: string; signature: string } = {
-        message: "",
-        signature: "",
-      };
-      let userFid: number | undefined;
-
-      if (context) {
-        result = await sdk.actions.signIn({
-          nonce: Math.random().toString(36).substring(2),
-          notBefore: new Date().toISOString(),
-          expirationTime: new Date(
-            Date.now() + MESSAGE_EXPIRATION_TIME
-          ).toISOString(),
+  const signIn = useCallback(
+    async ({
+      message,
+      signature,
+      fid,
+    }: {
+      message?: string;
+      signature?: string;
+      fid?: number;
+    } = {}) => {
+      try {
+        setIsLoading(true);
+        setError(null);
+        console.log("signing in with ", {
+          message,
+          signature,
+          profile,
         });
-        userFid = context.user.fid;
-      } else if (isAuthenticated) {
-        if (!message || !signature) {
-          throw new Error("No message or signature found");
-        }
-        userFid = profile.fid;
-        result = {
-          message: message || "",
-          signature: signature || "",
+        let result: { message: string; signature: string } = {
+          message: "",
+          signature: "",
         };
+        let userFid: number | undefined;
+
+        if (context) {
+          result = await sdk.actions.signIn({
+            nonce: Math.random().toString(36).substring(2),
+            notBefore: new Date().toISOString(),
+            expirationTime: new Date(
+              Date.now() + MESSAGE_EXPIRATION_TIME
+            ).toISOString(),
+          });
+          userFid = context.user.fid;
+        } else if (isAuthenticated) {
+          if (!message || !signature) {
+            throw new Error("No message or signature found");
+          }
+          console.log("message and signature found", {
+            message,
+            signature,
+          });
+          userFid = profile.fid;
+          result = {
+            message: message,
+            signature: signature,
+          };
+        }
+
+        const res = await fetch("/api/auth/sign-in", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            signature: result.signature || signature,
+            message: result.message || message,
+            fid: fid || profile?.fid || userFid,
+          }),
+        });
+
+        if (!res.ok) {
+          const errorData = await res.json().catch(() => ({}));
+          throw new Error(errorData.message || "Sign in failed");
+        }
+
+        const data = await res.json();
+        localStorage.setItem("token", data.token);
+        setIsSignedIn(true);
+        onSuccess();
+        // posthog.identify(context.user.fid.toString());
+        return data;
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : "Sign in failed";
+        setError(errorMessage);
+        throw err;
+      } finally {
+        setIsLoading(false);
       }
-
-      const res = await fetch("/api/auth/sign-in", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          signature: result.signature,
-          message: result.message,
-          fid: userFid,
-        }),
-      });
-
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.message || "Sign in failed");
-      }
-
-      const data = await res.json();
-      localStorage.setItem("token", data.token);
-      setIsSignedIn(true);
-      onSuccess();
-      // posthog.identify(context.user.fid.toString());
-      return data;
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : "Sign in failed";
-      setError(errorMessage);
-      throw err;
-    } finally {
-      setIsLoading(false);
-    }
-  }, [context, isAuthenticated, message, profile.fid, signature]);
+    },
+    [context, isAuthenticated, message, profile.fid, signature]
+  );
 
   const signOut = useCallback(async () => {
     localStorage.removeItem("token");
     setIsSignedIn(false);
   }, []);
-
-  useEffect(() => {
-    signIn();
-  }, [isAuthenticated, signIn]);
 
   useEffect(() => {
     const token = localStorage.getItem("token");

@@ -35,7 +35,7 @@ export interface ApplyFormData {
 export default function ApplyModal({ isOpen, onClose }: ApplyModalProps) {
   const { data: user } = useMe();
   const { isAuthenticated, profile } = useProfile();
-  const { mutateAsync: apply, isPending } = useApply();
+  const { mutate: apply, isPending } = useApply();
 
   // Form state
   const [projectName, setProjectName] = useState("");
@@ -123,10 +123,6 @@ export default function ApplyModal({ isOpen, onClose }: ApplyModalProps) {
             onClose();
           }, 5000);
           setIsSubmitting(false);
-        },
-        onError: () => {
-          setIsSubmitting(false);
-          setValidationError("Something went wrong. Please try again.");
         },
       });
     } catch (error) {

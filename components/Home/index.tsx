@@ -1,6 +1,5 @@
 "use client";
 
-import { useSignIn } from "@/hooks/use-sign-in";
 import { ALLOWED_VOTER_FIDS } from "@/lib/constants";
 import { trackEvent } from "@/lib/posthog/client";
 import { useProfile } from "@farcaster/auth-kit";
@@ -30,11 +29,7 @@ export default function Home() {
   const { profile } = useProfile();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { signIn, isLoading: isSigningIn } = useSignIn({
-    onSuccess: () => {
-      console.log("sign in success");
-    },
-  });
+
   const [isProgramInfoModalOpen, setIsProgramInfoModalOpen] = useState(false);
   const [showCopiedTooltip, setShowCopiedTooltip] = useState(false);
   const [showOverlay, setShowOverlay] = useState(false);
