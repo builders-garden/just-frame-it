@@ -1,0 +1,60 @@
+import { ALLOWED_VOTER_FIDS } from "@/lib/constants";
+import { prisma } from "@/lib/prisma";
+import { NextResponse } from "next/server";
+
+export async function POST(request: Request) {
+  try {
+    const voterFid = parseInt(request.headers.get("x-user-fid") || "");
+    const { votes } = await request.json();
+
+    // Validate voter
+    if (!voterFid || !ALLOWED_VOTER_FIDS.includes(voterFid)) {
+      return NextResponse.json(
+        { error: "Unauthorized voter" },
+        { status: 401 }
+      );
+    }
+
+    // Validate votes
+    const totalPoints = Object.values(votes).reduce((a, b) => a + b, 0);
+    if (totalPoints !== 10) {
+      return NextResponse.json(
+        { error: "Total points must equal 10" },
+        { status: 400 }
+      );
+    }
+
+    if (Object.keys(votes).length > 4) {
+      return NextResponse.json(
+        { error: "Cannot vote for more than 4 teams" },
+        { status: 400 }
+      );
+    }
+
+    // Delete existing votes for this voter
+    await prisma.teamVote.deleteMany({
+      where: { voterFid },
+    });
+
+    // Create new votes
+    const votePromises = Object.entries(votes).map(([teamName, points]) =>
+      prisma.teamVote.create({
+        data: {
+          voterFid,
+          teamName,
+          points: points as number,
+        },
+      })
+    );
+
+    await Promise.all(votePromises);
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("Error submitting votes:", error);
+    return NextResponse.json(
+      { error: "Failed to submit votes" },
+      { status: 500 }
+    );
+  }
+}

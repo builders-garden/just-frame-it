@@ -2,30 +2,11 @@ import { fetchUser } from "@/lib/neynar";
 import { NextRequest, NextResponse } from "next/server";
 import { verifyMessage } from "viem";
 import * as jose from "jose";
-import { trackEvent } from "@/lib/posthog/server";
 
 export const POST = async (req: NextRequest) => {
   const { fid, referrerFid, signature, message, userNow } = await req.json();
 
   const newUser = await fetchUser(fid);
-  /*if (!user) {
-    const newUser = await fetchUser(fid);
-    user = await createUser({
-      fid: fid,
-      username: newUser.username,
-      displayName: newUser.display_name,
-      avatarUrl: newUser.pfp_url,
-      walletAddress: newUser.custody_address,
-      xp: 0,
-      coins: 0,
-      expansions: 1,
-      notificationDetails: "",
-    });
-
-    trackEvent(fid, "sign_up", {
-      fid,
-    });
-  }*/
 
   // Verify signature matches custody address
   const isValidSignature = await verifyMessage({
@@ -47,10 +28,6 @@ export const POST = async (req: NextRequest) => {
     .sign(new TextEncoder().encode(process.env.JWT_SECRET));
 
   const response = NextResponse.json({ success: true, token: jwtToken });
-
-  //   trackEvent(fid, "sign_in", {
-  //     fid,
-  //   });
 
   return response;
 };

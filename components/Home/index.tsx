@@ -1,7 +1,6 @@
 "use client";
 
 import { ALLOWED_VOTER_FIDS } from "@/lib/constants";
-import { trackEvent } from "@/lib/posthog/client";
 import { useProfile } from "@farcaster/auth-kit";
 import sdk from "@farcaster/frame-sdk";
 import { CircleCheck, Hourglass } from "lucide-react";
@@ -39,10 +38,6 @@ export default function Home() {
       posthog.identify(context?.user?.fid?.toString());
       setShowOverlay(true);
       try {
-        trackEvent("apply_button_clicked", {
-          fid: context?.user?.fid,
-          context: "frame",
-        });
         const details = await sdk.actions.addFrame();
         if (details.notificationDetails?.token) {
           setIsFrameAdded(true);
@@ -53,10 +48,6 @@ export default function Home() {
         setShowOverlay(true);
       }
     } else {
-      trackEvent("apply_button_clicked", {
-        fid: context?.user?.fid,
-        context: "web",
-      });
       window.open(
         "https://warpcast.com/?launchFrameDomain=frame-it.builders.garden",
         "_blank"
@@ -180,11 +171,6 @@ export default function Home() {
               <Button
                 variant="bordered"
                 onClick={() => {
-                  posthog.identify(context?.user?.fid?.toString());
-                  trackEvent("learn_more_button_clicked", {
-                    fid: context?.user?.fid,
-                    context: context?.user?.fid ? "frame" : "web",
-                  });
                   setIsProgramInfoModalOpen(true);
                 }}
               >

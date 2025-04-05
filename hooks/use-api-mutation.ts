@@ -8,6 +8,7 @@ interface UseApiMutationOptions<TData, TVariables>
   method?: HttpMethod;
   isProtected?: boolean;
   body?: (variables: TVariables) => unknown;
+  headers?: Record<string, string>;
 }
 
 export const useApiMutation = <TData, TVariables = unknown>(
@@ -17,6 +18,7 @@ export const useApiMutation = <TData, TVariables = unknown>(
     url,
     method = "POST",
     isProtected = true,
+    headers = {},
     ...mutationOptions
   } = options;
 
@@ -31,6 +33,7 @@ export const useApiMutation = <TData, TVariables = unknown>(
         headers: {
           "Content-Type": "application/json",
           ...(isProtected && { Authorization: `Bearer ${token}` }),
+          ...headers,
         },
         ...(resolvedBody ? { body: JSON.stringify(resolvedBody) } : {}),
       });

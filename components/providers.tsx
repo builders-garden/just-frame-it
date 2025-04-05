@@ -3,19 +3,10 @@
 import { AuthKitProvider } from "@farcaster/auth-kit";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { providers } from "ethers";
-import posthog from "posthog-js";
-import { PostHogProvider } from "posthog-js/react";
 import FrameWalletProvider from "./frame-wallet-provider";
 import dynamic from "next/dynamic";
 const queryClient = new QueryClient();
 
-if (typeof window !== "undefined") {
-  posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
-    api_host: "/ingest",
-    ui_host: "https://eu.posthog.com",
-    person_profiles: "always", // or 'always' to create profiles for anonymous users as well
-  });
-}
 
 const FrameProvider = dynamic(
   () =>
@@ -43,13 +34,11 @@ export const Providers = ({ children }: { children: React.ReactNode }) => {
   return (
     <FrameProvider>
       <FrameWalletProvider>
-        <PostHogProvider client={posthog}>
           <QueryClientProvider client={queryClient}>
             <AuthKitProvider config={farcasterConfig}>
               {children}
             </AuthKitProvider>
           </QueryClientProvider>
-        </PostHogProvider>
       </FrameWalletProvider>
     </FrameProvider>
   );

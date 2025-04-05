@@ -103,3 +103,17 @@ model ProgressUpdate {
   @@index([authorFid])
   @@index([teamName])
 }
+
+model TeamVote {
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  voterFid      Int
+  teamName      String
+  points        Int      // Points allocated to this team
+  
+  @@unique([voterFid, teamName])
+  @@index([voterFid])
+  @@index([teamName])
+}
