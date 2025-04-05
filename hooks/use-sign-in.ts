@@ -25,11 +25,6 @@ export const useSignIn = ({ onSuccess }: { onSuccess: () => void }) => {
       try {
         setIsLoading(true);
         setError(null);
-        console.log("signing in with ", {
-          message,
-          signature,
-          profile,
-        });
         let result: { message: string; signature: string } = {
           message: "",
           signature: "",
@@ -49,10 +44,6 @@ export const useSignIn = ({ onSuccess }: { onSuccess: () => void }) => {
           if (!message || !signature) {
             throw new Error("No message or signature found");
           }
-          console.log("message and signature found", {
-            message,
-            signature,
-          });
           userFid = profile.fid;
           result = {
             message: message,

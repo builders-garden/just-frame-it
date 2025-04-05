@@ -113,7 +113,6 @@ export function ProgressUpdateList() {
     );
   }
 
-  console.log("updates", updates, user.fid);
 
   return (
     <div className="space-y-6">

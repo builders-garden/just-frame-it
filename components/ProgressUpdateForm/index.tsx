@@ -76,12 +76,8 @@ export function ProgressUpdateForm({
   }, [initialData]);
 
   useEffect(() => {
-    console.log("user", user);
     if (user?.fid) {
-      console.log(
-        "user fid",
-        ALLOWED_PROGRESS_UPDATE_FIDS[user?.fid!.toString() as string]
-      );
+
       setFormData((prev) => ({
         ...prev,
         teamName: ALLOWED_PROGRESS_UPDATE_FIDS[user?.fid!.toString() as string],

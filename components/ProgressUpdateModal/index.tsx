@@ -72,7 +72,6 @@ export function ProgressUpdateModal({
   };
 
   useEffect(() => {
-    console.log("user", user);
     if (user?.fid) {
       setFormData((prev) => ({
         ...prev,
