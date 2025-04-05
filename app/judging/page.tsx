@@ -96,19 +96,21 @@ export default function JudgingPage() {
     return (
       <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto">
-          <div className="flex flex-col text-center justify-center items-center">
+          <div className="flex flex-col items-center">
             <h1 className="text-3xl font-bold text-gray-900">Access Denied</h1>
             <p className="mt-4 mb-2 text-lg text-gray-600">
               Please sign in with Farcaster to access this page.
             </p>
-            <FarcasterSignInButton
-              onSuccess={({ message, signature, fid }) => {
-                signIn({ message, signature, fid });
-              }}
-              onError={(error) => {
-                console.error("sign in error", error);
-              }}
-            />
+            <div className="flex justify-center w-full">
+              <FarcasterSignInButton
+                onSuccess={({ message, signature, fid }) => {
+                  signIn({ message, signature, fid });
+                }}
+                onError={(error) => {
+                  console.error("sign in error", error);
+                }}
+              />
+            </div>
           </div>
         </div>
       </div>
