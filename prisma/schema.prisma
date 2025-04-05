@@ -79,3 +79,50 @@ model Vote {
   @@index([voterFid])
   @@index([applicationId])
 }
+
+model ProgressUpdate {
+  id                  String   @id @default(cuid())
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  
+  teamName            String
+  demoLink            String?
+  keyFeatures         String
+  technicalMilestones String
+  userEngagement      String
+  challenges          String
+  nextSteps           String
+  additionalNotes     String?
+  
+  // Author information
+  authorFid           Int
+  authorDisplayName   String
+  authorUsername      String
+  authorAvatarUrl     String?
+  
+  @@index([authorFid])
+  @@index([teamName])
+}
+
+enum DemoDay {
+  SPRINT_1
+  SPRINT_2
+  SPRINT_3
+  SPRINT_4
+}
+
+model TeamVote {
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  voterFid      Int
+  teamName      String
+  points        Int      // Points allocated to this team
+  demoDay       DemoDay  // Which demo day this vote belongs to
+  
+  @@unique([voterFid, teamName, demoDay])
+  @@index([voterFid])
+  @@index([teamName])
+  @@index([demoDay])
+}

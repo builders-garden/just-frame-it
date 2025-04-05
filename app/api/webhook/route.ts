@@ -1,5 +1,4 @@
 import { sendFrameNotification } from "@/lib/notifs";
-import { trackEvent } from "@/lib/posthog/server";
 import {
   deleteUserNotificationDetails,
   setUserNotificationDetails,
@@ -54,16 +53,10 @@ export async function POST(request: NextRequest) {
           title: "Just Frame It 🖼️",
           body: "We'll be in touch soon to let you know when applications open.",
         });
-        trackEvent(fid, "frame_added", {
-          fid,
-        });
       }
       break;
     case "frame_removed":
       await deleteUserNotificationDetails(fid);
-      trackEvent(fid, "frame_removed", {
-        fid,
-      });
       break;
     case "notifications_enabled":
       await setUserNotificationDetails(fid, event.notificationDetails);
@@ -72,15 +65,9 @@ export async function POST(request: NextRequest) {
         title: "Ding ding ding",
         body: "Notifications for Just Frame It are now enabled",
       });
-      trackEvent(fid, "notifications_enabled", {
-        fid,
-      });
       break;
     case "notifications_disabled":
       await deleteUserNotificationDetails(fid);
-      trackEvent(fid, "notifications_disabled", {
-        fid,
-      });
       break;
   }
 
