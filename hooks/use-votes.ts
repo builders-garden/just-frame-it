@@ -1,3 +1,4 @@
+import { DemoDay } from "@/lib/constants";
 import { useApiMutation } from "./use-api-mutation";
 import { useApiQuery } from "./use-api-query";
 
@@ -49,3 +50,12 @@ export function useSubmitVote() {
     isProtected: true,
   });
 }
+
+export const useVotesForDemoDay = (demoDay: DemoDay) => {
+  return useApiQuery<Record<string, number>>({
+    url: `/api/judging/votes?demoDay=${demoDay}`,
+    method: "GET",
+    isProtected: true,
+    queryKey: ["votes", demoDay],
+  });
+};

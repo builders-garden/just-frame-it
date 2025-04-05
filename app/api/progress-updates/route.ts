@@ -73,42 +73,29 @@ export async function POST(req: Request) {
 
 export async function GET(req: Request) {
   try {
-    const userFid = req.headers.get("x-user-fid");
-    if (!userFid) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
     const { searchParams } = new URL(req.url);
     const teamName = searchParams.get("teamName");
-    const authorFid = searchParams.get("authorFid");
-
-    let whereClause = {};
 
     if (teamName) {
-      whereClause = { teamName };
-    } else if (authorFid) {
-      whereClause = { authorFid: parseInt(authorFid) };
-    } else {
-      // If no filters provided, return updates from the current user's team
-      const userUpdates = await prisma.progressUpdate.findMany({
-        where: { authorFid: parseInt(userFid) },
-        select: { teamName: true },
+      const updates = await prisma.progressUpdate.findMany({
+        where: {
+          teamName,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
       });
 
-      if (userUpdates.length > 0) {
-        whereClause = { teamName: userUpdates[0].teamName };
-      } else {
-        return NextResponse.json([]);
-      }
+      return NextResponse.json(updates);
     }
 
-    // Get all progress updates matching the filter
-    const progressUpdates = await prisma.progressUpdate.findMany({
-      where: whereClause,
-      orderBy: { createdAt: "desc" },
+    const updates = await prisma.progressUpdate.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
     });
 
-    return NextResponse.json(progressUpdates);
+    return NextResponse.json(updates);
   } catch (error) {
     console.error("Error fetching progress updates:", error);
     return NextResponse.json(

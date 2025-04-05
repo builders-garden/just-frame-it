@@ -1,11 +1,19 @@
 import { ALLOWED_VOTER_FIDS } from "@/lib/constants";
 import { prisma } from "@/lib/prisma";
+import { DemoDay } from "@prisma/client";
 import { NextResponse } from "next/server";
+
+type Votes = {
+  [teamName: string]: number;
+};
 
 export async function POST(request: Request) {
   try {
     const voterFid = parseInt(request.headers.get("x-user-fid") || "");
-    const { votes } = await request.json();
+    const { votes, demoDay } = (await request.json()) as {
+      votes: Votes;
+      demoDay: DemoDay;
+    };
 
     // Validate voter
     if (!voterFid || !ALLOWED_VOTER_FIDS.includes(voterFid)) {
@@ -16,7 +24,11 @@ export async function POST(request: Request) {
     }
 
     // Validate votes
-    const totalPoints = Object.values(votes).reduce((a, b) => a + b, 0);
+    const totalPoints = Object.values(votes).reduce(
+      (acc, points) => acc + points,
+      0
+    );
+
     if (totalPoints !== 10) {
       return NextResponse.json(
         { error: "Total points must equal 10" },
@@ -26,7 +38,7 @@ export async function POST(request: Request) {
 
     if (Object.keys(votes).length > 4) {
       return NextResponse.json(
-        { error: "Cannot vote for more than 4 teams" },
+        { error: "Cannot vote forf more than 4 teams" },
         { status: 400 }
       );
     }
@@ -42,7 +54,8 @@ export async function POST(request: Request) {
         data: {
           voterFid,
           teamName,
-          points: points as number,
+          points,
+          demoDay,
         },
       })
     );
