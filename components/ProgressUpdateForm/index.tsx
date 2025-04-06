@@ -10,7 +10,6 @@ interface ProgressUpdateData {
   teamName: string;
   demoLink: string;
   keyFeatures: string;
-  technicalMilestones: string;
   userEngagement: string;
   challenges: string;
   nextSteps: string;
@@ -36,7 +35,6 @@ export function ProgressUpdateForm({
       : "",
     demoLink: "",
     keyFeatures: "",
-    technicalMilestones: "",
     userEngagement: "",
     challenges: "",
     nextSteps: "",
@@ -58,7 +56,6 @@ export function ProgressUpdateForm({
           : "",
         demoLink: "",
         keyFeatures: "",
-        technicalMilestones: "",
         userEngagement: "",
         challenges: "",
         nextSteps: "",
@@ -77,7 +74,6 @@ export function ProgressUpdateForm({
 
   useEffect(() => {
     if (user?.fid) {
-
       setFormData((prev) => ({
         ...prev,
         teamName: ALLOWED_PROGRESS_UPDATE_FIDS[user?.fid!.toString() as string],
@@ -164,8 +160,11 @@ export function ProgressUpdateForm({
               >
                 1. Key Features Built
                 <p className="text-xs text-gray-500">
-                  List the key features you&apos;ve built. Feel free to add
-                  links when relevant.
+                  Detail the most important features you&apos;ve developed in
+                  the past two weeks from both a product and technical
+                  perspective. Highlight what&apos;s been shipped, improved, or
+                  iterated on. Include links to demos, repos, or designs if
+                  relevant.
                 </p>
               </label>
               <textarea
@@ -181,37 +180,16 @@ export function ProgressUpdateForm({
 
             <div>
               <label
-                htmlFor="technicalMilestones"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
-                2. Technical Milestones Achieved
-                <p className="text-xs text-gray-500">
-                  List the technical milestones you&apos;ve achieved. Feel free
-                  to add links when relevant.
-                </p>
-              </label>
-              <textarea
-                id="technicalMilestones"
-                name="technicalMilestones"
-                value={formData.technicalMilestones}
-                onChange={handleChange}
-                required
-                rows={4}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            <div>
-              <label
                 htmlFor="userEngagement"
                 className="block text-sm font-medium text-gray-700 mb-1"
               >
                 3. User & Market Engagement
                 <p className="text-xs text-gray-500">
-                  Anything related to user engagement, market engagement,
-                  retention, etc. It can be things you&apos;ve done to onboard
-                  users, things you&apos;ve done to retain users, as well as
-                  actual engagement metrics.
+                  Share insights and metrics related to user engagement,
+                  retention, and market feedback. Include onboarding
+                  initiatives, retention strategies, user interviews, or
+                  surveys. Be specific with numbers if possible — signups, daily
+                  active users, conversions, etc.
                 </p>
               </label>
               <textarea
@@ -232,8 +210,9 @@ export function ProgressUpdateForm({
               >
                 4. Challenges & Blockers
                 <p className="text-xs text-gray-500">
-                  List the challenges and blockers you&apos;ve faced or are
-                  facing.
+                  Highlight any challenges that impacted progress. This can
+                  include technical obstacles, design bottlenecks, internal
+                  communication issues, or anything else slowing you down.
                 </p>
               </label>
               <textarea
@@ -254,7 +233,9 @@ export function ProgressUpdateForm({
               >
                 5. Next Steps (Next 2 Weeks)
                 <p className="text-xs text-gray-500">
-                  List the next steps you&apos;re going to take.
+                  Explain what you plan to focus on in the upcoming sprint.
+                  Describe what you aim to build, improve, or validate. Include
+                  what progress you expect to see.
                 </p>
               </label>
               <textarea
@@ -277,8 +258,9 @@ export function ProgressUpdateForm({
           >
             Additional Notes (Optional)
             <p className="text-xs text-gray-500">
-              Anything else you&apos;d like to add, as well as goals for the
-              next period.
+              Share anything else worth noting. This can include technical
+              updates, team or organizational changes, external opportunities,
+              or reflections from the last sprint.
             </p>
           </label>
           <textarea
