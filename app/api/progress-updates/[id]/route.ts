@@ -1,7 +1,7 @@
 import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
-export async function PATCH(
+export async function POST(
   request: Request,
   { params }: { params: { id: string } }
 ) {
@@ -45,4 +45,29 @@ export async function PATCH(
     console.error("[PROGRESS_UPDATE_PATCH]", error);
     return new NextResponse("Internal error", { status: 500 });
   }
+}
+
+export async function DELETE(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  const { id } = params;
+  const userFid = request.headers.get("x-user-fid");
+  if (!userFid) {
+    return new NextResponse("Unauthorized", { status: 401 });
+  }
+
+  const existingUpdate = await prisma.progressUpdate.findUnique({
+    where: { id, authorFid: parseInt(userFid) },
+  });
+
+  if (!existingUpdate) {
+    return new NextResponse("Update not found", { status: 404 });
+  }
+
+  await prisma.progressUpdate.delete({
+    where: { id },
+  });
+
+  return NextResponse.json({ message: "Update deleted" });
 }

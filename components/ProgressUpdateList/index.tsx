@@ -6,7 +6,9 @@ import { useMe } from "@/hooks/use-users";
 import { format } from "date-fns";
 import Image from "next/image";
 import { useState } from "react";
+import { ConfirmationModal } from "../ConfirmationModal";
 import { ProgressUpdateForm } from "../ProgressUpdateForm";
+
 interface ProgressUpdate {
   id: string;
   createdAt: string;
@@ -43,6 +45,8 @@ export function ProgressUpdateList() {
   const [editingUpdate, setEditingUpdate] = useState<ProgressUpdate | null>(
     null
   );
+  const [deleteConfirmation, setDeleteConfirmation] =
+    useState<ProgressUpdate | null>(null);
   const {
     data: updates = [],
     isLoading,
@@ -54,6 +58,16 @@ export function ProgressUpdateList() {
     queryKey: ["progress-updates"],
     isProtected: true,
   });
+
+  const { mutate: deleteProgressUpdate, isPending: isDeleting } =
+    useApiMutation<ProgressUpdate, { id: string }>({
+      url: (variables) => `/api/progress-updates/${variables.id}`,
+      method: "DELETE",
+      isProtected: true,
+      onSuccess: () => {
+        refetch();
+      },
+    });
 
   const { mutate: updateProgressUpdate, isPending: isUpdating } =
     useApiMutation<
@@ -69,7 +83,8 @@ export function ProgressUpdateList() {
       >
     >({
       url: `/api/progress-updates/${editingUpdate?.id}`,
-      method: "PATCH",
+      method: "POST",
+      body: (variables) => variables,
       onSuccess: () => {
         setEditingUpdate(null);
         refetch();
@@ -161,12 +176,20 @@ export function ProgressUpdateList() {
                 {format(new Date(update.createdAt), "MMM d, yyyy")}
               </span>
               {user?.fid.toString() === update.authorFid.toString() && (
-                <button
-                  onClick={() => setEditingUpdate(update)}
-                  className="text-blue-600 hover:text-blue-800 text-sm font-medium"
-                >
-                  Edit
-                </button>
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={() => setEditingUpdate(update)}
+                    className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => setDeleteConfirmation(update)}
+                    className="text-red-600 hover:text-red-800 text-sm font-medium"
+                  >
+                    Delete
+                  </button>
+                </div>
               )}
             </div>
 
@@ -255,6 +278,19 @@ export function ProgressUpdateList() {
           </div>
         </div>
       )}
+
+      <ConfirmationModal
+        isOpen={!!deleteConfirmation}
+        onClose={() => setDeleteConfirmation(null)}
+        onConfirm={() => {
+          if (deleteConfirmation) {
+            deleteProgressUpdate({ id: deleteConfirmation.id });
+          }
+        }}
+        title="Delete Progress Update"
+        message="Are you sure you want to delete this progress update? This action cannot be undone."
+        confirmText="Delete"
+      />
     </div>
   );
 }

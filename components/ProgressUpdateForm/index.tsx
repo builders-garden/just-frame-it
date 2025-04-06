@@ -1,12 +1,11 @@
 "use client";
 
-import { useApiMutation } from "@/hooks/use-api-mutation";
 import { useMe } from "@/hooks/use-users";
 import { ALLOWED_PROGRESS_UPDATE_FIDS } from "@/lib/constants";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 interface ProgressUpdateData {
+  id?: string;
   teamName: string;
   demoLink: string;
   keyFeatures: string;
@@ -25,9 +24,9 @@ interface ProgressUpdateFormProps {
 export function ProgressUpdateForm({
   initialData,
   onSubmit,
-  isSubmitting: externalIsSubmitting,
+  isSubmitting,
 }: ProgressUpdateFormProps) {
-  const router = useRouter();
+  const [error, setError] = useState<Error | null>(null);
   const { data: user } = useMe();
   const [formData, setFormData] = useState<ProgressUpdateData>({
     teamName: user?.fid
@@ -39,31 +38,6 @@ export function ProgressUpdateForm({
     challenges: "",
     nextSteps: "",
     additionalNotes: "",
-  });
-
-  const {
-    mutate: submitProgressUpdate,
-    isPending: isSubmitting,
-    error,
-  } = useApiMutation<unknown, ProgressUpdateData>({
-    url: "/api/progress-updates",
-    method: "POST",
-    onSuccess: () => {
-      // Reset form and refresh the page
-      setFormData({
-        teamName: user?.fid
-          ? (ALLOWED_PROGRESS_UPDATE_FIDS[user?.fid.toString()] as string)
-          : "",
-        demoLink: "",
-        keyFeatures: "",
-        userEngagement: "",
-        challenges: "",
-        nextSteps: "",
-        additionalNotes: "",
-      });
-      router.refresh();
-    },
-    isProtected: true,
   });
 
   useEffect(() => {
@@ -83,10 +57,11 @@ export function ProgressUpdateForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (onSubmit) {
-      onSubmit(formData);
-    } else {
-      submitProgressUpdate(formData);
+    try {
+      onSubmit?.(formData);
+    } catch (error) {
+      console.error(error);
+      setError(error as Error);
     }
   };
 
@@ -272,10 +247,10 @@ export function ProgressUpdateForm({
         <div className="flex justify-end">
           <button
             type="submit"
-            disabled={isSubmitting || externalIsSubmitting}
+            disabled={isSubmitting}
             className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
           >
-            {isSubmitting || externalIsSubmitting
+            {isSubmitting
               ? "Submitting..."
               : initialData
               ? "Update"
