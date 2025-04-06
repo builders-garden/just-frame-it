@@ -14,7 +14,6 @@ export async function POST(req: Request) {
       teamName,
       demoLink,
       keyFeatures,
-      technicalMilestones,
       userEngagement,
       challenges,
       nextSteps,
@@ -25,7 +24,6 @@ export async function POST(req: Request) {
     if (
       !teamName ||
       !keyFeatures ||
-      !technicalMilestones ||
       !userEngagement ||
       !challenges ||
       !nextSteps
@@ -49,7 +47,6 @@ export async function POST(req: Request) {
         teamName,
         demoLink,
         keyFeatures,
-        technicalMilestones,
         userEngagement,
         challenges,
         nextSteps,

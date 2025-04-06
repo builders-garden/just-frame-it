@@ -33,7 +33,6 @@ export async function PATCH(
         teamName: body.teamName,
         demoLink: body.demoLink,
         keyFeatures: body.keyFeatures,
-        technicalMilestones: body.technicalMilestones,
         userEngagement: body.userEngagement,
         challenges: body.challenges,
         nextSteps: body.nextSteps,
