@@ -13,7 +13,6 @@ interface ProgressUpdate {
   teamName: string;
   demoLink: string | null;
   keyFeatures: string;
-  technicalMilestones: string;
   userEngagement: string;
   challenges: string;
   nextSteps: string;
@@ -113,7 +112,6 @@ export function ProgressUpdateList() {
     );
   }
 
-
   return (
     <div className="space-y-6">
       {updates.map((update) => (
@@ -196,13 +194,6 @@ export function ProgressUpdateList() {
               </div>
 
               <div>
-                <h4 className="font-medium mb-2">Technical Milestones</h4>
-                <p className="text-gray-700 whitespace-pre-wrap">
-                  {update.technicalMilestones}
-                </p>
-              </div>
-
-              <div>
                 <h4 className="font-medium mb-2">User & Market Engagement</h4>
                 <p className="text-gray-700 whitespace-pre-wrap">
                   {update.userEngagement}
@@ -253,7 +244,6 @@ export function ProgressUpdateList() {
                 teamName: editingUpdate.teamName,
                 demoLink: editingUpdate.demoLink || "",
                 keyFeatures: editingUpdate.keyFeatures,
-                technicalMilestones: editingUpdate.technicalMilestones,
                 userEngagement: editingUpdate.userEngagement,
                 challenges: editingUpdate.challenges,
                 nextSteps: editingUpdate.nextSteps,
