@@ -98,11 +98,7 @@ export function ProgressUpdateForm({
   };
 
   return (
-    <div className="bg-white shadow rounded-lg p-6">
-      <h2 className="text-xl font-semibold mb-6">
-        {initialData ? "Edit Progress Update" : "Submit Progress Update"}
-      </h2>
-
+    <div className="bg-white rounded-lg p-6">
       {error && (
         <div className="mb-4 p-4 bg-red-50 text-red-700 rounded-md">
           {error.message}
