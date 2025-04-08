@@ -9,7 +9,6 @@ interface ProgressUpdate {
   teamName: string;
   demoLink: string | null;
   keyFeatures: string;
-  technicalMilestones: string;
   userEngagement: string;
   challenges: string;
   nextSteps: string;
@@ -28,7 +27,7 @@ interface TeamProgressModalProps {
 
 const makeLinksClickable = (text: string) => {
   const urlRegex = /(https?:\/\/[^\s]+)/g;
-  return text.split(urlRegex).map((part, index) => {
+  return text?.split(urlRegex).map((part, index) => {
     if (part.match(urlRegex)) {
       return (
         <a
@@ -163,15 +162,6 @@ export function TeamProgressModal({
                             </h4>
                             <p className="text-gray-700 whitespace-pre-wrap">
                               {makeLinksClickable(update.keyFeatures)}
-                            </p>
-                          </div>
-
-                          <div>
-                            <h4 className="font-bold mb-2">
-                              Technical Milestones
-                            </h4>
-                            <p className="text-gray-700 whitespace-pre-wrap">
-                              {makeLinksClickable(update.technicalMilestones)}
                             </p>
                           </div>
 
