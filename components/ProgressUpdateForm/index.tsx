@@ -154,7 +154,7 @@ export function ProgressUpdateForm({
                 htmlFor="userEngagement"
                 className="block text-sm font-medium text-gray-700 mb-1"
               >
-                3. User & Market Engagement
+                2. User & Market Engagement
                 <p className="text-xs text-gray-500">
                   Share insights and metrics related to user engagement,
                   retention, and market feedback. Include onboarding
@@ -179,7 +179,7 @@ export function ProgressUpdateForm({
                 htmlFor="challenges"
                 className="block text-sm font-medium text-gray-700 mb-1"
               >
-                4. Challenges & Blockers
+                3. Challenges & Blockers
                 <p className="text-xs text-gray-500">
                   Highlight any challenges that impacted progress. This can
                   include technical obstacles, design bottlenecks, internal
@@ -202,7 +202,7 @@ export function ProgressUpdateForm({
                 htmlFor="nextSteps"
                 className="block text-sm font-medium text-gray-700 mb-1"
               >
-                5. Next Steps (Next 2 Weeks)
+                4. Next Steps (Next 2 Weeks)
                 <p className="text-xs text-gray-500">
                   Explain what you plan to focus on in the upcoming sprint.
                   Describe what you aim to build, improve, or validate. Include
