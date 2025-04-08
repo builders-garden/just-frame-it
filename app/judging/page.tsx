@@ -16,7 +16,12 @@ import { useProfile } from "@farcaster/auth-kit";
 import { useEffect, useState } from "react";
 
 // Get unique team names from ALLOWED_PROGRESS_UPDATE_FIDS
-const TEAMS = Array.from(new Set(Object.values(ALLOWED_PROGRESS_UPDATE_FIDS)));
+const TEAMS = Array.from(
+  new Set(Object.values(ALLOWED_PROGRESS_UPDATE_FIDS))
+).filter((team) => {
+  const isLocalhost = process.env.NEXT_PUBLIC_URL?.includes("localhost");
+  return isLocalhost || team !== "Builders Garden";
+});
 
 export default function JudgingPage() {
   const { data: user } = useMe();

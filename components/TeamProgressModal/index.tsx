@@ -184,7 +184,7 @@ export function TeamProgressModal({
                           </div>
 
                           <div>
-                            <h4 className="font-medium mb-2">Next Steps</h4>
+                            <h4 className="font-bold mb-2">Next Steps</h4>
                             <p className="text-gray-700 whitespace-pre-wrap">
                               {makeLinksClickable(update.nextSteps)}
                             </p>
