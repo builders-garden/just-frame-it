@@ -25,6 +25,27 @@ interface ProgressUpdate {
   authorAvatarUrl: string | null;
 }
 
+// Helper function to convert URLs in text to clickable links
+const convertUrlsToLinks = (text: string) => {
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  return text.split(urlRegex).map((part, i) => {
+    if (part.match(urlRegex)) {
+      return (
+        <a
+          key={i}
+          href={part}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-600 hover:text-blue-800 underline"
+        >
+          {part}
+        </a>
+      );
+    }
+    return part;
+  });
+};
+
 // Helper function to get update number for a team
 const getUpdateNumberForTeam = (
   updates: ProgressUpdate[],
@@ -212,28 +233,28 @@ export function ProgressUpdateList() {
               <div>
                 <h4 className="font-medium mb-2">Key Features Built</h4>
                 <p className="text-gray-700 whitespace-pre-wrap">
-                  {update.keyFeatures}
+                  {convertUrlsToLinks(update.keyFeatures)}
                 </p>
               </div>
 
               <div>
                 <h4 className="font-medium mb-2">User & Market Engagement</h4>
                 <p className="text-gray-700 whitespace-pre-wrap">
-                  {update.userEngagement}
+                  {convertUrlsToLinks(update.userEngagement)}
                 </p>
               </div>
 
               <div>
                 <h4 className="font-medium mb-2">Challenges & Blockers</h4>
                 <p className="text-gray-700 whitespace-pre-wrap">
-                  {update.challenges}
+                  {convertUrlsToLinks(update.challenges)}
                 </p>
               </div>
 
               <div>
                 <h4 className="font-medium mb-2">Next Steps</h4>
                 <p className="text-gray-700 whitespace-pre-wrap">
-                  {update.nextSteps}
+                  {convertUrlsToLinks(update.nextSteps)}
                 </p>
               </div>
 
@@ -241,7 +262,7 @@ export function ProgressUpdateList() {
                 <div>
                   <h4 className="font-medium mb-2">Additional Notes</h4>
                   <p className="text-gray-700 whitespace-pre-wrap">
-                    {update.additionalNotes}
+                    {convertUrlsToLinks(update.additionalNotes)}
                   </p>
                 </div>
               )}
