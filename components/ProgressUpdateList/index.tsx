@@ -231,28 +231,28 @@ export function ProgressUpdateList() {
             {/* Content sections */}
             <div className="space-y-6 mt-4">
               <div>
-                <h4 className="font-medium mb-2">Key Features Built</h4>
+                <h4 className="font-bold mb-2">Key Features Built</h4>
                 <p className="text-gray-700 whitespace-pre-wrap">
                   {convertUrlsToLinks(update.keyFeatures)}
                 </p>
               </div>
 
               <div>
-                <h4 className="font-medium mb-2">User & Market Engagement</h4>
+                <h4 className="font-bold mb-2">User & Market Engagement</h4>
                 <p className="text-gray-700 whitespace-pre-wrap">
                   {convertUrlsToLinks(update.userEngagement)}
                 </p>
               </div>
 
               <div>
-                <h4 className="font-medium mb-2">Challenges & Blockers</h4>
+                <h4 className="font-bold mb-2">Challenges & Blockers</h4>
                 <p className="text-gray-700 whitespace-pre-wrap">
                   {convertUrlsToLinks(update.challenges)}
                 </p>
               </div>
 
               <div>
-                <h4 className="font-medium mb-2">Next Steps</h4>
+                <h4 className="font-bold mb-2">Next Steps</h4>
                 <p className="text-gray-700 whitespace-pre-wrap">
                   {convertUrlsToLinks(update.nextSteps)}
                 </p>
@@ -260,7 +260,7 @@ export function ProgressUpdateList() {
 
               {update.additionalNotes && (
                 <div>
-                  <h4 className="font-medium mb-2">Additional Notes</h4>
+                  <h4 className="font-bold mb-2">Additional Notes</h4>
                   <p className="text-gray-700 whitespace-pre-wrap">
                     {convertUrlsToLinks(update.additionalNotes)}
                   </p>

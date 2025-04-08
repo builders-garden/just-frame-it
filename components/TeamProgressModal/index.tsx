@@ -26,6 +26,26 @@ interface TeamProgressModalProps {
   teamName: string;
 }
 
+const makeLinksClickable = (text: string) => {
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  return text.split(urlRegex).map((part, index) => {
+    if (part.match(urlRegex)) {
+      return (
+        <a
+          key={index}
+          href={part}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-600 hover:text-blue-800 underline"
+        >
+          {part}
+        </a>
+      );
+    }
+    return part;
+  });
+};
+
 export function TeamProgressModal({
   isOpen,
   onClose,
@@ -138,55 +158,55 @@ export function TeamProgressModal({
 
                         <div className="space-y-6 mt-4">
                           <div>
-                            <h4 className="font-medium mb-2">
+                            <h4 className="font-bold mb-2">
                               Key Features Built
                             </h4>
                             <p className="text-gray-700 whitespace-pre-wrap">
-                              {update.keyFeatures}
+                              {makeLinksClickable(update.keyFeatures)}
                             </p>
                           </div>
 
                           <div>
-                            <h4 className="font-medium mb-2">
+                            <h4 className="font-bold mb-2">
                               Technical Milestones
                             </h4>
                             <p className="text-gray-700 whitespace-pre-wrap">
-                              {update.technicalMilestones}
+                              {makeLinksClickable(update.technicalMilestones)}
                             </p>
                           </div>
 
                           <div>
-                            <h4 className="font-medium mb-2">
+                            <h4 className="font-bold mb-2">
                               User & Market Engagement
                             </h4>
                             <p className="text-gray-700 whitespace-pre-wrap">
-                              {update.userEngagement}
+                              {makeLinksClickable(update.userEngagement)}
                             </p>
                           </div>
 
                           <div>
-                            <h4 className="font-medium mb-2">
+                            <h4 className="font-bold mb-2">
                               Challenges & Blockers
                             </h4>
                             <p className="text-gray-700 whitespace-pre-wrap">
-                              {update.challenges}
+                              {makeLinksClickable(update.challenges)}
                             </p>
                           </div>
 
                           <div>
                             <h4 className="font-medium mb-2">Next Steps</h4>
                             <p className="text-gray-700 whitespace-pre-wrap">
-                              {update.nextSteps}
+                              {makeLinksClickable(update.nextSteps)}
                             </p>
                           </div>
 
                           {update.additionalNotes && (
                             <div>
-                              <h4 className="font-medium mb-2">
+                              <h4 className="font-bold mb-2">
                                 Additional Notes
                               </h4>
                               <p className="text-gray-700 whitespace-pre-wrap">
-                                {update.additionalNotes}
+                                {makeLinksClickable(update.additionalNotes)}
                               </p>
                             </div>
                           )}

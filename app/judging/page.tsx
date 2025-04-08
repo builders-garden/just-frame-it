@@ -33,6 +33,7 @@ export default function JudgingPage() {
   const [success, setSuccess] = useState<string | null>(null);
   const [selectedTeam, setSelectedTeam] = useState<string | null>(null);
   const [isProgressModalOpen, setIsProgressModalOpen] = useState(false);
+  const [hasExistingVotes, setHasExistingVotes] = useState(false);
 
   // Fetch existing votes for the current demo day
   const { data: existingVotes, refetch: refetchVotes } = useApiQuery<
@@ -62,6 +63,7 @@ export default function JudgingPage() {
       });
 
       setVotes(initializedVotes);
+      setHasExistingVotes(Object.keys(existingVotes).length > 0);
 
       // Calculate total points for the current demo day
       const currentDemoDayPoints = Object.values(existingVotes).reduce(
@@ -198,7 +200,7 @@ export default function JudgingPage() {
             Distribute your 10 points among up to 4 teams
           </p>
         </div>
-        <div className="flex flex-col text-blue-500 bg-blue-100 rounded-md items-start text-sm p-4">
+        <div className="flex flex-col text-blue-500 bg-blue-100 border border-blue-200 rounded-md items-start text-sm p-4">
           <ul className="list-disc list-inside">
             <li>
               You can submit and edit your votes up to 3 days after the demo day
@@ -330,12 +332,23 @@ export default function JudgingPage() {
                 }
                 className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
               >
-                {isSubmitting ? "Submitting..." : "Submit Votes"}
+                {isSubmitting
+                  ? "Submitting..."
+                  : hasExistingVotes
+                  ? "Update Votes"
+                  : "Submit Votes"}
               </button>
             </div>
           </div>
         </div>
       </div>
+
+      {hasExistingVotes && !success && (
+        <div className="max-w-3xl mx-auto mt-4 p-4 bg-green-100 border border-green-200 text-green-700 rounded-md">
+          You have already submitted votes for this demo day. You can update
+          your votes until the deadline.
+        </div>
+      )}
 
       {selectedTeam && (
         <TeamProgressModal
