@@ -1,59 +1,64 @@
 "use client";
 
-import { ALLOWED_VOTER_FIDS } from "@/lib/constants";
+import { useFarcasterUsers } from "@/hooks/use-farcaster-users";
+import { ALLOWED_PROGRESS_UPDATE_FIDS } from "@/lib/constants";
 import { useProfile } from "@farcaster/auth-kit";
 import sdk from "@farcaster/frame-sdk";
 import { CircleCheck, Hourglass } from "lucide-react";
 import { Climate_Crisis } from "next/font/google";
 import Image from "next/image";
-import posthog from "posthog-js";
 import { useState } from "react";
 import ApplyModal from "../ApplyModal";
 import Button from "../Button";
-import Countdown from "../Countdown";
 import { useFrame } from "../farcaster-provider";
 import ProgramInfoModal from "../ProgramInfoModal";
 import SafeAreaContainer from "../SafeAreaContainer";
 import Sponsors from "../Sponsors";
 import SuccessStories from "../SuccessStories";
+import Teams from "../Teams";
 import { Tooltip } from "../Tooltip";
 import VoteModal from "../VoteModal";
 
 const climateCrisis = Climate_Crisis({ subsets: ["latin"] });
+
+interface FarcasterUser {
+  fid: number;
+  username: string;
+  pfp_url?: string;
+}
+
+// Group FIDs by team
+const teamFids = Object.entries(ALLOWED_PROGRESS_UPDATE_FIDS).reduce(
+  (acc, [fid, team]) => {
+    if (team !== "Builders Garden") {
+      if (!acc[team]) {
+        acc[team] = [];
+      }
+      acc[team].push(fid);
+    }
+    return acc;
+  },
+  {} as Record<string, string[]>
+);
+
+// Get all FIDs except Builders Garden
+const allFids = Object.entries(ALLOWED_PROGRESS_UPDATE_FIDS)
+  .filter(([_, team]) => team !== "Builders Garden")
+  .map(([fid]) => fid);
 
 export default function Home() {
   const { context } = useFrame();
   const [isFrameAdded, setIsFrameAdded] = useState(context?.client.added);
   const [isVoteModalOpen, setIsVoteModalOpen] = useState(false);
   const { profile } = useProfile();
+  const { data: users } = useFarcasterUsers(allFids) as {
+    data: FarcasterUser[] | undefined;
+  };
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const [isProgramInfoModalOpen, setIsProgramInfoModalOpen] = useState(false);
   const [showCopiedTooltip, setShowCopiedTooltip] = useState(false);
   const [showOverlay, setShowOverlay] = useState(false);
-
-  const handleApplyClick = async () => {
-    if (context?.user?.fid) {
-      posthog.identify(context?.user?.fid?.toString());
-      setShowOverlay(true);
-      try {
-        const details = await sdk.actions.addFrame();
-        if (details.notificationDetails?.token) {
-          setIsFrameAdded(true);
-        }
-      } catch (error) {
-        console.error("Failed to save frame", error);
-      } finally {
-        setShowOverlay(true);
-      }
-    } else {
-      window.open(
-        "https://warpcast.com/?launchFrameDomain=frame-it.builders.garden",
-        "_blank"
-      );
-    }
-  };
 
   const copyEmailToClipboard = () => {
     navigator.clipboard.writeText("gm@builders.garden");
@@ -133,63 +138,15 @@ export default function Home() {
             <p className="w-1 h-1 bg-black rounded-full"></p>
             <p>ONLINE - NYC - ROME</p>
           </div>
-
-          {/* <div className="flex flex-wrap justify-center gap-2 md:gap-4 mt-4 md:mt-8 text-xs md:text-base font-bold text-purple-500">
-            <div className="border-2 border-purple-500 px-4 py-1 md:px-8 md:py-3 bg-white/50">
-              6 TEAMS
-            </div>
-            <div className="border-2 border-purple-500 px-4 py-1 md:px-8 md:py-3 bg-white/50">
-              HYBRID BUILDATHON
-            </div>
-          </div> */}
         </div>
 
-        <div className="w-full max-w-5xl mx-auto text-center pb-4 md:pb-16 mt-auto">
-          <div className="flex flex-col items-center gap-4">
-            <Countdown />
-            <div className="flex flex-row items-center justify-center gap-2 mx-auto">
-              {/* <ApplyButton
-                onSuccess={() => {
-                  setIsModalOpen(true);
-                }}
-                onError={(error) => {
-                  console.error("Failed to sign in", error);
-                }}
-              /> */}
-              {(profile?.fid && ALLOWED_VOTER_FIDS.includes(profile.fid)) ||
-                (context?.user?.fid &&
-                  ALLOWED_VOTER_FIDS.includes(context.user.fid) && (
-                    <Button
-                      className="px-[30px] py-[1.4rem] flex flex-row items-center justify-center gap-2"
-                      onClick={() => {
-                        setIsVoteModalOpen(true);
-                      }}
-                    >
-                      Review Applications
-                    </Button>
-                  ))}
-              <Button
-                variant="bordered"
-                onClick={() => {
-                  setIsProgramInfoModalOpen(true);
-                }}
-              >
-                Learn More
-              </Button>
-            </div>
-            <a
-              href="https://www.farcaster.xyz/"
-              target="_blank"
-              className="text-xs text-purple-400 underline"
-            >
-              Not on Farcaster yet? Create an account!
-            </a>
-          </div>
+        <div className="w-full flex flex-col gap-16">
+          <Teams />
+
+          <Sponsors />
+
+          <SuccessStories />
         </div>
-
-        <Sponsors />
-
-        <SuccessStories />
 
         <div className="w-full flex justify-center py-4 md:py-8 text-gray-400">
           <div className="flex flex-col items-center gap-8">

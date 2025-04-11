@@ -9,7 +9,7 @@ export const ALLOWED_PROGRESS_UPDATE_FIDS: Record<string, string> = {
   "4461": "Builders Garden",
   "16286": "Builders Garden",
   "479": "Atlas",
-  "5395": "Atlas",
+  //"5395": "Atlas",
   "11528": "Atlas",
   "469678": "Atlas",
   "1575": "Megapot",
