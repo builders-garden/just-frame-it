@@ -1,11 +1,13 @@
 "use client";
 import { useFarcasterUsers } from "@/hooks/use-farcaster-users";
 import { useTeamVotes } from "@/hooks/use-team-votes";
+import { useLeaderboard } from "@/hooks/useLeaderboard";
 import { ALLOWED_VOTER_FIDS } from "@/lib/constants";
 import { CircularProgress } from "@mui/material";
 import { DemoDay } from "@prisma/client";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+
 export default function JudgingVotesPage() {
   const [password, setPassword] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -14,10 +16,17 @@ export default function JudgingVotesPage() {
   const [selectedDemoDay, setSelectedDemoDay] = useState<DemoDay>(
     DemoDay.SPRINT_1
   );
+  const [activeTab, setActiveTab] = useState<"demoDays" | "leaderboard">(
+    "leaderboard"
+  );
 
   // Fetch team votes for the selected demo day
   const { data: teamVotes, isLoading: isLoadingVotes } =
     useTeamVotes(selectedDemoDay);
+
+  // Fetch leaderboard data
+  const { data: leaderboardData, isLoading: isLoadingLeaderboard } =
+    useLeaderboard();
 
   // Get unique voter FIDs from the votes
   const voterFids = teamVotes
@@ -125,94 +134,117 @@ export default function JudgingVotesPage() {
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-8">Judging Votes</h1>
 
-      {/* Demo Day Tabs */}
+      {/* Tab Navigation */}
       <div className="flex space-x-4 mb-8">
-        {Object.values(DemoDay).map((demoDay) => (
-          <button
-            key={demoDay}
-            onClick={() => setSelectedDemoDay(demoDay)}
-            className={`px-4 py-2 rounded-lg ${
-              selectedDemoDay === demoDay
-                ? "bg-blue-500 text-white"
-                : "bg-gray-200 hover:bg-gray-300"
-            }`}
-          >
-            {demoDay.replace("_", " ")}
-          </button>
-        ))}
+        <button
+          onClick={() => setActiveTab("leaderboard")}
+          className={`px-4 py-2 rounded-lg ${
+            activeTab === "leaderboard"
+              ? "bg-blue-500 text-white"
+              : "bg-gray-200 hover:bg-gray-300"
+          }`}
+        >
+          Global Leaderboard
+        </button>
+        <button
+          onClick={() => setActiveTab("demoDays")}
+          className={`px-4 py-2 rounded-lg ${
+            activeTab === "demoDays"
+              ? "bg-blue-500 text-white"
+              : "bg-gray-200 hover:bg-gray-300"
+          }`}
+        >
+          Demo Days
+        </button>
       </div>
 
-      {/* Team Votes Display */}
-      <div className="grid gap-8">
-        {teamVotesMap &&
-          Object.entries(teamVotesMap).map(([teamName, votes]) => (
-            <div key={teamName} className="bg-white p-6 rounded-lg shadow">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-2xl font-semibold">{teamName}</h2>
-                <div className="text-xl font-bold text-blue-600">
-                  Total Points: {teamTotals[teamName]}
-                </div>
-              </div>
-
-              {/* Judge PFPs */}
-              <div className="mb-6">
-                <h3 className="text-lg font-medium mb-2">Judges</h3>
-                <div className="flex flex-wrap gap-2">
-                  {votes.map((vote) => {
-                    const voter = (farcasterUsers as FarcasterUser[]).find(
-                      (user: FarcasterUser) =>
-                        user.fid.toString() === vote.voterFid.toString()
-                    );
-                    return voter?.pfp_url ? (
-                      <Image
-                        key={vote.id}
-                        src={voter.pfp_url}
-                        alt={voter.username}
-                        className="w-10 h-10 rounded-full border-2 border-blue-500 object-cover"
-                        title={voter.username}
-                        width={40}
-                        height={40}
-                      />
-                    ) : null;
-                  })}
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                {votes.map((vote) => {
-                  const voter = (farcasterUsers as FarcasterUser[]).find(
-                    (user: FarcasterUser) =>
-                      user.fid === vote.voterFid.toString()
-                  );
-                  return (
-                    <div
-                      key={vote.id}
-                      className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
-                    >
-                      <div className="flex items-center gap-3">
-                        {voter?.pfp_url && (
-                          <img
-                            src={voter.pfp_url}
-                            alt={voter.username}
-                            className="w-8 h-8 rounded-full"
-                          />
-                        )}
-                        <span className="font-medium">
-                          {voter?.username || `Voter ${vote.voterFid}`}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full font-medium">
-                          {vote.points} points
-                        </span>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
+      {activeTab === "leaderboard" ? (
+        <div className="grid gap-8">
+          {isLoadingLeaderboard ? (
+            <div className="flex justify-center">
+              <CircularProgress />
             </div>
-          ))}
-      </div>
+          ) : (
+            leaderboardData?.map((entry) => (
+              <div
+                key={entry.teamName}
+                className="bg-white p-6 rounded-lg shadow"
+              >
+                <div className="flex justify-between items-center">
+                  <h2 className="text-2xl font-semibold">{entry.teamName}</h2>
+                  <div className="text-xl font-bold text-blue-600">
+                    Total Points: {entry.totalPoints}
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      ) : (
+        <>
+          {/* Demo Day Tabs */}
+          <div className="flex space-x-4 mb-8">
+            {Object.values(DemoDay).map((demoDay) => (
+              <button
+                key={demoDay}
+                onClick={() => setSelectedDemoDay(demoDay)}
+                className={`px-4 py-2 rounded-lg ${
+                  selectedDemoDay === demoDay
+                    ? "bg-blue-500 text-white"
+                    : "bg-gray-200 hover:bg-gray-300"
+                }`}
+              >
+                {demoDay.replace("_", " ")}
+              </button>
+            ))}
+          </div>
+
+          {/* Team Votes Display */}
+          <div className="grid gap-8">
+            {teamVotesMap &&
+              Object.entries(teamVotesMap).map(([teamName, votes]) => (
+                <div key={teamName} className="bg-white p-4 rounded-lg shadow">
+                  <div className="flex justify-between items-center mb-4">
+                    <h2 className="text-xl font-semibold">{teamName}</h2>
+                    <div className="text-lg font-bold text-blue-600">
+                      {teamTotals[teamName]} pts
+                    </div>
+                  </div>
+
+                  <div className="flex flex-row gap-2">
+                    {votes.map((vote) => {
+                      const voter = (farcasterUsers as FarcasterUser[]).find(
+                        (user: FarcasterUser) =>
+                          user.fid.toString() === vote.voterFid.toString()
+                      );
+                      return (
+                        <div
+                          key={vote.id}
+                          className="flex flex-col items-center p-2 gap-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors w-fit"
+                        >
+                          {voter?.pfp_url && (
+                            <div className="relative w-12 h-12">
+                              <Image
+                                src={voter.pfp_url}
+                                alt={voter.username}
+                                className="rounded-full object-cover"
+                                fill
+                                sizes="48px"
+                              />
+                            </div>
+                          )}
+                          <span className="w-8 h-8 flex items-center justify-center bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
+                            {vote.points}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+          </div>
+        </>
+      )}
     </div>
   );
 }
