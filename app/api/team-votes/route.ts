@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
         demoDay,
       },
       orderBy: {
-        createdAt: "desc",
+        points: "desc",
       },
     });
 
