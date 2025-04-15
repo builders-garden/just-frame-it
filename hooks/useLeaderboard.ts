@@ -10,5 +10,7 @@ export function useLeaderboard() {
     url: "/api/team-votes/leaderboard",
     queryKey: ["leaderboard"],
     isProtected: true,
+    staleTime: 1000 * 60 * 1,
+    refetchInterval: 1000 * 60 * 3,
   });
 }
