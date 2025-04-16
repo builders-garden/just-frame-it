@@ -21,7 +21,14 @@ export async function GET() {
       totalPoints: entry._sum.points || 0,
     }));
 
-    return NextResponse.json(formattedLeaderboard);
+    return NextResponse.json(formattedLeaderboard, {
+      headers: {
+        "Cache-Control":
+          "no-store, no-cache, must-revalidate, proxy-revalidate",
+        Pragma: "no-cache",
+        Expires: "0",
+      },
+    });
   } catch (error) {
     console.error("Error fetching team leaderboard:", error);
     return NextResponse.json(
