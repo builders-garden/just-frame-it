@@ -9,6 +9,7 @@ interface TeamVote {
   teamName: string;
   points: number;
   demoDay: DemoDay;
+  notes?: string;
 }
 
 export function useTeamVotes(demoDay: DemoDay) {

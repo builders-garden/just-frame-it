@@ -31,7 +31,7 @@ export default function JudgingPage() {
   });
   const [activeDemoDay, setActiveDemoDay] = useState<DemoDay>(DemoDay.SPRINT_1);
   const [votes, setVotes] = useState<
-    Record<string, Partial<Record<DemoDay, number>>>
+    Record<string, Partial<Record<DemoDay, { points: number; notes?: string }>>>
   >({});
   const [totalPoints, setTotalPoints] = useState(0);
   const [error, setError] = useState<string | null>(null);
@@ -39,10 +39,12 @@ export default function JudgingPage() {
   const [selectedTeam, setSelectedTeam] = useState<string | null>(null);
   const [isProgressModalOpen, setIsProgressModalOpen] = useState(false);
   const [hasExistingVotes, setHasExistingVotes] = useState(false);
+  const [editingNotes, setEditingNotes] = useState<string | null>(null);
+  const [notesInput, setNotesInput] = useState("");
 
   // Fetch existing votes for the current demo day
   const { data: existingVotes, refetch: refetchVotes } = useApiQuery<
-    Record<string, number>
+    Record<string, { points: number; notes?: string }>
   >({
     url: `/api/judging/votes?demoDay=${activeDemoDay}`,
     method: "GET",
@@ -54,25 +56,22 @@ export default function JudgingPage() {
   // Update votes when existing votes are loaded
   useEffect(() => {
     if (existingVotes) {
-      // Initialize votes with the structure needed for each team
       const initializedVotes: Record<
         string,
-        Partial<Record<DemoDay, number>>
+        Partial<Record<DemoDay, { points: number; notes?: string }>>
       > = {};
 
-      // For each team that has votes, create the nested structure
-      Object.entries(existingVotes).forEach(([team, points]) => {
+      Object.entries(existingVotes).forEach(([team, vote]) => {
         initializedVotes[team] = {
-          [activeDemoDay]: points,
+          [activeDemoDay]: vote,
         };
       });
 
       setVotes(initializedVotes);
       setHasExistingVotes(Object.keys(existingVotes).length > 0);
 
-      // Calculate total points for the current demo day
       const currentDemoDayPoints = Object.values(existingVotes).reduce(
-        (sum: number, points: number) => sum + points,
+        (sum: number, vote: { points: number }) => sum + vote.points,
         0
       );
       setTotalPoints(currentDemoDayPoints);
@@ -81,7 +80,10 @@ export default function JudgingPage() {
 
   const { mutate: submitVotes, isPending: isSubmitting } = useApiMutation<
     void,
-    { votes: Record<string, number>; demoDay: DemoDay }
+    {
+      votes: Record<string, { points: number; notes?: string }>;
+      demoDay: DemoDay;
+    }
   >({
     url: "/api/judging/vote",
     method: "POST",
@@ -145,7 +147,7 @@ export default function JudgingPage() {
 
   const handleVoteChange = (team: string, points: number) => {
     const newVotes = { ...votes };
-    const oldPoints = newVotes[team]?.[activeDemoDay] || 0;
+    const oldPoints = newVotes[team]?.[activeDemoDay]?.points || 0;
     const newTotalPoints = totalPoints - oldPoints + points;
 
     if (newTotalPoints > 10) {
@@ -164,11 +166,14 @@ export default function JudgingPage() {
       if (!newVotes[team]) {
         newVotes[team] = {};
       }
-      newVotes[team][activeDemoDay] = points;
+      newVotes[team][activeDemoDay] = {
+        points,
+        notes: newVotes[team][activeDemoDay]?.notes,
+      };
     }
 
     const currentDemoDayVotes = Object.values(newVotes)
-      .map((v) => v[activeDemoDay] || 0)
+      .map((v) => v[activeDemoDay]?.points || 0)
       .filter((v) => v > 0);
 
     if (currentDemoDayVotes.length > 4) {
@@ -181,6 +186,21 @@ export default function JudgingPage() {
     setError(null);
   };
 
+  const handleNotesChange = (team: string, notes: string) => {
+    const newVotes = { ...votes };
+    if (!newVotes[team]) {
+      newVotes[team] = {};
+    }
+    if (!newVotes[team][activeDemoDay]) {
+      newVotes[team][activeDemoDay] = { points: 0 };
+    }
+    newVotes[team][activeDemoDay] = {
+      ...newVotes[team][activeDemoDay],
+      notes,
+    };
+    setVotes(newVotes);
+  };
+
   const handleSubmit = () => {
     if (!userFid) return;
     const currentDemoDayVotes = Object.entries(votes).reduce(
@@ -190,7 +210,7 @@ export default function JudgingPage() {
         }
         return acc;
       },
-      {} as Record<string, number>
+      {} as Record<string, { points: number; notes?: string }>
     );
 
     submitVotes({ votes: currentDemoDayVotes, demoDay: activeDemoDay });
@@ -280,44 +300,86 @@ export default function JudgingPage() {
 
           <div className="space-y-6">
             {TEAMS.map((team) => (
-              <div key={team} className="flex items-center justify-between">
-                <button
-                  onClick={() => {
-                    setSelectedTeam(team);
-                    setIsProgressModalOpen(true);
-                  }}
-                  className="text-lg font-medium text-gray-900 hover:text-blue-600 transition-colors"
-                >
-                  {team}
-                </button>
+              <div key={team} className="flex flex-col space-y-2">
+                <div className="flex items-center justify-between">
+                  <button
+                    onClick={() => {
+                      setSelectedTeam(team);
+                      setIsProgressModalOpen(true);
+                    }}
+                    className="text-lg font-medium text-gray-900 hover:text-blue-600 transition-colors"
+                  >
+                    {team}
+                  </button>
+                  <div className="flex items-center space-x-2">
+                    <button
+                      onClick={() =>
+                        handleVoteChange(
+                          team,
+                          (votes[team]?.[activeDemoDay]?.points || 0) - 1
+                        )
+                      }
+                      disabled={!votes[team]?.[activeDemoDay]?.points}
+                      className="px-3 py-1 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 disabled:opacity-50"
+                    >
+                      -
+                    </button>
+                    <span className="w-8 text-center">
+                      {votes[team]?.[activeDemoDay]?.points || 0}
+                    </span>
+                    <button
+                      onClick={() =>
+                        handleVoteChange(
+                          team,
+                          (votes[team]?.[activeDemoDay]?.points || 0) + 1
+                        )
+                      }
+                      disabled={totalPoints >= 10}
+                      className="px-3 py-1 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 disabled:opacity-50"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
                 <div className="flex items-center space-x-2">
                   <button
-                    onClick={() =>
-                      handleVoteChange(
-                        team,
-                        (votes[team]?.[activeDemoDay] || 0) - 1
-                      )
-                    }
-                    disabled={!votes[team]?.[activeDemoDay]}
-                    className="px-3 py-1 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 disabled:opacity-50"
+                    onClick={() => {
+                      setEditingNotes(team);
+                      setNotesInput(votes[team]?.[activeDemoDay]?.notes || "");
+                    }}
+                    className="text-sm text-blue-600 hover:text-blue-800"
                   >
-                    -
+                    {votes[team]?.[activeDemoDay]?.notes
+                      ? "Edit Notes"
+                      : "Add Notes"}
                   </button>
-                  <span className="w-8 text-center">
-                    {votes[team]?.[activeDemoDay] || 0}
-                  </span>
-                  <button
-                    onClick={() =>
-                      handleVoteChange(
-                        team,
-                        (votes[team]?.[activeDemoDay] || 0) + 1
-                      )
-                    }
-                    disabled={totalPoints >= 10}
-                    className="px-3 py-1 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 disabled:opacity-50"
-                  >
-                    +
-                  </button>
+                  {editingNotes === team && (
+                    <div className="flex-1">
+                      <input
+                        type="text"
+                        value={notesInput}
+                        onChange={(e) => setNotesInput(e.target.value)}
+                        onBlur={() => {
+                          handleNotesChange(team, notesInput);
+                          setEditingNotes(null);
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            handleNotesChange(team, notesInput);
+                            setEditingNotes(null);
+                          }
+                        }}
+                        className="w-full px-2 py-1 text-sm border rounded-md"
+                        placeholder="Add notes about this team..."
+                        autoFocus
+                      />
+                    </div>
+                  )}
+                  {!editingNotes && votes[team]?.[activeDemoDay]?.notes && (
+                    <span className="text-sm text-gray-500 truncate">
+                      {votes[team][activeDemoDay].notes}
+                    </span>
+                  )}
                 </div>
               </div>
             ))}

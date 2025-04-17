@@ -31,14 +31,18 @@ export async function GET(request: NextRequest) {
       select: {
         teamName: true,
         points: true,
+        notes: true,
       },
     });
 
-    // Convert to a record of teamName -> points
+    // Convert to a record of teamName -> { points, notes }
     const votesRecord = votes.reduce((acc, vote) => {
-      acc[vote.teamName] = vote.points;
+      acc[vote.teamName] = {
+        points: vote.points,
+        notes: vote.notes || undefined,
+      };
       return acc;
-    }, {} as Record<string, number>);
+    }, {} as Record<string, { points: number; notes?: string }>);
 
     return NextResponse.json(votesRecord);
   } catch (error) {

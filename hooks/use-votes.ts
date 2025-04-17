@@ -52,7 +52,7 @@ export function useSubmitVote() {
 }
 
 export const useVotesForDemoDay = (demoDay: DemoDay) => {
-  return useApiQuery<Record<string, number>>({
+  return useApiQuery<Record<string, { points: number; notes?: string }>>({
     url: `/api/judging/votes?demoDay=${demoDay}`,
     method: "GET",
     isProtected: true,

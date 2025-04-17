@@ -4,7 +4,10 @@ import { DemoDay } from "@prisma/client";
 import { NextResponse } from "next/server";
 
 type Votes = {
-  [teamName: string]: number;
+  [teamName: string]: {
+    points: number;
+    notes?: string;
+  };
 };
 
 export async function POST(request: Request) {
@@ -25,7 +28,7 @@ export async function POST(request: Request) {
 
     // Validate votes
     const totalPoints = Object.values(votes).reduce(
-      (acc, points) => acc + points,
+      (acc, vote) => acc + vote.points,
       0
     );
 
@@ -38,7 +41,7 @@ export async function POST(request: Request) {
 
     if (Object.keys(votes).length > 4) {
       return NextResponse.json(
-        { error: "Cannot vote forf more than 4 teams" },
+        { error: "Cannot vote for more than 4 teams" },
         { status: 400 }
       );
     }
@@ -49,12 +52,13 @@ export async function POST(request: Request) {
     });
 
     // Create new votes
-    const votePromises = Object.entries(votes).map(([teamName, points]) =>
+    const votePromises = Object.entries(votes).map(([teamName, vote]) =>
       prisma.teamVote.create({
         data: {
           voterFid,
           teamName,
-          points,
+          points: vote.points,
+          notes: vote.notes,
           demoDay,
         },
       })

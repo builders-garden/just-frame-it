@@ -119,6 +119,7 @@ model TeamVote {
   teamName      String
   points        Int      // Points allocated to this team
   demoDay       DemoDay  // Which demo day this vote belongs to
+  notes         String?  // Optional notes about the vote
   
   @@unique([voterFid, teamName, demoDay])
   @@index([voterFid])
