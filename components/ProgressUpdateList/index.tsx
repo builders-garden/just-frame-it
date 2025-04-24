@@ -3,6 +3,7 @@
 import { useApiMutation } from "@/hooks/use-api-mutation";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { useMe } from "@/hooks/use-users";
+import { ALLOWED_PROGRESS_UPDATE_FIDS } from "@/lib/constants";
 import { format } from "date-fns";
 import Image from "next/image";
 import { useState } from "react";
@@ -74,10 +75,13 @@ export function ProgressUpdateList() {
     error,
     refetch,
   } = useApiQuery<ProgressUpdate[]>({
-    url: "/api/progress-updates",
+    url: `/api/progress-updates?teamName=${
+      ALLOWED_PROGRESS_UPDATE_FIDS[user?.fid!]
+    }`,
     method: "GET",
     queryKey: ["progress-updates"],
     isProtected: true,
+    enabled: !!user,
   });
 
   const { mutate: deleteProgressUpdate, isPending: isDeleting } =
