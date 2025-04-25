@@ -1,4 +1,5 @@
 import { useApiQuery } from "@/hooks/use-api-query";
+import { DEMO_DAY_DATES, DemoDay } from "@/lib/constants";
 import { format } from "date-fns";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
@@ -45,6 +46,32 @@ const makeLinksClickable = (text: string) => {
   });
 };
 
+const getDemoDayForDate = (date: string): DemoDay | null => {
+  const updateDate = new Date(date);
+  console.log("updateDate", updateDate);
+
+  const demoDayEntries = Object.entries(DEMO_DAY_DATES);
+
+  for (let i = 0; i < demoDayEntries.length; i++) {
+    const [demoDay, { date: currentDemoDate }] = demoDayEntries[i];
+    const prevDemoDate = i > 0 ? demoDayEntries[i - 1][1].date : new Date(0);
+    console.log("currentDemoDate", currentDemoDate);
+    console.log("prevDemoDate", prevDemoDate);
+    console.log("updateDate", updateDate);
+    const updateDateOnly = new Date(updateDate.toDateString());
+    const currentDemoDateOnly = new Date(currentDemoDate.toDateString());
+    const prevDemoDateOnly = new Date(prevDemoDate.toDateString());
+    if (
+      updateDateOnly <= currentDemoDateOnly &&
+      updateDateOnly >= prevDemoDateOnly
+    ) {
+      return demoDay as DemoDay;
+    }
+  }
+
+  return null;
+};
+
 export function TeamProgressModal({
   isOpen,
   onClose,
@@ -56,6 +83,20 @@ export function TeamProgressModal({
     queryKey: ["team-progress", teamName],
     isProtected: true,
   });
+
+  // Group updates by demo day
+  const updatesByDemoDay = updates.reduce((acc, update) => {
+    const demoDay = getDemoDayForDate(update.createdAt);
+    if (demoDay) {
+      if (!acc[demoDay]) {
+        acc[demoDay] = [];
+      }
+      acc[demoDay].push(update);
+    }
+    return acc;
+  }, {} as Record<DemoDay, ProgressUpdate[]>);
+
+  console.log("Updates by demo day:", updatesByDemoDay);
 
   return (
     <AnimatePresence>
@@ -113,110 +154,127 @@ export function TeamProgressModal({
                 ) : updates.length === 0 ? (
                   <p className="text-gray-500">No progress updates yet.</p>
                 ) : (
-                  <div className="space-y-6">
-                    {updates.map((update) => (
-                      <div
-                        key={update.id}
-                        className="bg-gray-50 rounded-lg p-6"
-                      >
-                        <div className="flex items-center justify-between border-b pb-4">
+                  <div className="space-y-8">
+                    {Object.entries(updatesByDemoDay).map(
+                      ([demoDay, demoDayUpdates]) => (
+                        <div key={demoDay} className="space-y-6">
                           <div className="flex items-center space-x-4">
-                            <div>
-                              <p className="text-sm text-gray-500">
-                                {format(
-                                  new Date(update.createdAt),
-                                  "MMMM d, yyyy"
-                                )}
-                              </p>
-                            </div>
+                            <div className="flex-1 h-px bg-gray-200"></div>
+                            <h3 className="text-lg font-semibold text-gray-700">
+                              DEMO DAY {demoDay.split("_")[1]}
+                            </h3>
+                            <div className="flex-1 h-px bg-gray-200"></div>
                           </div>
-                          <div className="flex items-center space-x-4">
-                            <div className="flex items-center space-x-3">
-                              {update.authorAvatarUrl ? (
-                                <Image
-                                  src={update.authorAvatarUrl}
-                                  alt={update.authorDisplayName}
-                                  width={40}
-                                  height={40}
-                                  className="rounded-full"
-                                />
-                              ) : (
-                                <div className="w-10 h-10 bg-gray-200 rounded-full"></div>
-                              )}
-                              <div>
-                                <p className="font-medium">
-                                  {update.authorDisplayName}
-                                </p>
-                                <p className="text-sm text-gray-500">
-                                  @{update.authorUsername}
-                                </p>
+                          {demoDayUpdates.map((update) => (
+                            <div
+                              key={update.id}
+                              className="bg-gray-50 rounded-lg p-6"
+                            >
+                              <div className="flex items-center justify-between border-b pb-4">
+                                <div className="flex items-center space-x-4">
+                                  <div>
+                                    <p className="text-sm text-gray-500">
+                                      {format(
+                                        new Date(update.createdAt),
+                                        "MMMM d, yyyy"
+                                      )}
+                                    </p>
+                                  </div>
+                                </div>
+                                <div className="flex items-center space-x-4">
+                                  <div className="flex items-center space-x-3">
+                                    {update.authorAvatarUrl ? (
+                                      <Image
+                                        src={update.authorAvatarUrl}
+                                        alt={update.authorDisplayName}
+                                        width={40}
+                                        height={40}
+                                        className="rounded-full"
+                                      />
+                                    ) : (
+                                      <div className="w-10 h-10 bg-gray-200 rounded-full"></div>
+                                    )}
+                                    <div>
+                                      <p className="font-medium">
+                                        {update.authorDisplayName}
+                                      </p>
+                                      <p className="text-sm text-gray-500">
+                                        @{update.authorUsername}
+                                      </p>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className="space-y-6 mt-4">
+                                <div>
+                                  <h4 className="font-bold mb-2">
+                                    Key Features Built
+                                  </h4>
+                                  <p className="text-gray-700 whitespace-pre-wrap">
+                                    {makeLinksClickable(update.keyFeatures)}
+                                  </p>
+                                </div>
+
+                                <div>
+                                  <h4 className="font-bold mb-2">
+                                    User & Market Engagement
+                                  </h4>
+                                  <p className="text-gray-700 whitespace-pre-wrap">
+                                    {makeLinksClickable(update.userEngagement)}
+                                  </p>
+                                </div>
+
+                                <div>
+                                  <h4 className="font-bold mb-2">
+                                    Challenges & Blockers
+                                  </h4>
+                                  <p className="text-gray-700 whitespace-pre-wrap">
+                                    {makeLinksClickable(update.challenges)}
+                                  </p>
+                                </div>
+
+                                <div>
+                                  <h4 className="font-bold mb-2">Next Steps</h4>
+                                  <p className="text-gray-700 whitespace-pre-wrap">
+                                    {makeLinksClickable(update.nextSteps)}
+                                  </p>
+                                </div>
+
+                                {update.additionalNotes && (
+                                  <div>
+                                    <h4 className="font-bold mb-2">
+                                      Additional Notes
+                                    </h4>
+                                    <p className="text-gray-700 whitespace-pre-wrap">
+                                      {makeLinksClickable(
+                                        update.additionalNotes
+                                      )}
+                                    </p>
+                                  </div>
+                                )}
+
+                                {update.demoLink && (
+                                  <div>
+                                    <h4 className="font-medium mb-2">
+                                      Demo Link
+                                    </h4>
+                                    <a
+                                      href={update.demoLink}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="text-blue-600 hover:text-blue-800"
+                                    >
+                                      {update.demoLink}
+                                    </a>
+                                  </div>
+                                )}
                               </div>
                             </div>
-                          </div>
+                          ))}
                         </div>
-
-                        <div className="space-y-6 mt-4">
-                          <div>
-                            <h4 className="font-bold mb-2">
-                              Key Features Built
-                            </h4>
-                            <p className="text-gray-700 whitespace-pre-wrap">
-                              {makeLinksClickable(update.keyFeatures)}
-                            </p>
-                          </div>
-
-                          <div>
-                            <h4 className="font-bold mb-2">
-                              User & Market Engagement
-                            </h4>
-                            <p className="text-gray-700 whitespace-pre-wrap">
-                              {makeLinksClickable(update.userEngagement)}
-                            </p>
-                          </div>
-
-                          <div>
-                            <h4 className="font-bold mb-2">
-                              Challenges & Blockers
-                            </h4>
-                            <p className="text-gray-700 whitespace-pre-wrap">
-                              {makeLinksClickable(update.challenges)}
-                            </p>
-                          </div>
-
-                          <div>
-                            <h4 className="font-bold mb-2">Next Steps</h4>
-                            <p className="text-gray-700 whitespace-pre-wrap">
-                              {makeLinksClickable(update.nextSteps)}
-                            </p>
-                          </div>
-
-                          {update.additionalNotes && (
-                            <div>
-                              <h4 className="font-bold mb-2">
-                                Additional Notes
-                              </h4>
-                              <p className="text-gray-700 whitespace-pre-wrap">
-                                {makeLinksClickable(update.additionalNotes)}
-                              </p>
-                            </div>
-                          )}
-
-                          {update.demoLink && (
-                            <div>
-                              <h4 className="font-medium mb-2">Demo Link</h4>
-                              <a
-                                href={update.demoLink}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-blue-600 hover:text-blue-800"
-                              >
-                                {update.demoLink}
-                              </a>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    ))}
+                      )
+                    )}
                   </div>
                 )}
               </div>

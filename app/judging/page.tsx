@@ -259,14 +259,14 @@ export default function JudgingPage() {
                 className="block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-blue-500 focus:outline-none focus:ring-blue-500"
               >
                 {Object.entries(DEMO_DAY_DATES).map(
-                  ([day, { date, isUnlocked }]) => (
+                  ([day, { formattedDate, isUnlocked }]) => (
                     <option
                       key={day}
                       value={day}
                       disabled={!isUnlocked}
                       className={!isUnlocked ? "text-gray-400" : ""}
                     >
-                      {date}
+                      {formattedDate}
                     </option>
                   )
                 )}
@@ -275,7 +275,7 @@ export default function JudgingPage() {
             <div className="hidden sm:block">
               <nav className="flex space-x-4" aria-label="Tabs">
                 {Object.entries(DEMO_DAY_DATES).map(
-                  ([day, { date, isUnlocked }]) => (
+                  ([day, { formattedDate, isUnlocked }]) => (
                     <button
                       key={day}
                       onClick={() =>
@@ -290,7 +290,7 @@ export default function JudgingPage() {
                       }`}
                       disabled={!isUnlocked}
                     >
-                      {date}
+                      {formattedDate}
                     </button>
                   )
                 )}

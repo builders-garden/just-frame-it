@@ -33,32 +33,36 @@ export enum DemoDay {
   SPRINT_4 = "SPRINT_4",
 }
 
-function isDemoDayUnlocked(dateStr: string): boolean {
+function isDemoDayUnlocked(demoDayDate: Date): boolean {
   const now = new Date();
-  const demoDayDate = new Date(dateStr.split(",")[0] + ", 2025");
   const endDate = new Date(demoDayDate);
   endDate.setDate(endDate.getDate() + 3);
+  console.log(now, demoDayDate, endDate);
   return now >= demoDayDate && now <= endDate;
 }
 
 export const DEMO_DAY_DATES: Record<
   DemoDay,
-  { date: string; isUnlocked: boolean }
+  { formattedDate: string; date: Date; isUnlocked: boolean }
 > = {
   [DemoDay.SPRINT_1]: {
-    date: "April 11th, 2025",
-    isUnlocked: isDemoDayUnlocked("April 11th, 2025"),
+    formattedDate: "April 11th, 2025",
+    date: new Date("2025-04-11"),
+    isUnlocked: isDemoDayUnlocked(new Date("2025-04-11")),
   },
   [DemoDay.SPRINT_2]: {
-    date: "April 25th, 2025",
-    isUnlocked: isDemoDayUnlocked("April 25th, 2025"),
+    formattedDate: "April 25th, 2025",
+    date: new Date("2025-04-25"),
+    isUnlocked: isDemoDayUnlocked(new Date("2025-04-25")),
   },
   [DemoDay.SPRINT_3]: {
-    date: "May 9th, 2025",
-    isUnlocked: isDemoDayUnlocked("May 9th, 2025"),
+    formattedDate: "May 9th, 2025",
+    date: new Date("2025-05-09"),
+    isUnlocked: isDemoDayUnlocked(new Date("2025-05-09")),
   },
   [DemoDay.SPRINT_4]: {
-    date: "May 23rd, 2025",
-    isUnlocked: isDemoDayUnlocked("May 23rd, 2025"),
+    formattedDate: "May 23rd, 2025",
+    date: new Date("2025-05-23"),
+    isUnlocked: isDemoDayUnlocked(new Date("2025-05-23")),
   },
 };
