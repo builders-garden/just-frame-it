@@ -302,15 +302,20 @@ export default function JudgingPage() {
             {TEAMS.map((team) => (
               <div key={team} className="flex flex-col space-y-2">
                 <div className="flex items-center justify-between">
-                  <button
-                    onClick={() => {
-                      setSelectedTeam(team);
-                      setIsProgressModalOpen(true);
-                    }}
-                    className="text-lg font-medium text-gray-900 hover:text-blue-600 transition-colors"
-                  >
-                    {team}
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg font-medium text-gray-900">
+                      {team}
+                    </span>
+                    <button
+                      onClick={() => {
+                        setSelectedTeam(team);
+                        setIsProgressModalOpen(true);
+                      }}
+                      className="text-sm text-blue-600 hover:text-blue-800"
+                    >
+                      View Progress
+                    </button>
+                  </div>
                   <div className="flex items-center space-x-2">
                     <button
                       onClick={() =>
