@@ -33,36 +33,55 @@ export enum DemoDay {
   SPRINT_4 = "SPRINT_4",
 }
 
-function isDemoDayUnlocked(demoDayDate: Date): boolean {
-  const now = new Date();
-  const endDate = new Date(demoDayDate);
-  endDate.setDate(endDate.getDate() + 3);
-  console.log(now, demoDayDate, endDate);
-  return now >= demoDayDate && now <= endDate;
-}
+export const DEMO_DAY_SCHEDULE: {
+  key: DemoDay;
+  formattedDate: string;
+  date: Date;
+}[] = [
+  {
+    key: DemoDay.SPRINT_1,
+    formattedDate: "April 11th, 2025",
+    date: new Date("2025-04-11"),
+  },
+  {
+    key: DemoDay.SPRINT_2,
+    formattedDate: "April 25th, 2025",
+    date: new Date("2025-04-25"),
+  },
+  {
+    key: DemoDay.SPRINT_3,
+    formattedDate: "May 9th, 2025",
+    date: new Date("2025-05-09"),
+  },
+  {
+    key: DemoDay.SPRINT_4,
+    formattedDate: "May 23rd, 2025",
+    date: new Date("2025-05-23"),
+  },
+];
 
 export const DEMO_DAY_DATES: Record<
   DemoDay,
   { formattedDate: string; date: Date; isUnlocked: boolean }
-> = {
-  [DemoDay.SPRINT_1]: {
-    formattedDate: "April 11th, 2025",
-    date: new Date("2025-04-11"),
-    isUnlocked: isDemoDayUnlocked(new Date("2025-04-11")),
-  },
-  [DemoDay.SPRINT_2]: {
-    formattedDate: "April 25th, 2025",
-    date: new Date("2025-04-25"),
-    isUnlocked: isDemoDayUnlocked(new Date("2025-04-25")),
-  },
-  [DemoDay.SPRINT_3]: {
-    formattedDate: "May 9th, 2025",
-    date: new Date("2025-05-09"),
-    isUnlocked: isDemoDayUnlocked(new Date("2025-05-09")),
-  },
-  [DemoDay.SPRINT_4]: {
-    formattedDate: "May 23rd, 2025",
-    date: new Date("2025-05-23"),
-    isUnlocked: isDemoDayUnlocked(new Date("2025-05-23")),
-  },
-};
+> = DEMO_DAY_SCHEDULE.reduce((acc, curr, idx, arr) => {
+  const next = arr[idx + 1];
+  acc[curr.key] = {
+    formattedDate: curr.formattedDate,
+    date: curr.date,
+    isUnlocked: isDemoDayUnlocked(curr.date),
+  };
+  return acc;
+}, {} as Record<DemoDay, { formattedDate: string; date: Date; isUnlocked: boolean }>);
+
+function isDemoDayUnlocked(demoDayDate: Date): boolean {
+  const now = new Date();
+  const sortedDates = DEMO_DAY_SCHEDULE.map((d) => d.date).sort(
+    (a, b) => a.getTime() - b.getTime()
+  );
+  const idx = sortedDates.findIndex(
+    (date) => date.getTime() === demoDayDate.getTime()
+  );
+  const nextDemoDay = sortedDates[idx + 1];
+  const endDate = nextDemoDay || new Date(demoDayDate);
+  return now >= demoDayDate && now < endDate;
+}
