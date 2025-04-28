@@ -39,9 +39,20 @@ export async function POST(request: Request) {
       );
     }
 
-    if (Object.keys(votes).length > 4) {
+    const teamsWithZeroPoints = Object.values(votes).filter(
+      (vote) => vote.points === 0
+    ).length;
+
+    if (Object.keys(votes).length > 6) {
       return NextResponse.json(
-        { error: "Cannot vote for more than 4 teams" },
+        { error: "Cannot vote for more than 6 teams" },
+        { status: 400 }
+      );
+    }
+
+    if (Object.keys(votes).length === 6 && teamsWithZeroPoints !== 2) {
+      return NextResponse.json(
+        { error: "When voting for 6 teams, exactly 2 must have 0 points" },
         { status: 400 }
       );
     }
