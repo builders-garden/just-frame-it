@@ -66,7 +66,7 @@ export function FeedbackList() {
 
   // Filter votes for the user's team
   const filteredTeamVotes =
-    allTeamVotes?.filter((vote) => vote.teamName === "Megapot") || [];
+    allTeamVotes?.filter((vote) => vote.teamName === userTeamName) || [];
   const totalPoints = filteredTeamVotes.reduce(
     (sum, vote) => sum + vote.points,
     0
