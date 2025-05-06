@@ -15,6 +15,8 @@ export async function GET() {
       },
     });
 
+    console.log(JSON.stringify(leaderboard, null, 2));
+
     // Transform the result to a more readable format
     const formattedLeaderboard = leaderboard.map((entry) => ({
       teamName: entry.teamName,
