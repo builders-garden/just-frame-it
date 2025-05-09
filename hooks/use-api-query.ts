@@ -35,6 +35,9 @@ export const useApiQuery = <TData, TBody = unknown>(
       });
 
       if (!response.ok) {
+        if (response.status === 401) {
+          localStorage.removeItem("token");
+        }
         throw new Error(`API Error: ${response.status}`);
       }
 
