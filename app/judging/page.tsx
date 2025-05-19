@@ -29,7 +29,13 @@ export default function JudgingPage() {
   const { signIn } = useSignIn({
     onSuccess: () => {},
   });
-  const [activeDemoDay, setActiveDemoDay] = useState<DemoDay>(DemoDay.SPRINT_1);
+  const [activeDemoDay, setActiveDemoDay] = useState<DemoDay>(() => {
+    const now = new Date();
+    const sortedDates = Object.entries(DEMO_DAY_DATES)
+      .sort(([, a], [, b]) => b.date.getTime() - a.date.getTime())
+      .find(([, { date }]) => date <= now);
+    return sortedDates ? (sortedDates[0] as DemoDay) : DemoDay.SPRINT_1;
+  });
   const [votes, setVotes] = useState<
     Record<string, Partial<Record<DemoDay, { points: number; notes?: string }>>>
   >({});
